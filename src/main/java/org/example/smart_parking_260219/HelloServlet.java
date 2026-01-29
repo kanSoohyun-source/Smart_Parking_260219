@@ -7,7 +7,6 @@ import jakarta.servlet.annotation.*;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
     private String message;

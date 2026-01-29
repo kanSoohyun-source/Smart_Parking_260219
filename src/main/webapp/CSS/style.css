@@ -1,0 +1,348 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+}
+
+/* Navigation */
+nav {
+    background: #2c3e50;
+    color: white;
+    padding: 0;
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+}
+
+nav h1 {
+    padding: 30px 20px;
+    background: #1a252f;
+    font-size: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 20px 0;
+}
+
+nav ul li {
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+    border-left: 4px solid transparent;
+}
+
+nav ul li:hover {
+    background: #34495e;
+    border-left-color: #3498db;
+}
+
+nav ul li.active {
+    background: #34495e;
+    border-left-color: #3498db;
+}
+
+nav ul li a {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-decoration: none; /* 밑줄 제거 */
+    color: #ffffff;        /* 글자 색상 하얀색 */
+}
+
+/* 마우스를 올렸을 때의 효과 (선택 사항) */
+nav ul li a:hover {
+    color: #cccccc;        /* 마우스 오버 시 약간 회색으로 변경 */
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.page {
+    background: white;      /* 배경을 흰색으로 */
+    padding: 30px;          /* 안쪽 여백 */
+    border-radius: 10px;    /* 모서리 둥글게 */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* 약한 그림자 효과 */
+    margin-top: 20px;       /* 위쪽 간격 */
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    color: #2c3e50;         /* 글자 색상 (어두운 남색 계열) */
+    margin-bottom: 30px;    /* 아래쪽 요소와의 간격 */
+    padding-bottom: 15px;   /* 글자와 파란 선 사이의 간격 */
+    border-bottom: 3px solid #3498db; /* 아래쪽에 3px 두께의 파란색 실선 추가 */
+    display: block;         /* 너비를 100% 차지하게 함 */
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+button {
+    background: #3498db;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+button.secondary {
+    background: #95a5a6;
+}
+
+button.secondary:hover {
+    background: #7f8c8d;
+}
+
+button.danger {
+    background: #e74c3c;
+}
+
+button.danger:hover {
+    background: #c0392b;
+}
+
+a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #ffffff;        /* 글자 색상 하얀색 */
+}
+
+/* 마우스를 올렸을 때의 효과 (선택 사항) */
+button a:hover {
+    color: #cccccc;        /* 마우스 오버 시 약간 회색으로 변경 */
+}
+
+/* Login Page 중앙 정렬 */
+.login-container {
+    position: fixed;    /* 화면에 고정 */
+    top: 50%;           /* 위에서 50% */
+    left: 50%;          /* 왼쪽에서 50% */
+    transform: translate(-50%, -50%); /* 정확히 자신의 절반만큼 이동해서 중앙 맞춤 */
+
+    width: 100%;
+    max-width: 400px;   /* 박스 너비 */
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2); /* 그림자 추가 */
+    z-index: 2000;      /* 사이드바보다 위에 오도록 */
+}
+
+.login-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.login-buttons button {
+    flex: 1;
+}
+
+/* Parking Status Grid */
+.parking-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.parking-slot {
+    background: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #bdc3c7;
+}
+
+.parking-slot.occupied {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+}
+
+.parking-slot h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.parking-slot p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Table */
+.table-container {
+    margin: 30px 0;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background: #34495e;
+    color: white;
+    font-weight: 600;
+}
+
+table tr:hover {
+    background: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.pagination button {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+/* Search Box */
+.search-box {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.search-box input {
+    width: calc(100% - 120px);
+    display: inline-block;
+}
+
+.search-box button {
+    width: 100px;
+    margin-left: 10px;
+}
+
+/* Member Detail */
+.member-detail {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.detail-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+/* Multiple Members */
+.member-list {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.member-item {
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.member-item:hover {
+    border-color: #3498db;
+    background: #f8f9fa;
+}
