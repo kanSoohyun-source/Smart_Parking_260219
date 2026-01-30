@@ -1,0 +1,76 @@
+/* 대시보드 전용 스타일 - 기존 style.css와 조화되도록 설정 */
+:root {
+    --card-bg: #ffffff;
+    --inner-bg: #f8fafc;
+    --primary-blue: #2563eb;
+    --border-color: #e2e8f0;
+}
+
+.stats-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.section-card {
+    background-color: var(--inner-bg);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.control-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.selector-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-label {
+    background: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+}
+
+select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    cursor: pointer;
+}
+
+.total-price-tag {
+    background: var(--primary-blue);
+    color: white;
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.chart-area {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    height: 320px;
+    border: 1px solid var(--border-color);
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #334155;
+    font-size: 24px;
+    border-left: 5px solid var(--primary-blue);
+    padding-left: 15px;
+}
