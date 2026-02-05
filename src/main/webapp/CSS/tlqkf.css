@@ -1,0 +1,160 @@
+/* ============================================================
+   [통합 스타일시트] 전체 레이아웃 및 주차 현황 대시보드
+   ============================================================ */
+
+/* 1. 전체 초기화 및 기본 폰트 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex; /* 사이드바와 메인 콘텐츠를 가로로 배치 */
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f4f6f9; /* 연한 그레이 배경 */
+    color: #333;
+}
+
+/* 2. 네비게이션 사이드바 (menu.jsp 영역) */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* 사이드바 크기 고정 */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 15px 25px;
+    transition: background 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #34495e;
+}
+
+/* 3. 메인 콘텐츠 영역 */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* 4. 흰색 카드 컨테이너 (Dashboard 전용) */
+.page {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    min-height: 80vh;
+}
+
+h2 {
+    margin-bottom: 30px;
+    color: #2c3e50;
+    font-size: 28px;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 12px;
+    display: inline-block;
+}
+
+/* 5. [핵심] 주차장 그리드 레이아웃 (5열 구성) */
+.parking-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개씩 균등 배분 */
+    gap: 20px; /* 박스 사이 간격 */
+    margin-top: 20px;
+}
+
+/* 6. 개별 주차 슬롯(Slot) 디자인 */
+.slot-item {
+    height: 120px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    text-align: center;
+}
+
+/* 호버 효과: 살짝 떠오르는 느낌 */
+.slot-item:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* 7. 슬롯 상태별 스타일 (공차 vs 입차) */
+
+/* [공차 상태] */
+.slot-item.empty {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.slot-item.empty .slot-status {
+    color: #95a5a6;
+    font-weight: 500;
+}
+
+/* [입차/주차 중 상태] */
+.slot-item.occupied {
+    background-color: #e3f2fd; /* 연한 파란색 배경 */
+    border: 2px solid #2196f3; /* 강조된 테두리 */
+}
+
+.slot-item.occupied .slot-status {
+    color: #1976d2; /* 진한 파란색 차량번호 */
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* 8. 슬롯 내부 텍스트 스타일 */
+.slot-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.slot-status {
+    font-size: 16px;
+}
+
+.slot-time {
+    font-size: 12px;
+    color: #607d8b;
+    margin-top: 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* 9. 반응형 처리 (화면이 작아질 때) */
+@media (max-width: 1200px) {
+    .parking-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4열로 조정 */
+    }
+}
+
+@media (max-width: 900px) {
+    .parking-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3열로 조정 */
+    }
+    body {
+        flex-direction: column; /* 모바일 대응: 사이드바 위로 */
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+    }
+}
