@@ -14,17 +14,23 @@
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
+<%
+    String parking = request.getParameter("parking");
+%>
 <div class="main-content">
   <!-- Content -->
     <div id="entry" class="page">
         <h2>입차</h2>
-        <div class="form-group">
-            <label>주차 자리</label>
-            <input type="text" id="parkingSlot" placeholder="A1 - A20">
-            <label>차량 번호</label>
-            <input type="text" id="entryCarNum" placeholder="차량번호 8자리">
-        </div>
-        <button onclick="processEntry()">입차 등록</button>
+        <form action="../dashboard/dashboard.jsp" method="post">
+            <div class="form-group">
+                <label>주차 자리</label>
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" value="<%=parking%>">
+                <label>차량 번호</label>
+                <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
+            </div>
+            <button onclick="processEntry()">입차 등록</button>
+        </form>
+
     </div>
 </div>
     <script src="../JS/menu.js"></script>

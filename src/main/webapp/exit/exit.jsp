@@ -17,12 +17,14 @@
 <div class="main-content">
   <!-- Content -->
     <div id="exit" class="page">
-        <h2>출차</h2>
-        <div class="form-group">
-            <label>차량 번호</label>
-            <input type="text" id="exitCarNum" placeholder="차량번호 8자리">
-        </div>
-        <a href="../payment/payment.jsp"><button>정산</button></a>
+        <form action="../payment/payment.jsp" method="post">
+            <h2>출차</h2>
+            <div class="form-group">
+                <label>차량 번호</label>
+                <input type="text" id="exitCarNum" placeholder="차량번호 8자리" name="carNum">
+            </div>
+            <button>정산</button>
+        </form>
     </div>
 </div>
     <script src="../JS/menu.js"></script>

@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON `parking_system`.* TO 'todo_user1'@'localhost';
