@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 public class CarParkDTO {
     String space;               // 주차 공간 구역
     boolean state;              // false: 빈자리, true: 사용중
-    int carNum;                 // 차 번호
-    String phone;               // 전화번호
+    String carNum;                 // 차 번호
     LocalDateTime lastUpdate;   // 마지막으로 정보가 갱신된 시간
 
     public CarParkVO toVO() {
@@ -22,7 +21,6 @@ public class CarParkDTO {
                 .space(space)
                 .state(state)
                 .carNum(carNum)
-                .phone(phone)
                 .lastUpdate(lastUpdate)
                 .build();
         return carParkVO;

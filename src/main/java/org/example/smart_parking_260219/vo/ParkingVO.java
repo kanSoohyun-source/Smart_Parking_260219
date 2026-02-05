@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingVO {
-    int entryExitNo;            // 주차장 이용 인덱스
+    int parkingId;            // 주차장 이용 인덱스
     String carNum;              // 차 번호
-    String phone;               // 전화번호
-    String space;               // 주차 구역 id
+    int memberId;               // 전화번호
+    String spaceId;               // 주차 구역 id
     LocalDateTime entryTime;    // 입차 시간
     LocalDateTime exitTime;     // 출차 시간
     int totalTime;              // 총 주차 시간
@@ -23,10 +23,10 @@ public class ParkingVO {
 
     public ParkingDTO toDTO() {
         ParkingDTO parkingDTO = ParkingDTO.builder()
-                .entryExitNo(entryExitNo)
+                .parkingId(parkingId)
                 .carNum(carNum)
-                .phone(phone)
-                .space(space)
+                .memberId(memberId)
+                .spaceId(spaceId)
                 .entryTime(entryTime)
                 .exitTime(exitTime)
                 .totalTime(totalTime)
