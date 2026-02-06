@@ -1,6 +1,6 @@
-package org.example.smart_parking_260219.DAO;
+package org.example.smart_parking_260219.dao;
 
-import org.example.smart_parking_260219.VO.PaymentVO;
+import org.example.smart_parking_260219.vo.PaymentVO;
 
 public class PaymentDAO {
     /*

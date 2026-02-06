@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.DTO;
+package org.example.smart_parking_260219.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

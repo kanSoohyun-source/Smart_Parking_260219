@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.VO;
+package org.example.smart_parking_260219.vo;
 
 import lombok.*;
 
