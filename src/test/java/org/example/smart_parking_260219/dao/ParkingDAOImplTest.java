@@ -18,10 +18,10 @@ class ParkingDAOImplTest {
     @Test
     public void insertParkingTest() {
         ParkingVO parkingVO = ParkingVO.builder()
-                .entryExitNo(1)
+                .parkingId(1)
+                .memberId(1)
                 .carNum("가1111")
-                .phone("010-1111-1111")
-                .space("A1")
+                .spaceId("A01")
                 .carType(1)
                 .build();
         parkingDAO.insertParking(parkingVO);
@@ -29,19 +29,19 @@ class ParkingDAOImplTest {
 
     @Test
     public void selectParkingTest() {
-        String id = "1111";
+        String carNum = "1111";
 
-        ParkingVO parkingVO = parkingDAO.selectParking(id);
-        Assertions.assertNull(parkingVO);
+        ParkingVO parkingVO = parkingDAO.selectParkingByLast4(carNum);
+        Assertions.assertNotNull(parkingVO);
         log.info("parking: {}", parkingVO);
     }
 
     @Test
     public void updateParkingTest() {
-        String id = "1111";
+        String id = "A01";
 
         ParkingVO parkingVO = ParkingVO.builder()
-                .space(id)
+                .spaceId(id)
                 .build();
         parkingDAO.updateParking(parkingVO);
     }

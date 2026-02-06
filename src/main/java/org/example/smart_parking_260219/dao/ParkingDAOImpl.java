@@ -1,13 +1,12 @@
 package org.example.smart_parking_260219.dao;
 
 import lombok.Cleanup;
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.vo.ParkingVO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Log4j2
@@ -26,14 +25,14 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 입차 확인
     @Override
     public void insertParking(ParkingVO parkingVO) {
-        String sql = "INSERT INTO parking_system.extry_exit_log (entry_exit_no, car_num, phone, space, entry_time, car_type) VALUES (?, ?, ?, ?, now(), ?)";
+        String sql = "INSERT INTO parking_system.parking (parking_id, member_id, car_num, space_id, entry_time, car_type) VALUES (?, ?, ?, ?, now(), ?)";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, parkingVO.getEntryExitNo());
-            preparedStatement.setString(2, parkingVO.getCarNum());
-            preparedStatement.setString(3, parkingVO.getPhone());
-            preparedStatement.setString(4, parkingVO.getSpace());
+            preparedStatement.setInt(1, parkingVO.getParkingId());
+            preparedStatement.setInt(2, parkingVO.getMemberId());
+            preparedStatement.setString(3, parkingVO.getCarNum());
+            preparedStatement.setString(4, parkingVO.getSpaceId());
             preparedStatement.setInt(5, parkingVO.getCarType());
 
             preparedStatement.executeUpdate();
@@ -44,21 +43,54 @@ public class ParkingDAOImpl implements ParkingDAO {
 
     // 주차 차량 조회
     @Override
-    public ParkingVO selectParking(String last4) {
-        String sql = "SELECT * FROM parking_system.extry_exit_log WHERE RIGHT(car_num, 4)=?";
+    public ParkingVO selectParkingByLast4(String last4) {
+        String sql = "SELECT * FROM parking_system.parking WHERE RIGHT(car_num, 4) = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, last4);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                Timestamp entryTime = resultSet.getTimestamp("entry_time");
+                Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
-                        .entryExitNo(resultSet.getInt("entry_exit_no"))
+                        .parkingId(resultSet.getInt("parking_id"))
+                        .memberId(resultSet.getInt("member_id"))
                         .carNum(resultSet.getString("car_num"))
-                        .phone(resultSet.getString("phone"))
-                        .space(resultSet.getString("space"))
-                        .entryTime((LocalDateTime) resultSet.getObject("entry_time"))
-                        .exitTime((LocalDateTime) resultSet.getObject("exit_time"))
+                        .spaceId(resultSet.getString("space_id"))
+                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
+                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
+                        .totalTime(resultSet.getInt("total_time"))
+                        .carType(resultSet.getInt("car_type"))
+                        .isPaid(resultSet.getBoolean("is_paid"))
+                        .build();
+                log.info("parkingVO : {}", parkingVO);
+                return parkingVO;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public ParkingVO selectParkingById(String spaceId) {
+        String sql = "SELECT * FROM parking_system.parking WHERE space_id = ?";
+        try {
+            @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, spaceId);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Timestamp entryTime = resultSet.getTimestamp("entry_time");
+                Timestamp exitTime = resultSet.getTimestamp("exit_time");
+                ParkingVO parkingVO = ParkingVO.builder()
+                        .parkingId(resultSet.getInt("parking_id"))
+                        .memberId(resultSet.getInt("member_id"))
+                        .carNum(resultSet.getString("car_num"))
+                        .spaceId(resultSet.getString("space_id"))
+                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
+                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
                         .totalTime(resultSet.getInt("total_time"))
                         .carType(resultSet.getInt("car_type"))
                         .isPaid(resultSet.getBoolean("is_paid"))
@@ -75,13 +107,24 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 출차 확인
     @Override
     public void updateParking(ParkingVO parkingVO) {
-        String sql = "UPDATE parking_system.extry_exit_log SET exit_time= now(), total_time= " +
-                (Integer.parseInt(String.valueOf(parkingVO.getExitTime())) - Integer.parseInt(String.valueOf(parkingVO.getEntryTime())))
-                + ", is_paid=true WHERE space=?";
+        LocalDateTime entry = selectParkingById(parkingVO.getSpaceId()).getEntryTime();
+        if (entry == null) {
+            log.error("entry is null");
+            return;
+        }
+        LocalDateTime exit = LocalDateTime.now();
+
+        long totalMinutes = Duration.between(entry, exit).toMinutes();
+
+        String sql = "UPDATE parking_system.parking SET exit_time= ?, total_time= ?, is_paid=true WHERE space_id=?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, parkingVO.getSpace());
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(exit));
+            preparedStatement.setLong(2, totalMinutes);
+            preparedStatement.setString(3, parkingVO.getSpaceId());
+
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

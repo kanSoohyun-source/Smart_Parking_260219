@@ -18,11 +18,13 @@ class CarParkDAOImplTest {
 
     @Test
     public void insertCarPark() {
-        CarParkVO carParkVO = CarParkVO.builder()
-                .space("A1")
-                .state(false)
-                .build();
-        carParkDAO.insertCarPark(carParkVO);
+        for (int i = 1; i <= 20; i++) {
+            CarParkVO carParkVO = CarParkVO.builder()
+                    .space("A" + (i < 10 ? "0" : "") + i)
+                    .build();
+            carParkDAO.insertCarPark(carParkVO);
+        }
+
     }
 
     @Test
@@ -36,10 +38,9 @@ class CarParkDAOImplTest {
 
     @Test
     public void updateCarParkTest() {
-        String id = "A1";
+        String id = "A01";
         CarParkVO carParkVO = CarParkVO.builder()
-                .carNum(1111)
-                .phone("010-1111-1111")
+                .carNum("가1111")
                 .space(id)
                 .build();
         carParkDAO.updateCarPark(carParkVO);

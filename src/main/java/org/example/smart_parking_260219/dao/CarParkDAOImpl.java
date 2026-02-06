@@ -27,12 +27,12 @@ public class CarParkDAOImpl implements CarParkDAO {
 
     @Override
     public void insertCarPark(CarParkVO carParkVO) {
-        String sql = "INSERT INTO parking_system.parking_spot (space, state, last_update) VALUES (?,?,?,?,now())";
+        String sql = "INSERT INTO parking_system.parking_spot (space, state, last_update) VALUES (?, false,now())";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, carParkVO.getSpace());
-            preparedStatement.setBoolean(2, carParkVO.isState());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -52,9 +52,8 @@ public class CarParkDAOImpl implements CarParkDAO {
                 CarParkVO carParkVO = CarParkVO.builder()
                         .space(resultSet.getString("space"))
                         .state(resultSet.getBoolean("state"))
-                        .carNum(resultSet.getInt("car_num"))
-                        .phone(resultSet.getString("phone"))
-                        .lastUpdate((LocalDateTime) resultSet.getObject("last_update"))
+                        .carNum(resultSet.getString("car_num"))
+                        .lastUpdate(resultSet.getTimestamp("last_update").toLocalDateTime())
                         .build();
                 log.info("CarParkVo: {}", carParkVO);
                 carParkVOList.add(carParkVO);
@@ -68,13 +67,12 @@ public class CarParkDAOImpl implements CarParkDAO {
     // 주차공간 현황 갱신
     @Override
     public void updateCarPark(CarParkVO carParkVO) {
-        String sql = "UPDATE parking_system.parking_spot SET state = " + !(carParkVO.isState()) + ", car_num =?, phone = ?, last_update = now() WHERE space = ?";
+        String sql = "UPDATE parking_system.parking_spot SET state = " + !(carParkVO.isState()) + ", car_num =?, last_update = now() WHERE space = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, carParkVO.getCarNum());
-            preparedStatement.setString(2, carParkVO.getPhone());
-            preparedStatement.setString(3, carParkVO.getSpace());
+            preparedStatement.setString(1, carParkVO.getCarNum());
+            preparedStatement.setString(2, carParkVO.getSpace());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -91,13 +89,12 @@ public class CarParkDAOImpl implements CarParkDAO {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 CarParkVO carParkVO = CarParkVO.builder()
                         .space(resultSet.getString("space"))
                         .state(resultSet.getBoolean("state"))
-                        .carNum(resultSet.getInt("car_num"))
-                        .phone(resultSet.getString("phone"))
-                        .lastUpdate((LocalDateTime) resultSet.getObject("last_update"))
+                        .carNum(resultSet.getString("car_num"))
+                        .lastUpdate(resultSet.getTimestamp("last_update").toLocalDateTime())
                         .build();
                 log.info("CarParkVo: {}", carParkVO);
                 carParkVOList.add(carParkVO);
