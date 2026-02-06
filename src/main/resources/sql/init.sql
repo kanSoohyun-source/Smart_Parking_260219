@@ -102,3 +102,9 @@ CREATE TABLE IF NOT EXISTS `fee_policy`
     `is_active`         BOOLEAN NOT NULL DEFAULT TRUE COMMENT '현재 정책 활성화 여부',
     `modify_date`       DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '정책 수정일'
 );
+
+-- 전용 사용자 생성
+CREATE USER `admin`@`localhost` IDENTIFIED BY '0219';
+
+-- 사용자에게 DB 권한 부여
+GRANT ALL PRIVILEGES ON `smart_parking_team2`.* TO `admin`@`localhost`;
