@@ -31,14 +31,24 @@ public enum CarParkService {
         return carParkDTOList;
     }
 
-    // 주차장 현황 갱신
-    public void modifyCarPark(CarParkDTO carParkDTO) {
+    // 주차 공간 입차 갱신
+    public void modifyInputCarPark(CarParkDTO carParkDTO) {
         CarParkVO carParkVO = modelMapper.map(carParkDTO, CarParkVO.class);
-        carParkDAO.updateCarPark(carParkVO);
+        carParkDAO.updateInputCarPark(carParkVO);
+    }
+
+    // 주차 공간 출차 갱신
+    public void modifyOutputCarPark(CarParkDTO carParkDTO) {
+        CarParkVO carParkVO = modelMapper.map(carParkDTO, CarParkVO.class);
+        carParkDAO.updateOutputCarPark(carParkVO);
     }
 
     // 빈 주차 공간 찾기
-    public CarParkVO getCarPark() {
-        return modelMapper.map(carParkDAO.selectEmptyCarPark(), CarParkVO.class);
+    public List<CarParkDTO> getEmptyCarPark() {
+        List<CarParkVO> carParkVOList = carParkDAO.selectEmptyCarPark();
+
+        List<CarParkDTO> carParkDTOList = carParkVOList.stream()
+                .map(carParkVO -> modelMapper.map(carParkVO, CarParkDTO.class)).toList();
+        return carParkDTOList;
     }
 }

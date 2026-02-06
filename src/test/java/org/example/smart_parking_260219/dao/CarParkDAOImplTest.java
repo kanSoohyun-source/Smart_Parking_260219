@@ -37,13 +37,22 @@ class CarParkDAOImplTest {
     }
 
     @Test
-    public void updateCarParkTest() {
+    public void updateInputCarCarParkTest() {
         String id = "A01";
         CarParkVO carParkVO = CarParkVO.builder()
                 .carNum("가1111")
                 .space(id)
                 .build();
-        carParkDAO.updateCarPark(carParkVO);
+        carParkDAO.updateInputCarPark(carParkVO);
+    }
+
+    @Test
+    public void updateOutputCarParkTest() {
+        String id = "A01";
+        CarParkVO carParkVO = CarParkVO.builder()
+                .space(id)
+                .build();
+        carParkDAO.updateOutputCarPark(carParkVO);
     }
 
     @Test

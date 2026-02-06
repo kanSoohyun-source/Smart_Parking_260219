@@ -26,7 +26,7 @@ public enum ParkingService {
 
     // 차번호 뒷자리 일치 차량 조회
     public ParkingVO getParking(String last4) {
-        return modelMapper.map(parkingDAO.selectParking(last4), ParkingVO.class);
+        return modelMapper.map(parkingDAO.selectParkingByLast4(last4), ParkingVO.class);
     }
 
     // 출차된 시간

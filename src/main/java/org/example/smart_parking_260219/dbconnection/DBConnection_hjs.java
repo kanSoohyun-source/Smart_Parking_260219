@@ -1,10 +1,10 @@
-package org.example.smart_parking_260219.DBConnection;
+package org.example.smart_parking_260219.dbconnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DBConnection {
+public class DBConnection_hjs {
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection connection = null;
         String url = "jdbc:mariadb://localhost:3308/sample";

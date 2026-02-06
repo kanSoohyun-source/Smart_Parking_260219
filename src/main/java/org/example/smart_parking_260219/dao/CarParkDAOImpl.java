@@ -64,15 +64,30 @@ public class CarParkDAOImpl implements CarParkDAO {
         return carParkVOList;
     }
 
-    // 주차공간 현황 갱신
+    // 주차 공간 입차 갱신
     @Override
-    public void updateCarPark(CarParkVO carParkVO) {
-        String sql = "UPDATE parking_system.parking_spot SET state = " + !(carParkVO.isState()) + ", car_num =?, last_update = now() WHERE space = ?";
+    public void updateInputCarPark(CarParkVO carParkVO) {
+        String sql = "UPDATE parking_system.parking_spot SET state = true, car_num =?, last_update = now() WHERE space = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, carParkVO.getCarNum());
             preparedStatement.setString(2, carParkVO.getSpace());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 주차 공간 출차 갱신
+    @Override
+    public void updateOutputCarPark(CarParkVO carParkVO) {
+        String sql = "UPDATE parking_system.parking_spot SET state = false, car_num =null, last_update = now() WHERE space = ?";
+        try {
+            @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, carParkVO.getSpace());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
