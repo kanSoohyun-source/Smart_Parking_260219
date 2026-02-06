@@ -18,7 +18,6 @@ class ParkingDAOImplTest {
     @Test
     public void insertParkingTest() {
         ParkingVO parkingVO = ParkingVO.builder()
-                .parkingId(1)
                 .memberId(1)
                 .carNum("가1111")
                 .spaceId("A01")

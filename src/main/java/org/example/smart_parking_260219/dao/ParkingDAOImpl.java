@@ -25,15 +25,14 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 입차 확인
     @Override
     public void insertParking(ParkingVO parkingVO) {
-        String sql = "INSERT INTO parking_system.parking (parking_id, member_id, car_num, space_id, entry_time, car_type) VALUES (?, ?, ?, ?, now(), ?)";
+        String sql = "INSERT INTO parking_system.parking (member_id, car_num, space_id, entry_time, car_type) VALUES (?, ?, ?, now(), ?)";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, parkingVO.getParkingId());
-            preparedStatement.setInt(2, parkingVO.getMemberId());
-            preparedStatement.setString(3, parkingVO.getCarNum());
-            preparedStatement.setString(4, parkingVO.getSpaceId());
-            preparedStatement.setInt(5, parkingVO.getCarType());
+            preparedStatement.setInt(1, parkingVO.getMemberId());
+            preparedStatement.setString(2, parkingVO.getCarNum());
+            preparedStatement.setString(3, parkingVO.getSpaceId());
+            preparedStatement.setInt(4, parkingVO.getCarType());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
