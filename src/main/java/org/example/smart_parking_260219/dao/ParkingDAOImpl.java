@@ -73,20 +73,20 @@ public class ParkingDAOImpl implements ParkingDAO {
     }
 
     @Override
-    public ParkingVO selectParkingById(String spaceId) {
-        String sql = "SELECT * FROM parking_system.parking WHERE space_id = ?";
+    public ParkingVO selectParkingByNum(String carNum) {
+        String sql = "SELECT * FROM parking_system.parking WHERE car_num = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, spaceId);
+            preparedStatement.setString(1, carNum);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Timestamp entryTime = resultSet.getTimestamp("entry_time");
                 Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
                         .parkingId(resultSet.getInt("parking_id"))
-                        .memberId(resultSet.getInt("member_id"))
                         .carNum(resultSet.getString("car_num"))
+                        .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
                         .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
                         .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
@@ -106,7 +106,7 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 출차 확인
     @Override
     public void updateParking(ParkingVO parkingVO) {
-        LocalDateTime entry = selectParkingById(parkingVO.getSpaceId()).getEntryTime();
+        LocalDateTime entry = selectParkingByNum(parkingVO.getCarNum()).getEntryTime();
         if (entry == null) {
             log.error("entry is null");
             return;

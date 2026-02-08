@@ -14,10 +14,13 @@
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
+<%
+
+%>
 <div class="main-content">
   <!-- Content -->
     <div id="exit" class="page">
-        <form action="../payment/payment.jsp" method="post">
+        <form action="../parking/output" method="post" class="form-horizontal">
             <h2>출차</h2>
             <div class="form-group">
                 <label>차량 번호</label>

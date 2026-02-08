@@ -40,7 +40,7 @@ class ParkingDAOImplTest {
         String num = "가1111";
 
         ParkingVO parkingVO = ParkingVO.builder()
-                .spaceId(num)
+                .carNum(num)
                 .build();
         parkingDAO.updateParking(parkingVO);
     }
