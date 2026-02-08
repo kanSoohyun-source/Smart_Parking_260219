@@ -48,9 +48,9 @@ class CarParkDAOImplTest {
 
     @Test
     public void updateOutputCarParkTest() {
-        String id = "A01";
+        String num = "가1111";
         CarParkVO carParkVO = CarParkVO.builder()
-                .space(id)
+                .carNum(num)
                 .build();
         carParkDAO.updateOutputCarPark(carParkVO);
     }

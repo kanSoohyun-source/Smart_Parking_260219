@@ -115,13 +115,13 @@ public class ParkingDAOImpl implements ParkingDAO {
 
         long totalMinutes = Duration.between(entry, exit).toMinutes();
 
-        String sql = "UPDATE parking_system.parking SET exit_time= ?, total_time= ?, is_paid=true WHERE space_id=?";
+        String sql = "UPDATE parking_system.parking SET exit_time= ?, total_time= ?, is_paid=true WHERE car_num=?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(exit));
             preparedStatement.setLong(2, totalMinutes);
-            preparedStatement.setString(3, parkingVO.getSpaceId());
+            preparedStatement.setString(3, parkingVO.getCarNum());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

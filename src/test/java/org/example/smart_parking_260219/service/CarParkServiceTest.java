@@ -29,7 +29,7 @@ class CarParkServiceTest {
     @Test
     public void modifyOutputCarParkTest() {
         carParkService.modifyOutputCarPark(CarParkDTO.builder()
-                        .space("A02")
+                        .carNum("다3222")
                 .build());
     }
 

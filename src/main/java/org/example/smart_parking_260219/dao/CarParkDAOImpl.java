@@ -83,11 +83,11 @@ public class CarParkDAOImpl implements CarParkDAO {
     // 주차 공간 출차 갱신
     @Override
     public void updateOutputCarPark(CarParkVO carParkVO) {
-        String sql = "UPDATE parking_system.parking_spot SET state = false, car_num =null, last_update = now() WHERE space = ?";
+        String sql = "UPDATE parking_system.parking_spot SET state = false, car_num =null, last_update = now() WHERE car_num = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carParkVO.getSpace());
+            preparedStatement.setString(1, carParkVO.getCarNum());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

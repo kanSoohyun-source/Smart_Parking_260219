@@ -29,8 +29,9 @@ class ParkingServiceTest {
 
     @Test
     public void modifyParkingTest() {
+        String num = "나2222";
         ParkingDTO parkingDTO = ParkingDTO.builder()
-                .spaceId("A02")
+                .carNum(num)
                 .build();
         parkingService.modifyParking(parkingDTO);
     }

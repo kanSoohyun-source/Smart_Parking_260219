@@ -15,16 +15,18 @@
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
-    String parking = request.getParameter("parking");
+    String space = request.getParameter("space_id");
+    String memberId = request.getParameter("member_id");
 %>
 <div class="main-content">
   <!-- Content -->
     <div id="entry" class="page">
         <h2>입차</h2>
-        <form action="../dashboard/dashboard.jsp" method="post">
+        <form action="../parking/input" method="post" class="form-horizontal">
+            <input type="hidden" value="<%=memberId%>">
             <div class="form-group">
                 <label>주차 자리</label>
-                <input type="text" id="parkingSlot" placeholder="A1 - A20" value="<%=parking%>">
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=space%>">
                 <label>차량 번호</label>
                 <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
             </div>
