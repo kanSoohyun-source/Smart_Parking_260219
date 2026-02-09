@@ -1,3 +1,5 @@
+-- 전체 작업 SQL문
+
 CREATE DATABASE IF NOT EXISTS `smart_parking_team2`;
 
 USE `smart_parking_team2`;
@@ -68,24 +70,6 @@ CREATE TABLE IF NOT EXISTS `parking`
         REFERENCES `parking_spot` (`space_id`) ON UPDATE CASCADE
 );
 
-# payment : 결제, 매출 정보 테이블 [완료]
-CREATE TABLE IF NOT EXISTS `payment`
-(
-    `payment_id`      INT AUTO_INCREMENT PRIMARY KEY COMMENT '결제 ID',
-    `parking_id`      INT      NOT NULL COMMENT '주차 기록 ID (FK)',
-    `policy_id`       INT               DEFAULT NULL COMMENT '적용된 요금 정책 ID (FK)',
-    `payment_type`    TINYINT  NOT NULL COMMENT '결제 수단 (1:카드, 2:현금, 3:월정액차감)',
-    `calculated_fee`    INT      NOT NULL DEFAULT 0 COMMENT '할인 전 요금',
-    `discount_amount` INT      NOT NULL DEFAULT 0 COMMENT '총 할인 금액',
-    `final_fee`       INT      NOT NULL DEFAULT 0 COMMENT '최종 결제 금액',
-    `payment_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '실제 결제 일시',
-
-    CONSTRAINT `fk_payment_parking` FOREIGN KEY (`parking_id`)
-        REFERENCES `parking` (`parking_id`),
-    CONSTRAINT `fk_payment_policy` FOREIGN KEY (`policy_id`)
-        REFERENCES `fee_policy` (`policy_id`)
-);
-
 # fee_policy : 요금 부과 정책 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `fee_policy`
 (
@@ -101,6 +85,24 @@ CREATE TABLE IF NOT EXISTS `fee_policy`
     `max_daily_fee`     INT     NOT NULL DEFAULT 15000 COMMENT '일일 최대 요금 - 15,000원',
     `is_active`         BOOLEAN NOT NULL DEFAULT TRUE COMMENT '현재 정책 활성화 여부',
     `modify_date`       DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '정책 수정일'
+);
+
+# payment : 결제, 매출 정보 테이블 [완료]
+CREATE TABLE IF NOT EXISTS `payment`
+(
+    `payment_id`      INT AUTO_INCREMENT PRIMARY KEY COMMENT '결제 ID',
+    `parking_id`      INT      NOT NULL COMMENT '주차 기록 ID (FK)',
+    `policy_id`       INT               DEFAULT NULL COMMENT '적용된 요금 정책 ID (FK)',
+    `payment_type`    TINYINT  NOT NULL COMMENT '결제 수단 (1:카드, 2:현금, 3:월정액)',
+    `calculated_fee`  INT      NOT NULL DEFAULT 0 COMMENT '할인 전 요금',
+    `discount_amount` INT      NOT NULL DEFAULT 0 COMMENT '총 할인 금액',
+    `final_fee`       INT      NOT NULL DEFAULT 0 COMMENT '최종 결제 금액',
+    `payment_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '실제 결제 일시',
+
+    CONSTRAINT `fk_payment_parking` FOREIGN KEY (`parking_id`)
+        REFERENCES `parking` (`parking_id`),
+    CONSTRAINT `fk_payment_policy` FOREIGN KEY (`policy_id`)
+        REFERENCES `fee_policy` (`policy_id`)
 );
 
 -- 전용 사용자 생성
