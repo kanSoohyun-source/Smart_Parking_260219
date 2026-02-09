@@ -14,17 +14,27 @@
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
+<%
+    String space = request.getParameter("space_id");
+    String memberId = request.getParameter("member_id");
+    String carType = request.getParameter("car_type");
+%>
 <div class="main-content">
   <!-- Content -->
     <div id="entry" class="page">
         <h2>입차</h2>
-        <div class="form-group">
-            <label>주차 자리</label>
-            <input type="text" id="parkingSlot" placeholder="A1 - A20">
-            <label>차량 번호</label>
-            <input type="text" id="entryCarNum" placeholder="차량번호 8자리">
-        </div>
-        <button onclick="processEntry()">입차 등록</button>
+        <form action="../parking/input" method="post" class="form-horizontal">
+            <input type="hidden" value="<%=memberId%>" name="memberId">
+            <input type="hidden" value="<%=carType%>" name="carType">
+            <div class="form-group">
+                <label>주차 자리</label>
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=space%>">
+                <label>차량 번호</label>
+                <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
+            </div>
+            <button onclick="processEntry()">입차 등록</button>
+        </form>
+
     </div>
 </div>
     <script src="../JS/menu.js"></script>

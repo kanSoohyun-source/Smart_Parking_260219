@@ -1,11 +1,11 @@
-package org.example.smart_parking_260219.utill;
+package org.example.smart_parking_260219.util;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
 
 public enum MapperUtil {
-    INSTANCE; // 상수 선언 - ModelMapper를 Singleton(싱글톤)으로 구현
+    INSTANCE;
 
     private final ModelMapper modelMapper;
     MapperUtil() {
@@ -14,7 +14,8 @@ public enum MapperUtil {
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE)
                 .setMatchingStrategy(MatchingStrategies.STRICT);
-        // STRICT 업격모드, 필드명과 타입이 모두 일치해야 함
+        // STRICT: 엄격모드. 필드명과 타입이 모두 일치해야 매핑
+
     }
 
     public ModelMapper getInstance() {
