@@ -2,36 +2,35 @@ package org.example.smart_parking_260219.dao;
 
 import lombok.Cleanup;
 import lombok.extern.log4j.Log4j2;
-import org.example.smart_parking_260219.vo.CarParkVO;
+import org.example.smart_parking_260219.vo.ParkingSpotVO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
-public class CarParkDAOImpl implements CarParkDAO {
-    private static CarParkDAO instance;
+public class ParkingSpotDAOImpl implements ParkingSpotDAO {
+    private static ParkingSpotDAO instance;
 
-    public CarParkDAOImpl() {}
+    public ParkingSpotDAOImpl() {}
 
-    public static CarParkDAO getInstance() {
+    public static ParkingSpotDAO getInstance() {
         if (instance == null) {
-            instance = new CarParkDAOImpl();
+            instance = new ParkingSpotDAOImpl();
         }
         return instance;
     }
 
     @Override
-    public void insertCarPark(CarParkVO carParkVO) {
-        String sql = "INSERT INTO parking_system.parking_spot (space, state, last_update) VALUES (?, false,now())";
+    public void insertParkingSpot(ParkingSpotVO parkingSpotVO) {
+        String sql = "INSERT INTO smart_parking_team2.parking_spot (space_id, `empty`, last_update) VALUES (?, false,now())";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carParkVO.getSpace());
+            preparedStatement.setString(1, parkingSpotVO.getSpaceId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -40,39 +39,39 @@ public class CarParkDAOImpl implements CarParkDAO {
 
     // 주차장 조회
     @Override
-    public List<CarParkVO> selectAllCarPark() {
-        String sql = "SELECT * FROM parking_system.parking_spot";
-        List<CarParkVO> carParkVOList = new ArrayList<>();
+    public List<ParkingSpotVO> selectAllParkingSpot() {
+        String sql = "SELECT * FROM smart_parking_team2.parking_spot";
+        List<ParkingSpotVO> ParkingSpotVOList = new ArrayList<>();
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                CarParkVO carParkVO = CarParkVO.builder()
-                        .space(resultSet.getString("space"))
-                        .state(resultSet.getBoolean("state"))
+                ParkingSpotVO parkingSpotVO = ParkingSpotVO.builder()
+                        .spaceId(resultSet.getString("space_id"))
+                        .empty(resultSet.getBoolean("empty"))
                         .carNum(resultSet.getString("car_num"))
                         .lastUpdate(resultSet.getTimestamp("last_update").toLocalDateTime())
                         .build();
-                log.info("CarParkVo: {}", carParkVO);
-                carParkVOList.add(carParkVO);
+                log.info("ParkingSpotVO: {}", parkingSpotVO);
+                ParkingSpotVOList.add(parkingSpotVO);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return carParkVOList;
+        return ParkingSpotVOList;
     }
 
     // 주차 공간 입차 갱신
     @Override
-    public void updateInputCarPark(CarParkVO carParkVO) {
-        String sql = "UPDATE parking_system.parking_spot SET state = true, car_num =?, last_update = now() WHERE space = ?";
+    public void updateInputParkingSpot(ParkingSpotVO parkingSpotVO) {
+        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = true, car_num =?, last_update = now() WHERE space_id = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carParkVO.getCarNum());
-            preparedStatement.setString(2, carParkVO.getSpace());
+            preparedStatement.setString(1, parkingSpotVO.getCarNum());
+            preparedStatement.setString(2, parkingSpotVO.getSpaceId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -82,12 +81,12 @@ public class CarParkDAOImpl implements CarParkDAO {
 
     // 주차 공간 출차 갱신
     @Override
-    public void updateOutputCarPark(CarParkVO carParkVO) {
-        String sql = "UPDATE parking_system.parking_spot SET state = false, car_num =null, last_update = now() WHERE car_num = ?";
+    public void updateOutputParkingSpot(ParkingSpotVO parkingSpotVO) {
+        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = false, car_num =null, last_update = now() WHERE car_num = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carParkVO.getCarNum());
+            preparedStatement.setString(1, parkingSpotVO.getCarNum());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -97,26 +96,26 @@ public class CarParkDAOImpl implements CarParkDAO {
 
     // 빈 주차공간 조회
     @Override
-    public List<CarParkVO> selectEmptyCarPark() {
-        String sql = "SELECT * FROM parking_system.parking_spot WHERE state = false";
-        List<CarParkVO> carParkVOList = new ArrayList<>();
+    public List<ParkingSpotVO> selectEmptyParkingSpot() {
+        String sql = "SELECT * FROM smart_parking_team2.parking_spot WHERE `empty` = false";
+        List<ParkingSpotVO> ParkingSpotVOList = new ArrayList<>();
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                CarParkVO carParkVO = CarParkVO.builder()
-                        .space(resultSet.getString("space"))
-                        .state(resultSet.getBoolean("state"))
+                ParkingSpotVO parkingSpotVO = ParkingSpotVO.builder()
+                        .spaceId(resultSet.getString("space_id"))
+                        .empty(resultSet.getBoolean("empty"))
                         .carNum(resultSet.getString("car_num"))
                         .lastUpdate(resultSet.getTimestamp("last_update").toLocalDateTime())
                         .build();
-                log.info("CarParkVo: {}", carParkVO);
-                carParkVOList.add(carParkVO);
+                log.info("ParkingSpotVO: {}", parkingSpotVO);
+                ParkingSpotVOList.add(parkingSpotVO);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return carParkVOList;
+        return ParkingSpotVOList;
     }
 }

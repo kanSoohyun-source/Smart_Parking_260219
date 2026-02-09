@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingDTO {
-    int parkingId;            // 주차장 이용 인덱스
-    int memberId;              // 회원 ID
-    String carNum;              // 차 번호
-    String spaceId;               // 주차 구역 id
-    LocalDateTime entryTime;    // 입차 시간
-    LocalDateTime exitTime;     // 출차 시간
-    int totalTime;              // 총 주차 시간
-    int carType;                // 차량 종류(1, 2, 3... 숫자로 표현)
-    boolean isPaid;             // 결제 여부
+    private int parkingId;  // 주차 기록 ID
+    private int memberId;  // 회원 ID (비회원일 경우 NULL)
+    private String spaceId;  // 주차 공간 ID (FK)
+    private String carNum;  // 차량 번호 (스냅샷)
+    private int carType;  // 차량 유형 (스냅샷)
+    private LocalDateTime entryTime;  // 입차 히간
+    private LocalDateTime exitTime;  // 출차 시간 (주차중이면 Null)
+    private int totalTime;  // 주차 시간(분), default 0
+    private boolean paid;  //정산 오나료 여부, default false
 
     public ParkingVO toVO() {
         ParkingVO parkingVO = ParkingVO.builder()
@@ -31,7 +31,7 @@ public class ParkingDTO {
                 .exitTime(exitTime)
                 .totalTime(totalTime)
                 .carType(carType)
-                .isPaid(isPaid)
+                .paid(paid)
                 .build();
         return parkingVO;
     }

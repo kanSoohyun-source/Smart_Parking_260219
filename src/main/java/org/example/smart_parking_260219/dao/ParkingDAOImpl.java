@@ -25,7 +25,7 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 입차 확인
     @Override
     public void insertParking(ParkingVO parkingVO) {
-        String sql = "INSERT INTO parking_system.parking (member_id, car_num, space_id, entry_time, car_type) VALUES (?, ?, ?, now(), ?)";
+        String sql = "INSERT INTO smart_parking_team2.parking (member_id, car_num, space_id, entry_time, car_type) VALUES (?, ?, ?, now(), ?)";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -43,7 +43,7 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 주차 차량 조회
     @Override
     public ParkingVO selectParkingByLast4(String last4) {
-        String sql = "SELECT * FROM parking_system.parking WHERE RIGHT(car_num, 4) = ?";
+        String sql = "SELECT * FROM smart_parking_team2.parking WHERE RIGHT(car_num, 4) = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -61,7 +61,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
                         .totalTime(resultSet.getInt("total_time"))
                         .carType(resultSet.getInt("car_type"))
-                        .isPaid(resultSet.getBoolean("is_paid"))
+                        .paid(resultSet.getBoolean("paid"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 return parkingVO;
@@ -73,8 +73,8 @@ public class ParkingDAOImpl implements ParkingDAO {
     }
 
     @Override
-    public ParkingVO selectParkingByNum(String carNum) {
-        String sql = "SELECT * FROM parking_system.parking WHERE car_num = ?";
+    public ParkingVO selectParkingByCarNum(String carNum) {
+        String sql = "SELECT * FROM smart_parking_team2.parking WHERE car_num = ?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -92,7 +92,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
                         .totalTime(resultSet.getInt("total_time"))
                         .carType(resultSet.getInt("car_type"))
-                        .isPaid(resultSet.getBoolean("is_paid"))
+                        .paid(resultSet.getBoolean("paid"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 return parkingVO;
@@ -106,7 +106,7 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 출차 확인
     @Override
     public void updateParking(ParkingVO parkingVO) {
-        LocalDateTime entry = selectParkingByNum(parkingVO.getCarNum()).getEntryTime();
+        LocalDateTime entry = selectParkingByCarNum(parkingVO.getCarNum()).getEntryTime();
         if (entry == null) {
             log.error("entry is null");
             return;
@@ -115,7 +115,7 @@ public class ParkingDAOImpl implements ParkingDAO {
 
         long totalMinutes = Duration.between(entry, exit).toMinutes();
 
-        String sql = "UPDATE parking_system.parking SET exit_time= ?, total_time= ?, is_paid=true WHERE car_num=?";
+        String sql = "UPDATE smart_parking_team2.parking SET exit_time= ?, total_time= ?, paid=true WHERE car_num=?";
         try {
             @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
