@@ -5,7 +5,7 @@ import org.example.smart_parking_260219.dao.FeePolicyDAO;
 import org.example.smart_parking_260219.dto.FeePolicyDTO;
 import org.example.smart_parking_260219.vo.FeePolicyVo;
 import org.modelmapper.ModelMapper;
-import util.MapperUtil;
+import org.example.smart_parking_260219.util.MapperUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class FeePolicyService {
 
         // Dto -> vo
         FeePolicyVo feePolicyVo = toVo(feePolicyDTO);
-        feePolicyVo.setActive(true);
+        feePolicyVo.setActive(true); // setter 사용 불가
         log.info("feePolicyVo : {}" , feePolicyVo);
         feePolicyDAO.insertPolicy(feePolicyVo);
     }

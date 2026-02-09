@@ -1,4 +1,4 @@
-package util;
+package org.example.smart_parking_260219.util;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
