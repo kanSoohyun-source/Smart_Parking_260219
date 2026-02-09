@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @Log4j2
 class MemberDAOTest {
@@ -15,7 +16,6 @@ class MemberDAOTest {
     public void insertTest() {
         try {
             MemberVO memberVO = MemberVO.builder()
-                    .subscriptionId(222)
                     .carNum("1234")
                     .carType(1)
                     .name("test")
@@ -30,13 +30,13 @@ class MemberDAOTest {
 
     @Test
     public void memberDummy() throws SQLException {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             MemberVO memberVO = MemberVO.builder()
-                    .subscriptionId(i)
                     .carNum("111" + i)
                     .carType(1)
                     .name("이름" + i)
                     .phone("111-2222-333" + i)
+                    .createDate(LocalDateTime.now())
                     .subscribed(false)
                     .build();
             memberDAO.insertMember(memberVO);
@@ -45,9 +45,9 @@ class MemberDAOTest {
 
     @Test
     public void selectAllTest() throws SQLException {
-        var cars = memberDAO.selectAllMember();
+        var member = memberDAO.selectAllMember();
 
-        for (MemberVO memberVO : cars) {
+        for (MemberVO memberVO : member) {
             log.info(memberVO);
         }
 
@@ -65,14 +65,14 @@ class MemberDAOTest {
 
     @Test
     public void updateTest() throws SQLException {
-        String carNum = "1110";
+        String carNum = "1234";
 
         MemberVO memberVO = MemberVO.builder()
-                .carNum("1115")
                 .carType(3)
                 .name("update")
-                .phone("111-111-111")
+                .phone("111-111-1111")
                 .subscribed(true)
+                .carNum("1234")
                 .build();
         memberDAO.updateMember(memberVO);
         MemberVO memberVO1 = memberDAO.selectOneMember(carNum);

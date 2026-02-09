@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,18 +25,16 @@ public class MemberDAO {
     }
 
     public void insertMember(MemberVO memberVO) throws SQLException {
-        String sql = "INSERT INTO member (member_id, subscription_id, car_num, car_type, name, phone, subscribed) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO member (car_num, car_type, name, phone, create_date ,subscribed) " +
+                "VALUES (?, ?, ?, ?, NOW(), ?)";
 
         @Cleanup Connection connection = ConnectionUtil.Instance.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, String.valueOf(memberVO.getMemberId()));
-        preparedStatement.setString(2, String.valueOf(memberVO.getSubscriptionId()));
-        preparedStatement.setString(3, memberVO.getCarNum());
-        preparedStatement.setString(4, String.valueOf(memberVO.getCarType()));
-        preparedStatement.setString(5, memberVO.getName());
-        preparedStatement.setString(6, memberVO.getPhone());
-        preparedStatement.setBoolean(7, (memberVO.isSubscribed()));
+        preparedStatement.setString(1, memberVO.getCarNum());
+        preparedStatement.setString(2, String.valueOf(memberVO.getCarType()));
+        preparedStatement.setString(3, memberVO.getName());
+        preparedStatement.setString(4, memberVO.getPhone());
+        preparedStatement.setBoolean(5, (memberVO.isSubscribed()));
 
         preparedStatement.executeUpdate();
     }
@@ -51,12 +50,12 @@ public class MemberDAO {
 
         while (resultSet.next()) {
             MemberVO memberVO = MemberVO.builder()
-                    .memberId(Integer.parseInt(resultSet.getString("member_id")))
-                    .subscriptionId(Integer.parseInt(resultSet.getString("subscription_id")))
+                    .memberId(resultSet.getInt("member_id"))
                     .carNum(resultSet.getString("car_num"))
-                    .carType(Integer.parseInt(resultSet.getString("car_type")))
+                    .carType(resultSet.getInt("car_type"))
                     .name(resultSet.getString("name"))
                     .phone(resultSet.getString("phone"))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .subscribed(resultSet.getBoolean("subscribed"))
                     .build();
             memberVOList.add(memberVO);
@@ -74,12 +73,12 @@ public class MemberDAO {
 
         if(resultSet.next()) {
             MemberVO memberVO = MemberVO.builder()
-                    .memberId(Integer.parseInt(resultSet.getString("member_id")))
-                    .subscriptionId(Integer.parseInt(resultSet.getString("subscription_id")))
+                    .memberId(resultSet.getInt("member_id"))
                     .carNum(resultSet.getString("car_num"))
-                    .carType(Integer.parseInt(resultSet.getString("car_type")))
+                    .carType(resultSet.getInt("car_type"))
                     .name(resultSet.getString("name"))
                     .phone(resultSet.getString("phone"))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .subscribed(resultSet.getBoolean("subscribed"))
                     .build();
             return memberVO;

@@ -15,9 +15,9 @@ public class ConnectionTest {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String url = "jdbc:mariadb://localhost:3306/mini_project";
-            String user = "root";
-            String pass = "7070";
+            String url = "jdbc:mariadb://localhost:3306/smart_parking_team2";
+            String user = "admin";
+            String pass = "0219";
 
             Connection connection = DriverManager.getConnection(url, user, pass);
             // 변수가 null이 아닌지 확인 -> null이 아니면 객체를 참조

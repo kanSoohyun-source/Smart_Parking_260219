@@ -23,11 +23,10 @@ class MemberServiceTest {
     @Test
     public void addTest() throws SQLException {
         MemberDTO memberDTO = MemberDTO.builder()
-                .subscriptionId(22)
                 .carNum("service")
                 .carType(1)
                 .name("service")
-                .phone("phoneService")
+                .phone("service1234")
                 .subscribed(true)
                 .build();
         memberService.addMember(memberDTO);
@@ -37,20 +36,36 @@ class MemberServiceTest {
     public void getAllTest() throws SQLException {
         var members = memberService.getAllMember();
 
-//        for (MemberDTO memberDTO : members) {
-//            log.info(memberDTO);
-//        }
-
         members.forEach(it -> log.info(it));
     }
 
     @Test
     public void getOneTest() throws SQLException{
-        String carNum = "11110";
+        String carNum = "service";
 
         MemberDTO memberDTO = memberService.getOneMember(carNum);
         log.info(memberDTO);
         Assertions.assertNotNull(memberDTO);
+    }
+
+    @Test
+    public void modify() throws SQLException {
+        MemberDTO memberDTO = MemberDTO.builder()
+                .carType(3)
+                .name("update")
+                .phone("update1234")
+                .subscribed(false)
+                .carNum("service")
+                .build();
+        memberService.modifyMember(memberDTO);
+
+    }
+
+    @Test
+    public void remove() throws SQLException {
+        String carNum = "service";
+
+        memberService.removeMember(carNum);
     }
 
 
