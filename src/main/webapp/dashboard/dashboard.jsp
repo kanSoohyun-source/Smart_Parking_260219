@@ -3,7 +3,7 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../CSS/tlqkf.css">
+    <link rel="stylesheet" href="../CSS/dashboard.css">
 </head>
 <body>
 <!-- Navigation -->

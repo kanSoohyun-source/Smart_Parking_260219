@@ -3,7 +3,6 @@ package org.example.smart_parking_260219.dao;
 import lombok.Cleanup;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.connection.DBConnection;
-import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.vo.PaymentVO;
 
 import java.sql.Connection;
@@ -69,7 +68,7 @@ public class PaymentDAO {
     public List<PaymentVO> selectAllPayments() {
         List<PaymentVO> paymentVOList = new ArrayList<>();
         String sql = "SELECT pay.*, p.car_num FROM payment pay "
-                + "JOIN parking p ON pay.parking_id = p.parking_id "
+                + "JOIN smart_parking_team2.parking p ON pay.parking_id = p.parking_id "
                 + "ORDER BY pay.payment_id DESC";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
@@ -97,8 +96,8 @@ public class PaymentDAO {
 
     // 단건 조회 - 결제 내역 상세 출력
     public PaymentVO selectOnePayment(int paymentNo) {
-        String sql = "SELECT pay.*, p.car_num FROM payment pay "
-                + "JOIN parking p ON pay.parking_id = p.parking_id "
+        String sql = "SELECT pay.*, p.car_num FROM smart_parking_team2.payment pay "
+                + "JOIN smart_parking_team2.parking p ON pay.parking_id = p.parking_id "
                 + "WHERE pay.payment_id = ?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();

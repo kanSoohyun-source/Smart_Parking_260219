@@ -3,8 +3,6 @@ package org.example.smart_parking_260219.dao;
 import lombok.Cleanup;
 import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.vo.MemberVO;
-import org.example.smart_parking_260219.dbconnection.ConnectionUtil;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +43,7 @@ public class MemberDAO {
 
         List<MemberVO> memberVOList = new ArrayList<>();
 
-        @Cleanup Connection connection = ConnectionUtil.Instance.getConnection();
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
         @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -67,7 +65,7 @@ public class MemberDAO {
     public MemberVO selectOneMember(String carNum) throws SQLException {
         String sql = "SELECT * FROM member WHERE car_num = ?";
 
-        @Cleanup Connection connection = ConnectionUtil.Instance.getConnection();
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, carNum);
         @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
@@ -92,7 +90,7 @@ public class MemberDAO {
                 "car_type = ?, name = ?, phone = ?, subscribed = ? " +
                 "WHERE car_num = ?";
 
-        @Cleanup Connection connection = ConnectionUtil.Instance.getConnection();
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
         preparedStatement.setString(1, String.valueOf(memberVO.getCarType()));
@@ -107,7 +105,7 @@ public class MemberDAO {
     public void deleteMember (String carNum) throws SQLException {
         String sql = "DELETE FROM member WHERE car_num = ?";
 
-        @Cleanup Connection connection = ConnectionUtil.Instance.getConnection();
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, carNum);
         preparedStatement.executeUpdate();
