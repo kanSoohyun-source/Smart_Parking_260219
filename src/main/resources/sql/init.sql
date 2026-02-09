@@ -70,6 +70,23 @@ CREATE TABLE IF NOT EXISTS `parking`
         REFERENCES `parking_spot` (`space_id`) ON UPDATE CASCADE
 );
 
+# fee_policy : 요금 부과 정책 테이블 [완료]
+CREATE TABLE IF NOT EXISTS `fee_policy`
+(
+    `policy_id`         INT AUTO_INCREMENT PRIMARY KEY COMMENT '요금 정책 고유 ID',
+    `grace_period`      INT     NOT NULL DEFAULT 10 COMMENT '무료 회차 시간(분) - 이 시간 내 출차 시 0원',
+    `default_time`      INT     NOT NULL DEFAULT 60 COMMENT '기본 요금 적용 시간(분) - 60분',
+    `default_fee`       INT     NOT NULL DEFAULT 2000 COMMENT '기본 요금 - 2,000원',
+    `extra_time`        INT     NOT NULL DEFAULT 30 COMMENT '추가 요금 단위 시간(분) - 30분',
+    `extra_fee`         INT     NOT NULL DEFAULT 1000 COMMENT '추가 요금 - 1,000원',
+    `light_discount`    DOUBLE  NOT NULL DEFAULT 0.3 COMMENT '경차 할인율(0.3 = 30%)',
+    `disabled_discount` DOUBLE  NOT NULL DEFAULT 0.5 COMMENT '장애인 할인율(0.5 = 50%)',
+    `subscribed_fee`    INT     NOT NULL DEFAULT 100000 COMMENT '월정액 가격 - 100,000원',
+    `max_daily_fee`     INT     NOT NULL DEFAULT 15000 COMMENT '일일 최대 요금 - 15,000원',
+    `is_active`         BOOLEAN NOT NULL DEFAULT TRUE COMMENT '현재 정책 활성화 여부',
+    `modify_date`       DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '정책 수정일'
+);
+
 # payment : 결제, 매출 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `payment`
 (
@@ -86,23 +103,6 @@ CREATE TABLE IF NOT EXISTS `payment`
         REFERENCES `parking` (`parking_id`),
     CONSTRAINT `fk_payment_policy` FOREIGN KEY (`policy_id`)
         REFERENCES `fee_policy` (`policy_id`)
-);
-
-# fee_policy : 요금 부과 정책 테이블 [완료]
-CREATE TABLE IF NOT EXISTS `fee_policy`
-(
-    `policy_id`         INT AUTO_INCREMENT PRIMARY KEY COMMENT '요금 정책 고유 ID',
-    `grace_period`      INT     NOT NULL DEFAULT 10 COMMENT '무료 회차 시간(분) - 이 시간 내 출차 시 0원',
-    `default_time`      INT     NOT NULL DEFAULT 60 COMMENT '기본 요금 적용 시간(분) - 60분',
-    `default_fee`       INT     NOT NULL DEFAULT 2000 COMMENT '기본 요금 - 2,000원',
-    `extra_time`        INT     NOT NULL DEFAULT 30 COMMENT '추가 요금 단위 시간(분) - 30분',
-    `extra_fee`         INT     NOT NULL DEFAULT 1000 COMMENT '추가 요금 - 1,000원',
-    `light_discount`    DOUBLE  NOT NULL DEFAULT 0.3 COMMENT '경차 할인율(0.3 = 30%)',
-    `disabled_discount` DOUBLE  NOT NULL DEFAULT 0.5 COMMENT '장애인 할인율(0.5 = 50%)',
-    `subscribed_fee`    INT     NOT NULL DEFAULT 100000 COMMENT '월정액 가격 - 100,000원',
-    `max_daily_fee`     INT     NOT NULL DEFAULT 15000 COMMENT '일일 최대 요금 - 15,000원',
-    `is_active`         BOOLEAN NOT NULL DEFAULT TRUE COMMENT '현재 정책 활성화 여부',
-    `modify_date`       DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '정책 수정일'
 );
 
 -- 전용 사용자 생성
