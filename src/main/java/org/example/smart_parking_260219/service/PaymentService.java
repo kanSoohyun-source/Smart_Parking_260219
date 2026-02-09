@@ -33,11 +33,11 @@ public enum PaymentService {
         // paymentDTO.setCalculatedFee(calculatedFee);
 
         // 3. 결제 수단 변환 (String "카드" -> int 1)
-        int paymentTypeInt = convertPaymentTypeToInt(paymentDTO.getPaymentType());
+        int paymentTypeInt = paymentDTO.getPaymentType();
 
         // 4. DTO -> VO 변환 (DB 저장을 위한 객체 생성)
         PaymentVO paymentVO = PaymentVO.builder()
-                .parkingId(paymentDTO.getPaymentNo()) // 주의: DTO 필드 설계상 parkingId가 필요함 (임시로 paymentNo 사용 매핑 시 주의)
+                .parkingId(paymentDTO.getParkingId()) // 주의: DTO 필드 설계상 parkingId가 필요함 (임시로 paymentNo 사용 매핑 시 주의)
                 .policyId(paymentDTO.getPolicyId())
                 .carNum(paymentDTO.getCarNum())
                 .paymentType(paymentTypeInt)
@@ -152,25 +152,4 @@ public enum PaymentService {
 //        return (int) (totalFee * discountRate);
 //    }
 
-
-    // 결제 수단 문자열을 코드로 변환 (화면 -> DB)
-    private int convertPaymentTypeToInt(String type) {
-        log.info("convertPaymentTypeToInt");
-        if (type == null) return 1; // 기본값 카드
-        switch (type) {
-            case "현금": return 2;
-            case "월정액": return 3;
-            case "카드": default: return 1;
-        }
-    }
-
-    // 결제 수단 코드를 문자열로 변환 (DB -> 화면)
-    private String convertPaymentTypeToString(int typeCode) {
-        log.info("convertPaymentType");
-        switch (typeCode) {
-            case 2: return "현금";
-            case 3: return "월정액";
-            case 1: default: return "카드";
-        }
-    }
 }
