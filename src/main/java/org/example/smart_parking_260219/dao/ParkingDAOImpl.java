@@ -129,4 +129,35 @@ public class ParkingDAOImpl implements ParkingDAO {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public ParkingVO selectParkingByParkingId(int parkingId) {
+        String sql = "SELECT * FROM smart_parking_team2.parking WHERE parking_id = ?";
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, parkingId);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Timestamp entryTime = resultSet.getTimestamp("entry_time");
+                Timestamp exitTime = resultSet.getTimestamp("exit_time");
+                ParkingVO parkingVO = ParkingVO.builder()
+                        .parkingId(resultSet.getInt("parking_id"))
+                        .carNum(resultSet.getString("car_num"))
+                        .memberId(resultSet.getInt("member_id"))
+                        .spaceId(resultSet.getString("space_id"))
+                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
+                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
+                        .totalTime(resultSet.getInt("total_time"))
+                        .carType(resultSet.getInt("car_type"))
+                        .paid(resultSet.getBoolean("paid"))
+                        .build();
+                log.info("parkingVO : {}", parkingVO);
+                return parkingVO;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

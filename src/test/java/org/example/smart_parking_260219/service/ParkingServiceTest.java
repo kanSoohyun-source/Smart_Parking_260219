@@ -35,4 +35,11 @@ class ParkingServiceTest {
                 .build();
         parkingService.modifyParking(parkingDTO);
     }
+
+    @Test
+    public void getByIdParkingTest() {
+        int id = 1;
+        ParkingDTO parkingDTO = parkingService.getByIdParking(id);
+        log.info("parkingDTO: {}", parkingDTO);
+    }
 }
