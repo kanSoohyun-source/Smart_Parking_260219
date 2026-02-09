@@ -1,0 +1,159 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>입차</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+
+    <!-- Sidebar 전용 CSS (최소) -->
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        /* 전체 레이아웃 */
+        #wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        /* 사이드바 */
+        #sidebar-wrapper {
+            min-height: 100vh;
+            width: 250px;
+            margin-left: -250px;   /* 기본: 숨김 */
+            transition: margin 0.25s ease-out;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+
+        /* 토글 시 사이드바 표시 */
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: 0;
+        }
+
+        /* 페이지 콘텐츠 */
+        #page-content-wrapper {
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* 사이드바 메뉴 */
+        .list-group {
+            width: 250px;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 15px 20px;
+        }
+
+        /* 버튼 글자색 */
+        #sidebarToggle {
+            color: slategray;
+        }
+
+        /* 수정 가능 */
+        /* 제목 + 입력칸 */
+        div.inputCar {
+            display: flex;  /* 수직 가운데 정렬 */
+            align-items: center;
+            justify-content: space-evenly;  /* 제목과 입력칸 배치 공간 정렬 */
+            text-align: center;
+            box-sizing: border-box;
+            width: 1000px;
+            min-height: 70px;
+            background : gray;
+            margin: auto auto 40px;
+        }
+        /* 입력칸 제목 */
+        span {
+            width: 450px;
+            padding-bottom: inherit;
+            font-size : 30px;
+        }
+        /* 입력칸 */
+        #page-content-wrapper label input.form-control {
+            box-shadow: none;
+            background: gray;
+            height: 40px;
+            width : 550px;
+            font-size : 35px;
+            border: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* 전체 입력칸 */
+        form {
+            margin: auto;
+            width : 1000px;
+        }
+        /* 사항 */
+        p {
+            text-align: right;
+            color: gray;
+        }
+        .form-button {
+            text-align: center;
+        }
+        /* 수정 불가능 */
+    </style>
+</head>
+<body>
+    <div id="wrapper" class="toggled">
+        <!-- 메뉴 -->
+        <jsp:include page="../common/menu.jsp"/>
+        <!-- 본문 내용 -->
+        <div id="page-content-wrapper">
+            <button id="sidebarToggle" class="btn btn-light">☰</button>
+            <%-- 수정 가능 --%>
+            <h1>입차</h1>
+            <form>
+                <div class="inputCar">
+                    <span>주차 구역* : </span>
+                    <label>
+                        <input type="text" class="form-control">
+                    </label>
+                </div>
+                <div class="inputCar">
+                    <span>차량 번호* : </span>
+                    <label>
+                        <input type="text" class="form-control">
+                    </label>
+                </div>
+                <div class="inputCar">
+                    <span>차종(일반, 경차, 장애인)* : </span>
+                    <label>
+                        <input type="text" class="form-control">
+                    </label>
+                </div>
+                <div class="inputCar">
+                    <span>전화번호* : </span>
+                    <label>
+                        <input type="text" class="form-control">
+                    </label>
+                </div>
+                <div class="inputCar">
+                    <span>차주 이름* : </span>
+                    <label>
+                        <input type="text" class="form-control">
+                    </label>
+                </div>
+                <p>*은 필수 입력 사항입니다.</p>
+                <div class="form-button">
+                    <input type="button" class="btn btn-primary" value="확인">
+                </div>
+            </form>
+            <%-- 수정 불가능 --%>
+        </div>
+    </div>
+
+    <!-- 토글 사용하려면 필요한 내용 -->
+    <script>
+        document.getElementById("sidebarToggle").addEventListener("click", function () {
+            document.getElementById("wrapper").classList.toggle("toggled");
+        });
+    </script>
+
+</body>
+</html>
