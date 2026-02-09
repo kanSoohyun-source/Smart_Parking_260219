@@ -40,11 +40,25 @@
                     <canvas id="monthlyChart"></canvas>
                 </div>
             </div>
+
+            <div class="section-card">
+                <div class="control-bar">
+                    <div class="selector-box">
+                        <div class="btn-label">년도별 조회</div>
+                        <select id="daySelect" onchange="updateDailyChart()"></select>
+                    </div>
+                    <div class="total-price-tag" id="dayTotal">년 총 매출: 0원</div>
+                </div>
+                <div class="chart-area">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-<script src="../JS/menu.js"></script> [cite: 2]
+<script src="../JS/menu.js"></script>
 <script>
     let dailyChart, monthlyChart;
 
@@ -77,6 +91,8 @@
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
+
+        /* 수정 필요 */
         document.getElementById('dayTotal').innerText = "일 총 매출: 460,000원";
 
         // 월별 차트 (Bar)

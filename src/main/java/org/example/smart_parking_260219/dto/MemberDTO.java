@@ -1,0 +1,22 @@
+package org.example.smart_parking_260219.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class MemberDTO {
+    private int memberId; // 회원 고유 식별자, FK
+    private String carNum; // 차량 번호
+    private int carType; // 차량 유형 (1 -일반/ 2 - 월정액 / 3 - 경차 / 4 - 장애인)
+    private String name; // 차량 운전자 이름
+    private String phone; // 운전자 연락처
+    private LocalDateTime createDate;  // 가입일
+    private boolean subscribed; // 월정액 회원 여부 (default false)
+}
