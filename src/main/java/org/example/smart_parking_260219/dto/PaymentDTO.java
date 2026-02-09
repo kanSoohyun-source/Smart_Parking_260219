@@ -5,21 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class PaymentDTO {
-    private int paymentNo; // 주차 기록 고유 ID
-    private int memberId; // 주차한 회원 ID
-    private int policyId; // 요금 정책 고유 ID
-    private String carNum; // 주차한 차량 번호
-    private String paymentType;	// 결제 방식 (카드 / 월정액)
-    private int calculatedFee; // 할인 적용 전 계산된 요금
-    private int discountAmount; // 할인된 금액
-    private int finalFee; // 실제 부과된 최종 요금
-    private LocalDate salesDate; // 매출 집계 기준 날짜
+    private int paymentId;  // 결제 ID
+    private int parkingId;  // 주차 기록 ID (FK)
+    private int policyId;  // 적용된 요금 정책 ID (FK_
+    private int paymentType;  // 결제 수단 (1:카드, 2:현금, 3:월정액)
+    private int calculatedFee;  // 할인 전 요금
+    private int discountAmount;  // 총 할인 금액
+    private int finalFee;  // 최종 결제 금액
+    private LocalDateTime paymentDate;  // 실제 결제 일시
 }

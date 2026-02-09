@@ -3,6 +3,7 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/tlqkf.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -17,6 +18,6 @@
     </div>
 </div>
     <script src="../JS/menu.js"></script>
-    <script src="../JS/function.js"></script>
+    <script src="../JS/tlqkf.js"></script>
 </body>
 </html>
