@@ -1,13 +1,17 @@
 package org.example.smart_parking_260219.dto;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class FeePolicyDTO {
     private int policyId;  // 요금 정책 고유 ID
     private int gracePeriod;  // 무료 회차 시간(분) - 이 시간 내 출차 시 0원

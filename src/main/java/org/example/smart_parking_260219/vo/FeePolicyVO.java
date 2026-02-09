@@ -4,22 +4,25 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+
 @Getter
+@Setter // setter 사용 불가
 @ToString
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class FeePolicyVO {
-    private int policyId;  // 요금 정책 고유 ID
-    private int gracePeriod;  // 무료 회차 시간(분) - 이 시간 내 출차 시 0원
-    private int defaultTime;  // 기본 요금 적용 시간(분) - 60분
-    private int defaultFee;  // 기본 요금 - 2,000원
-    private int extraTime;  // 추가 요금 단위 시간(분) - 30분
-    private int extraFee;  // 추가 요금 - 1,000원
-    private double lightDiscount;  // 경차 할인율(0.3 = 30%)
-    private double disabledDiscount;  // 장애인 할인율(0.5 = 50%)
-    private int subscribedFee;  // 월정액 가격 - 100,000원
-    private int maxDailyFee;  // 일일 최대 요금 - 15,000원
-    private boolean isActive;  // 현재 정책 활성화 여부
-    private LocalDateTime modifyDate;  // 정책 수정일
+    private int policyId;           // policy_no (PK)
+    private int gracePeriod;        // 무료 회차 시간(분)
+    private int defaultTime;        // 기본 시간
+    private int defaultFee;         // 기본 요금
+    private int extraTime;          // 추가 시간
+    private int extraFee;           // 추가 요금
+    private double lightDiscount;    // 경차 할인율
+    private double disabledDiscount;    // 장애인 할인율
+    private int subscribedFee;         // 월정액 가격
+    private int maxDailyFee;        // 일일 최대 금액 (max_daily_fee)
+    private boolean isActive;        // 현재 정책 활성화 여부
+    private LocalDateTime modifyDate;// 정책 수정일
 }
+
