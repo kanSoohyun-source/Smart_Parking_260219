@@ -3,7 +3,7 @@ package org.example.smart_parking_260219.service;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dao.MemberDAO;
 import org.example.smart_parking_260219.dto.MemberDTO;
-import org.example.smart_parking_260219.utill.MapperUtil;
+import org.example.smart_parking_260219.util.MapperUtil;
 import org.example.smart_parking_260219.vo.MemberVO;
 import org.modelmapper.ModelMapper;
 
