@@ -20,7 +20,7 @@ class ParkingSpotDAOImplTest {
     public void insertCarPark() {
         for (int i = 1; i <= 20; i++) {
             ParkingSpotVO parkingSpotVO = ParkingSpotVO.builder()
-                    .spaceId("A" + (i < 10 ? "0" : "") + i)
+                    .spaceId("A" + i)
                     .build();
             parkingSpotDAO.insertParkingSpot(parkingSpotVO);
         }

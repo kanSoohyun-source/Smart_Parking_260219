@@ -10,9 +10,9 @@ function renderParkingSlots() {
 
     // 1. 임시로 주차된 차량들의 정보 객체 (원하시는 더미 데이터 설정)
     const occupiedData = {
-        3: { carNum: '123가 1234', entryTime: '09:00' }, // A3번 자리
+        /*3: { carNum: '123가 1234', entryTime: '09:00' }, // A3번 자리
         7: { carNum: '345나 2334', entryTime: '14:55' }, // A7번 자리
-        12: { carNum: '567다 8765', entryTime: '18:27' } // A12번 자리
+        12: { carNum: '567다 8765', entryTime: '18:27' } // A12번 자리*/
     };
 
     let parkingSlots = [];

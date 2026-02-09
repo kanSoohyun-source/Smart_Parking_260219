@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @WebServlet(name = "parkingOutputController", value = "/parking/output")
 @Log4j2
-public class parkingOutputController extends HttpServlet {
+public class ParkingOutputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
@@ -42,7 +42,7 @@ public class parkingOutputController extends HttpServlet {
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
-        resp.sendRedirect("webapp/payment/payment.jsp");
+        resp.sendRedirect("/payment/payment.jsp");
     }
 }
 
