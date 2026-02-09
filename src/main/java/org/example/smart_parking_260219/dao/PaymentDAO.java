@@ -3,6 +3,7 @@ package org.example.smart_parking_260219.dao;
 import lombok.Cleanup;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.connection.DBConnection;
+import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.vo.PaymentVO;
 
 import java.sql.Connection;
@@ -15,7 +16,8 @@ import java.util.List;
 @Log4j2
 
 public class PaymentDAO {
-    // [등록] 요금 계산 후 결제 정보 저장
+
+    // 등록 - 요금 계산 후 결제 정보 저장
     public void insertPayment(PaymentVO vo) {
         log.info("insertPayment 실행: " + vo.getCarNum());
 
@@ -52,7 +54,7 @@ public class PaymentDAO {
         }
     }
 
-    // [전체 조회] 결제 목록 출력 (차량번호 포함)
+    // 전체 조회 - 결제 목록 출력 (차량번호 포함)
     public List<PaymentVO> selectAllPayments() {
         List<PaymentVO> paymentVOList = new ArrayList<>();
         String sql = "SELECT pay.*, p.car_num FROM payment pay "
@@ -82,7 +84,7 @@ public class PaymentDAO {
         return paymentVOList;
     }
 
-    // [단건 조회] 결제 내역 상세 출력
+    // 단건 조회 - 결제 내역 상세 출력
     public PaymentVO selectOnePayment(int paymentNo) {
         String sql = "SELECT pay.*, p.car_num FROM payment pay "
                 + "JOIN parking p ON pay.parking_id = p.parking_id "

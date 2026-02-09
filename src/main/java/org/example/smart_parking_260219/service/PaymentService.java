@@ -5,7 +5,7 @@ import org.example.smart_parking_260219.dao.PaymentDAO;
 import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.vo.PaymentVO;
 import org.modelmapper.ModelMapper;
-import utill.MapperUtil;
+import org.example.smart_parking_260219.utill.MapperUtil;
 
 import java.util.List;
 
@@ -25,8 +25,6 @@ public enum PaymentService {
         log.info("Service: addPayment 호출 - 차량번호: " + paymentDTO.getCarNum());
 
         // 1. 차량 번호로 현재 주차 중인 parking_id 조회 (필수 로직)
-        // 실제로는 ParkingDAO를 통해 가져와야 하지만, 여기서는 DTO에 없으므로 로직상 조회했다고 가정하거나
-        // DTO에 parkingId가 담겨온다고 가정하고 처리합니다.
         // int parkingId = parkingDAO.selectIdByCarNum(paymentDTO.getCarNum());
         // if(parkingId == 0) throw new Exception("주차 중인 차량이 아닙니다.");
 
@@ -127,7 +125,7 @@ public enum PaymentService {
             totalFee += (units * extraFee);
         }
 
-        // 6. [로직 4] 일일 최대 요금 상한선 적용
+        // 6. 일일 최대 요금 상한선 적용
         if (totalFee > maxDailyFee) {
             totalFee = maxDailyFee;
         }
