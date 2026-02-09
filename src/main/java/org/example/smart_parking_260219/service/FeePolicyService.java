@@ -53,8 +53,12 @@ public class FeePolicyService {
         if (feePolicyDTO.getGracePeriod() < 0) {
             throw new IllegalArgumentException("gracePeriod는 0 이상이어야 합니다.");
         }
+
+        feePolicyDAO.deactivateAllPolicies();  // 기존 정책 전부 false
+
         // Dto -> vo
         FeePolicyVo feePolicyVo = toVo(feePolicyDTO);
+        feePolicyVo.setActive(true);
         log.info("feePolicyVo : {}" , feePolicyVo);
         feePolicyDAO.insertPolicy(feePolicyVo);
     }

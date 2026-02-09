@@ -15,16 +15,15 @@ class FeePolicyServiceTest {
     @Test
     public void addPolicy() {
         FeePolicyDTO dto = FeePolicyDTO.builder()
-                .gracePeriod(10)
+                .gracePeriod(20)
                 .defaultTime(10)
-                .defaultFee(2000)
+                .defaultFee(1000)
                 .extraTime(30)
                 .extraFee(1000)
                 .lightDiscount(0.3)
                 .disabledDiscount(0.5)
                 .subscribedFee(100000)
                 .maxDailyFee(15000)
-                .isActive(false)
                 .build();
 
         feePolicyService.addPolicy(dto);

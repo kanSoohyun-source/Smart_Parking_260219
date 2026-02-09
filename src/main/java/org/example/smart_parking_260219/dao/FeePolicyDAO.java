@@ -186,6 +186,17 @@ public class FeePolicyDAO {
         }
     }
 
+    // 현재 활성화된 정책 모두 false로 변경
+    public int deactivateAllPolicies() {
+        String sql = "UPDATE fee_policy SET is_active = false WHERE is_active = true";
 
+        try {
+            @Cleanup Connection connection = DBConnection_sms.getConnection();
+            @Cleanup PreparedStatement ps = connection.prepareStatement(sql);
+            return ps.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
