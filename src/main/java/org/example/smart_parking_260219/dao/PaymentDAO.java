@@ -17,6 +17,17 @@ import java.util.List;
 
 public class PaymentDAO {
 
+    private static PaymentDAO instance;
+
+    public PaymentDAO() {}
+
+    public static PaymentDAO getInstance() {
+        if(instance == null) {
+            instance = new PaymentDAO();
+        }
+        return instance;
+    }
+
     // 등록 - 요금 계산 후 결제 정보 저장
     public void insertPayment(PaymentVO vo) {
         log.info("insertPayment 실행: " + vo.getCarNum());
@@ -75,7 +86,7 @@ public class PaymentDAO {
                         .calculatedFee(resultSet.getInt("calculated_fee"))
                         .discountAmount(resultSet.getInt("discount_amount"))
                         .finalFee(resultSet.getInt("final_fee"))
-                        .paymentDate(resultSet.getDate("payment_date").toLocalDate()).build();
+                        .paymentDate(resultSet.getTimestamp("payment_date").toLocalDateTime()).build();
                 paymentVOList.add(paymentVO);
             }
         } catch (SQLException e) {
@@ -105,7 +116,7 @@ public class PaymentDAO {
                         .calculatedFee(resultSet.getInt("calculated_fee"))
                         .discountAmount(resultSet.getInt("discount_amount"))
                         .finalFee(resultSet.getInt("final_fee"))
-                        .paymentDate(resultSet.getDate("payment_date").toLocalDate()).build();
+                        .paymentDate(resultSet.getTimestamp("payment_date").toLocalDateTime()).build();
                 return paymentVO;
             }
         } catch (Exception e) {
