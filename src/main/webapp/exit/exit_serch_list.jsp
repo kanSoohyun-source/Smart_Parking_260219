@@ -8,6 +8,7 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/payment_style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -41,14 +42,16 @@
             </div>
             <div class="form-group">
                 <label>차량 타입</label>
-                <label><input type="radio" name="finish" value="1"
-                    <%=(parkingDTO.getCarType() == 1) ? "checked" : ""%>>일반</label>
-                <label><input type="radio" name="finish" value="2"
-                    <%=(parkingDTO.getCarType() == 2) ? "checked" : ""%>>월정액</label>
-                <label><input type="radio" name="finish" value="3"
-                    <%=(parkingDTO.getCarType() == 3) ? "checked" : ""%>>경차</label>
-                <label><input type="radio" name="finish" value="4"
-                    <%=(parkingDTO.getCarType() == 4) ? "checked" : ""%>>장애인</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="finish" value="1"
+                        <%=(parkingDTO.getCarType() == 1) ? "checked" : ""%>>일반</label>
+                    <label class="radio-item"><input type="radio" name="finish" value="2"
+                        <%=(parkingDTO.getCarType() == 2) ? "checked" : ""%>>월정액</label>
+                    <label class="radio-item"><input type="radio" name="finish" value="3"
+                        <%=(parkingDTO.getCarType() == 3) ? "checked" : ""%>>경차</label>
+                    <label class="radio-item"><input type="radio" name="finish" value="4"
+                        <%=(parkingDTO.getCarType() == 4) ? "checked" : ""%>>장애인</label>
+                </div>
             </div>
             <div class="form-group">
                 <label>총 주차 시간</label>

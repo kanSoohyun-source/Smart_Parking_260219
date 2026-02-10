@@ -34,7 +34,7 @@ public enum PaymentService {
 
     // 결제 등록
     // 사용자가 결제한 내역을 등록하고, 주차 상태를 '정산 완료'로 변경
-    public void addPayment(PaymentDTO paymentDTO, FeePolicyDTO feePolicyDTO, ParkingDTO parkingDTO) throws Exception {
+    public void addPayment(PaymentDTO paymentDTO) throws Exception {
         log.info("Service: addPayment 호출 - 차량번호: " + paymentDTO.getCarNum());
 
         // 1. 차량 정보 한 번만 조회 (NPE 방지를 위해 변수에 담기)
@@ -46,23 +46,15 @@ public enum PaymentService {
 
         int parkingId = parkingVO.getParkingId();
 
-        // 2-1. 요금 계산
-        int calculatedFee = calculateFeeLogic(parkingDTO);
-
-        // 2-2. 할인 금액 계산 (이미 위에서 가져온 parkingVO 사용)
-        int discountAmount = calculateDiscountLogic(calculatedFee,
-                parkingVO.getCarType(),
-                modelMapper.map(feePolicyDTO, FeePolicyVO.class));
-
         // 3. DTO -> VO 변환 (Builder로 직접 생성하며 요금 주입)
         PaymentVO paymentVO = PaymentVO.builder()
                 .parkingId(parkingId) // 혹은 paymentDTO.getParkingId()
                 .policyId(paymentDTO.getPolicyId())
                 .carNum(paymentDTO.getCarNum())
                 .paymentType(paymentDTO.getPaymentType())
-                .calculatedFee(calculatedFee) // 계산된 요금 주입
-                .discountAmount(discountAmount) // 계산된 할인액 적용
-                .finalFee(calculatedFee - discountAmount) // 최종 요금 계산
+                .calculatedFee(paymentDTO.getCalculatedFee()) // 계산된 요금 주입
+                .discountAmount(paymentDTO.getDiscountAmount()) // 계산된 할인액 적용
+                .finalFee(paymentDTO.getFinalFee()) // 최종 요금 계산
                 .build();
 
         // 4. DAO 호출하여 DB 저장
@@ -87,17 +79,17 @@ public enum PaymentService {
 
     // 결제 상세 조회
     // 특정 결제 건에 대한 상세 정보
-    public PaymentDTO getPayment(int paymentNo) {
-        log.info("Service: getPayment - ID: " + paymentNo);
+    public PaymentDTO getPayment(int parkingId) {
+        log.info("Service: getPayment - ID: " + parkingId);
 
-        return modelMapper.map(paymentDAO.selectOnePayment(paymentNo), PaymentDTO.class);
+        return modelMapper.map(paymentDAO.selectOnePayment(parkingId), PaymentDTO.class);
     }
 
     // 내부 사용 메서드
 
     // 요금 계산
     // 주차 시간과 요금 정책을 기반으로 '할인 전 총 요금(calculatedFee)'을 계산
-    private int calculateFeeLogic(ParkingDTO parkingDTO) {
+    public int calculateFeeLogic(ParkingDTO parkingDTO) {
         log.info("calculateFeeLogic - parkingId: " + parkingDTO.getParkingId());
 
         // 1. DB에서 데이터 조회 (DAO가 구현되어 있다고 가정)
@@ -115,6 +107,7 @@ public enum PaymentService {
         // 2. 주차 시간(분) 계산
         // Duration.between(과거, 미래) -  두 시간 사이의 간격(차이)을 아주 쉽게 구해주는 도구
         // LocalDateTime, LocalTime, Instant 등 Java 8 날짜 타입끼리만 비교 가능
+
         // .toMinutes() -> 결과를 '분'으로 변환
         // 입출차 시간 계산
         LocalDateTime exitTime = parkingVO.getExitTime() != null ? parkingVO.getExitTime() : LocalDateTime.now();
@@ -151,14 +144,16 @@ public enum PaymentService {
 
     // 할인 금액 계산
     // 차량 타입과 정책을 기반으로 할인될 금액을 계산
-    private int calculateDiscountLogic(int totalFee, int carType, FeePolicyVO policyVO) {
+    public int calculateDiscountLogic(int totalFee, int carType, FeePolicyVO policyVO) {
         double discountRate = 0.0;
 
         // DB에 car_type이 1(경차), 2(장애인), 3(일반) 등으로 저장
 
-        if (1 == carType) {
+        if (carType == 2) {
+            discountRate = totalFee;
+        } else if (3 == carType) {
             discountRate = policyVO.getLightDiscount(); // 0.3 (30%)
-        } else if (2 == carType) {
+        } else if (4 == carType) {
             discountRate = policyVO.getDisabledDiscount(); // 0.5 (50%)
         }
 

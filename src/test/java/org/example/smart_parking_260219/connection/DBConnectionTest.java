@@ -17,7 +17,7 @@ class DBConnectionTest {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String url = "jdbc:mariadb://localhost:3308/smart_parking_team2";
+            String url = "jdbc:mariadb://localhost:3306/smart_parking_team2";
             String user = "admin";
             String passwd = "0219";
 
@@ -34,7 +34,7 @@ class DBConnectionTest {
     public void TestHikariCP() {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.mariadb.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mariadb://localhost:3308/smart_parking_team2");
+        config.setJdbcUrl("jdbc:mariadb://localhost:3306/smart_parking_team2");
         config.setUsername("admin");
         config.setPassword("0219");
 

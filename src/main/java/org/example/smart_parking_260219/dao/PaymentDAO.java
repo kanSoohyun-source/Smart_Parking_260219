@@ -95,14 +95,14 @@ public class PaymentDAO {
     }
 
     // 단건 조회 - 결제 내역 상세 출력
-    public PaymentVO selectOnePayment(int paymentNo) {
+    public PaymentVO selectOnePayment(int parkingId) {
         String sql = "SELECT pay.*, p.car_num FROM smart_parking_team2.payment pay "
                 + "JOIN smart_parking_team2.parking p ON pay.parking_id = p.parking_id "
-                + "WHERE pay.payment_id = ?";
+                + "WHERE p.parking_id = ?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, paymentNo);
+            preparedStatement.setInt(1, parkingId);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {

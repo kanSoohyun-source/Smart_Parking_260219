@@ -42,6 +42,8 @@ public class ParkingListController extends HttpServlet {
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
         req.setAttribute("carNum", CarNum);
+        log.info("1");
         req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
+        log.info("2");
     }
 }
