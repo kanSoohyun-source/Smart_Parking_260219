@@ -163,93 +163,93 @@ function changePage(direction) {
     renderMemberTable();
 }
 
-function searchMember() {
-    const searchNum = document.getElementById('searchCarNum').value.trim();
-    if (!searchNum) {
-        showMessage('차량번호를 입력해주세요.');
-        return;
-    }
+// function searchMember() {
+//     const searchNum = document.getElementById('searchCarNum').value.trim();
+//     if (!searchNum) {
+//         showMessage('차량번호를 입력해주세요.');
+//         return;
+//     }
+//
+//     const last4 = searchNum.slice(-4);
+//     const matches = members.filter(m => m.carNum.includes(last4));
+//
+//     const result = document.getElementById('searchResult');
+//
+//     if (matches.length === 0) {
+//         showMessage('등록된 회원이 없습니다.');
+//         result.innerHTML = '';
+//     } else if (matches.length === 1) {
+//         showMemberDetail(matches[0]);
+//     } else {
+//         result.innerHTML = '<div class="member-list"><h3>다수 회원</h3></div>';
+//         const list = result.querySelector('.member-list');
+//         matches.forEach(member => {
+//             const div = document.createElement('div');
+//             div.className = 'member-item';
+//             div.innerHTML = `차량 번호: ${member.carNum} | 소유주 전화번호: ${member.phone}`;
+//             div.onclick = () => showMemberDetail(member);
+//             list.appendChild(div);
+//         });
+//     }
+// }
 
-    const last4 = searchNum.slice(-4);
-    const matches = members.filter(m => m.carNum.includes(last4));
+// function showMemberDetail(member) {
+//     const result = document.getElementById('searchResult');
+//     result.innerHTML = `
+//                 <div class="member-detail">
+//                     <div class="form-group">
+//                         <label>차량 번호</label>
+//                         <input type="text" value="${member.carNum}" readonly>
+//                     </div>
+//                     <div class="form-group">
+//                         <label>차종</label>
+//                         <input type="text" id="editCarType" value="${member.carType}">
+//                     </div>
+//                     <div class="form-group">
+//                         <label>소유주 이름</label>
+//                         <input type="text" id="editOwner" value="${member.owner}">
+//                     </div>
+//                     <div class="form-group">
+//                         <label>소유주 전화번호</label>
+//                         <input type="text" id="editPhone" value="${member.phone}">
+//                     </div>
+//                     <div class="form-group">
+//                         <label>구독 시작일</label>
+//                         <input type="date" id="editStartDate" value="${member.startDate}">
+//                     </div>
+//                     <div class="form-group">
+//                         <label>구독 만료일</label>
+//                         <input type="date" id="editEndDate" value="${member.endDate}">
+//                     </div>
+//                     <div class="detail-buttons">
+//                         <button onclick="updateMember('${member.carNum}')">수정</button>
+//                         <button class="secondary" onclick="extendMembership('${member.carNum}')">추가</button>
+//                         <button class="danger" onclick="confirmDelete('${member.carNum}')">삭제</button>
+//                     </div>
+//                 </div>
+//             `;
+// }
 
-    const result = document.getElementById('searchResult');
+// function viewMemberDetail(carNum) {
+//     const member = members.find(m => m.carNum === carNum);
+//     if (member) {
+//         showPage('memberSearch');
+//         document.getElementById('searchCarNum').value = carNum;
+//         showMemberDetail(member);
+//     }
+// }
 
-    if (matches.length === 0) {
-        showMessage('등록된 회원이 없습니다.');
-        result.innerHTML = '';
-    } else if (matches.length === 1) {
-        showMemberDetail(matches[0]);
-    } else {
-        result.innerHTML = '<div class="member-list"><h3>다수 회원</h3></div>';
-        const list = result.querySelector('.member-list');
-        matches.forEach(member => {
-            const div = document.createElement('div');
-            div.className = 'member-item';
-            div.innerHTML = `차량 번호: ${member.carNum} | 소유주 전화번호: ${member.phone}`;
-            div.onclick = () => showMemberDetail(member);
-            list.appendChild(div);
-        });
-    }
-}
-
-function showMemberDetail(member) {
-    const result = document.getElementById('searchResult');
-    result.innerHTML = `
-                <div class="member-detail">
-                    <div class="form-group">
-                        <label>차량 번호</label>
-                        <input type="text" value="${member.carNum}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>차종</label>
-                        <input type="text" id="editCarType" value="${member.carType}">
-                    </div>
-                    <div class="form-group">
-                        <label>소유주 이름</label>
-                        <input type="text" id="editOwner" value="${member.owner}">
-                    </div>
-                    <div class="form-group">
-                        <label>소유주 전화번호</label>
-                        <input type="text" id="editPhone" value="${member.phone}">
-                    </div>
-                    <div class="form-group">
-                        <label>구독 시작일</label>
-                        <input type="date" id="editStartDate" value="${member.startDate}">
-                    </div>
-                    <div class="form-group">
-                        <label>구독 만료일</label>
-                        <input type="date" id="editEndDate" value="${member.endDate}">
-                    </div>
-                    <div class="detail-buttons">
-                        <button onclick="updateMember('${member.carNum}')">수정</button>
-                        <button class="secondary" onclick="extendMembership('${member.carNum}')">추가</button>
-                        <button class="danger" onclick="confirmDelete('${member.carNum}')">삭제</button>
-                    </div>
-                </div>
-            `;
-}
-
-function viewMemberDetail(carNum) {
-    const member = members.find(m => m.carNum === carNum);
-    if (member) {
-        showPage('memberSearch');
-        document.getElementById('searchCarNum').value = carNum;
-        showMemberDetail(member);
-    }
-}
-
-function updateMember(carNum) {
-    const member = members.find(m => m.carNum === carNum);
-    if (member) {
-        member.carType = document.getElementById('editCarType').value;
-        member.owner = document.getElementById('editOwner').value;
-        member.phone = document.getElementById('editPhone').value;
-        member.startDate = document.getElementById('editStartDate').value;
-        member.endDate = document.getElementById('editEndDate').value;
-        showMessage('회원 정보가 수정되었습니다.');
-    }
-}
+// function updateMember(carNum) {
+//     const member = members.find(m => m.carNum === carNum);
+//     if (member) {
+//         member.carType = document.getElementById('editCarType').value;
+//         member.owner = document.getElementById('editOwner').value;
+//         member.phone = document.getElementById('editPhone').value;
+//         member.startDate = document.getElementById('editStartDate').value;
+//         member.endDate = document.getElementById('editEndDate').value;
+//         showMessage('회원 정보가 수정되었습니다.');
+//     }
+// }
 
 function extendMembership(carNum) {
     const member = members.find(m => m.carNum === carNum);

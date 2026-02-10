@@ -12,7 +12,7 @@ import java.util.List;
 
 @Log4j2
 public enum MemberService {
-    Instance;
+    INSTANCE;
 
     private MemberDAO memberDAO;
     private ModelMapper modelMapper;
