@@ -50,8 +50,19 @@
                 <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" name="carNum" value="<%=memberDTO.getCarNum()%>">
             </div>
             <div class="form-group">
+                <label>차량 타입</label>
+                <label><input type="radio" name="finish" value="1"
+                    <%=(parkingDTO.getCarType() == 1) ? "checked" : ""%>>일반</label>
+                <label><input type="radio" name="finish" value="2"
+                    <%=(parkingDTO.getCarType() == 2) ? "checked" : ""%>>월정액</label>
+                <label><input type="radio" name="finish" value="3"
+                    <%=(parkingDTO.getCarType() == 3) ? "checked" : ""%>>경차</label>
+                <label><input type="radio" name="finish" value="4"
+                    <%=(parkingDTO.getCarType() == 4) ? "checked" : ""%>>장애인</label>
+            </div>
+            <div class="form-group">
                 <label>총 주차 시간</label>
-                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=parkingDTO.getTotalTime()%>">
+                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=parkingDTO.getTotalTime()%>분">
             </div>
             <div class="form-group">
                 <label>입차 시간</label>
