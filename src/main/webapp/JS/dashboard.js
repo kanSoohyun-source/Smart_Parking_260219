@@ -62,10 +62,10 @@ function renderParkingSlots() {
         slotDiv.addEventListener('click', function() {
             if (isEmpty) {
                 // 공차 -> 입차 페이지 (entry.jsp)
-                location.href = `../entry/entry.jsp?id=${slot.id}`;
+                location.href = `../entry/entry.jsp`;
             } else {
                 // 주차 중 -> 출차 페이지 (exit.jsp)
-                location.href = `../exit/exit.jsp?id=${slot.id}`;
+                location.href = `../exit/exit.jsp`;
             }
         });
 

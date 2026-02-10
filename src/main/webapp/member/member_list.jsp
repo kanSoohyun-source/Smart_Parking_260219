@@ -30,7 +30,7 @@
             <span id="pageInfo">1 / 1</span>
             <button onclick="changePage(1)">▶</button>
         </div>
-        <a href="../member/member_search.jsp"><button>회원 조회</button></a>
+        <a href="member_search.jsp"><button>회원 조회</button></a>
     </div>
 </div>
     <script src="../JS/menu.js"></script>
