@@ -57,8 +57,22 @@ public class FeePolicyService {
         feePolicyDAO.deactivateAllPolicies();  // 기존 정책 전부 false
 
         // Dto -> vo
-        FeePolicyVO feePolicyVo = toVo(feePolicyDTO);
-        feePolicyVo.setActive(true); // setter 사용 불가
+        FeePolicyVO originalVo = toVo(feePolicyDTO);
+
+        FeePolicyVO feePolicyVo = FeePolicyVO.builder()
+                .policyId(originalVo.getPolicyId())
+                .gracePeriod(originalVo.getGracePeriod())
+                .defaultTime(originalVo.getDefaultTime())
+                .defaultFee(originalVo.getDefaultFee())
+                .extraTime(originalVo.getExtraTime())
+                .extraFee(originalVo.getExtraFee())
+                .lightDiscount(originalVo.getLightDiscount())
+                .disabledDiscount(originalVo.getDisabledDiscount())
+                .subscribedFee(originalVo.getSubscribedFee())
+                .maxDailyFee(originalVo.getMaxDailyFee())
+                .isActive(true)
+                .modifyDate(originalVo.getModifyDate())
+                .build();
         log.info("feePolicyVo : {}" , feePolicyVo);
         feePolicyDAO.insertPolicy(feePolicyVo);
     }
@@ -75,47 +89,12 @@ public class FeePolicyService {
     }
 
     // [상세 조회]
-    public FeePolicyDTO getPolicy(int policyId) {
-        if (policyId <= 0) {
-            throw new IllegalArgumentException("policyId가 올바르지 않습니다.");
-        }
+    public FeePolicyDTO getPolicy() {
+        FeePolicyVO feePolicyVO = feePolicyDAO.selectOnePolicy();
 
-        FeePolicyVO vo = feePolicyDAO.selectOnePolicy(policyId);
-        return (vo == null) ? null : toDto(vo);
+        if (feePolicyVO == null) {
+            return null; // 또는 throw new IllegalStateException("활성 정책이 없습니다.");
+        }
+        return toDto(feePolicyVO);
     }
-
-    // 정책 수정 (성공 시 1, 실패 시 0 반환하도록)
-    public int modifyPolicy(FeePolicyDTO feePolicyDTO) {
-        log.info("modifyPolicy()");
-
-        FeePolicyVO feePolicyVo = modelMapper.map(feePolicyDTO, FeePolicyVO.class); // DTO -> VO
-
-        // 수정은 policyId가 필수
-        if (feePolicyDTO.getPolicyId() <= 0) {
-            throw new IllegalArgumentException("policyId가 필요합니다.");
-        }
-
-        if (feePolicyDTO.getDefaultTime() <= 0) {
-            throw new IllegalArgumentException("defaultTime은 0보다 커야 합니다.");
-        }
-
-        if (feePolicyDTO.getDefaultFee() < 0) {
-            throw new IllegalArgumentException("defaultFee는 0 이상이어야 합니다.");
-        }
-
-        return feePolicyDAO.updatePolicy(feePolicyVo);
-    }
-
-    // 정책 삭제(물리 삭제)
-    public int removePolicy(int policyId) {
-        log.info("removePolicy() policyId: {}", policyId);
-
-        if (policyId <= 0) {
-            throw new IllegalArgumentException("policyId가 올바르지 않습니다.");
-        }
-
-        return feePolicyDAO.deletePolicy(policyId);
-    }
-
-
 }
