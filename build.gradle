@@ -49,6 +49,8 @@ dependencies {
     // Connection Pool
     // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("com.zaxxer:HikariCP:5.0.1")
+
+    implementation 'com.google.code.gson:gson:2.13.2'
 }
 
 test {
