@@ -30,17 +30,6 @@ public class ParkingOutputController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/output post...");
         String CarNum = req.getParameter("carNum");
-        ParkingDTO parkingDTO = ParkingDTO.builder()
-                .carNum(CarNum)
-                .build();
-        log.info("parkingDTO: {}", parkingDTO);
-        parkingService.modifyParking(parkingDTO);
-
-        ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                .carNum(CarNum)
-                .build();
-        log.info("parkingSpotDTO: {}", parkingSpotDTO);
-        parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
         req.setAttribute("carNum", CarNum);
         req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
