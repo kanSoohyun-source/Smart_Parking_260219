@@ -1,27 +1,28 @@
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
+<%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.example.smart_parking_260219.dao.ParkingDAO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+    /*
     class Parking {
         String id, carNum, entryTime;
-        Parking(String id, String carNum, String entryTime) {
+        Parking(String id, String carNum, LocalDateTime entryTime) {
             this.id = id;
             this.carNum = carNum;
-            this.entryTime = entryTime;
+            this.entryTime = String.valueOf(entryTime);
         }
     }
 
     Parking[] occupied = {
-            new Parking("A3", "123가 1234", "09:00"),
+            *//*new Parking("A3", "123가 1234", "09:00"),
             new Parking("A7", "345나 2334", "14:55"),
-            new Parking("A12", "567다 8765", "18:27")
+            new Parking("A12", "567다 8765", "18:27")*//*
+            // new Parking(parkingDTO.getSpaceId(), parkingDTO.getCarNum(), parkingDTO.getEntryTime())
     };
-
-
-    ParkingService dao = ParkingService.INSTANCE;
-    List<ParkingDTO> slots = dao.getAllParking();
+    */
+    List<ParkingDTO> parkingDTOList = ParkingService.INSTANCE.getAllParking();
+    System.out.println(parkingDTOList);
 %>
 
 <html>
@@ -43,13 +44,15 @@
                 String id = "A" + i;
                 String carNum = null, entryTime = null;
 
-                for (Parking p : occupied) {
-                    if (p.id.equals(id)) {
-                        carNum = p.carNum;
-                        entryTime = p.entryTime;
+                for (ParkingDTO dto : parkingDTOList) {
+                    if (id.equals(dto.getSpaceId())) {
+                        carNum = dto.getCarNum();
+                        entryTime = String.valueOf(dto.getEntryTime().toLocalTime());
                         break;
                     }
                 }
+                System.out.println(carNum);
+
         %>
         <div class="slot-item <%= carNum == null ? "empty" : "occupied" %>"
              data-id="<%= id %>"

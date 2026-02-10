@@ -4,11 +4,14 @@ import lombok.Cleanup;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.connection.DBConnection;
+import org.example.smart_parking_260219.vo.ParkingSpotVO;
 import org.example.smart_parking_260219.vo.ParkingVO;
 
 import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 public class ParkingDAOImpl implements ParkingDAO {
@@ -159,5 +162,37 @@ public class ParkingDAOImpl implements ParkingDAO {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    @Override
+    public List<ParkingVO> selectAllParking() {
+        String sql = "SELECT * FROM smart_parking_team2.parking";
+        List<ParkingVO> ParkingVOList = new ArrayList<>();
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Timestamp entryTime = resultSet.getTimestamp("entry_time");
+                Timestamp exitTime = resultSet.getTimestamp("exit_time");
+                ParkingVO parkingVO = ParkingVO.builder()
+                        .parkingId(resultSet.getInt("parking_id"))
+                        .carNum(resultSet.getString("car_num"))
+                        .memberId(resultSet.getInt("member_id"))
+                        .spaceId(resultSet.getString("space_id"))
+                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
+                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
+                        .totalTime(resultSet.getInt("total_time"))
+                        .carType(resultSet.getInt("car_type"))
+                        .paid(resultSet.getBoolean("paid"))
+                        .build();
+                log.info("parkingVO : {}", parkingVO);
+                ParkingVOList.add(parkingVO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ParkingVOList;
     }
 }

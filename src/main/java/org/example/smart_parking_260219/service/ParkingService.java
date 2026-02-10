@@ -3,9 +3,13 @@ package org.example.smart_parking_260219.service;
 import org.example.smart_parking_260219.dao.ParkingDAO;
 import org.example.smart_parking_260219.dao.ParkingDAOImpl;
 import org.example.smart_parking_260219.dto.ParkingDTO;
+import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.util.MapperUtil;
+import org.example.smart_parking_260219.vo.ParkingSpotVO;
 import org.example.smart_parking_260219.vo.ParkingVO;
 import org.modelmapper.ModelMapper;
+
+import java.util.List;
 
 public enum ParkingService {
     INSTANCE;
@@ -38,5 +42,16 @@ public enum ParkingService {
     // 프라이머리키 기준 차량 조회
     public ParkingDTO getByIdParking(int id) {
         return modelMapper.map(parkingDAO.selectParkingByParkingId(id), ParkingDTO.class);
+    }
+
+    public List<ParkingDTO> getAllParking() {
+        List<ParkingVO> parkingVOList = parkingDAO.selectAllParking();
+
+        return parkingVOList.stream()
+                .map(parkingVO -> modelMapper.map(parkingVO, ParkingDTO.class)).toList();
+    }
+
+    public ParkingDTO getParkingByCarNum(String carNum) {
+        return modelMapper.map(parkingDAO.selectParkingByCarNum(carNum), ParkingDTO.class);
     }
 }

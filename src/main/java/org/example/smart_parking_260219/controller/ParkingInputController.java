@@ -26,6 +26,9 @@ public class ParkingInputController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("/entry/entry.jsp");
+        String carNum = req.getParameter("carNum");
+
+        req.setAttribute("carNum", carNum);
 
         req.getRequestDispatcher("webapp/entry/entry.jsp").forward(req, resp);
     }
@@ -34,6 +37,7 @@ public class ParkingInputController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("/parking/input post...");
         String carNum = req.getParameter("carNum");
+        log.info(carNum);
         String spaceId = req.getParameter("spaceId");
         MemberDTO memberDTO = null;
         try {
@@ -56,6 +60,8 @@ public class ParkingInputController extends HttpServlet {
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
+
+
 
         resp.sendRedirect("/dashboard/dashboard.jsp");
     }
