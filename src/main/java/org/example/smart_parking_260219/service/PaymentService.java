@@ -22,10 +22,15 @@ import java.util.List;
 public enum PaymentService {
     INSTANCE;
 
-    private final PaymentDAO paymentDAO = new PaymentDAO();
-    private final ModelMapper modelMapper = MapperUtil.INSTANCE.getInstance();
+    private final PaymentDAO paymentDAO;
+    private final ModelMapper modelMapper;
     private final ParkingDAO parkingDAO = new ParkingDAOImpl();
     private final FeePolicyDAO feePolicyDAO = new FeePolicyDAO();
+
+    PaymentService() {
+        paymentDAO = new PaymentDAO();
+        modelMapper = MapperUtil.INSTANCE.getInstance();
+    }
 
     // 결제 등록
     // 사용자가 결제한 내역을 등록하고, 주차 상태를 '정산 완료'로 변경
@@ -42,7 +47,7 @@ public enum PaymentService {
         int parkingId = parkingVO.getParkingId();
 
         // 2-1. 요금 계산
-        int calculatedFee = calculateFeeLogic(parkingDTO, paymentDTO.getPolicyId());
+        int calculatedFee = calculateFeeLogic(parkingDTO);
 
         // 2-2. 할인 금액 계산 (이미 위에서 가져온 parkingVO 사용)
         int discountAmount = calculateDiscountLogic(calculatedFee,
@@ -92,12 +97,12 @@ public enum PaymentService {
 
     // 요금 계산
     // 주차 시간과 요금 정책을 기반으로 '할인 전 총 요금(calculatedFee)'을 계산
-    private int calculateFeeLogic(ParkingDTO parkingDTO, int policyId) {
+    private int calculateFeeLogic(ParkingDTO parkingDTO) {
         log.info("calculateFeeLogic - parkingId: " + parkingDTO.getParkingId());
 
         // 1. DB에서 데이터 조회 (DAO가 구현되어 있다고 가정)
         ParkingVO parkingVO = parkingDAO.selectParkingByParkingId(parkingDTO.getParkingId());
-        FeePolicyVO policyVO = feePolicyDAO.selectOnePolicy(policyId);
+        FeePolicyVO policyVO = feePolicyDAO.selectOnePolicy();
 
         // 정책 데이터 (DB fee_policy 테이블 기준)
         int gracePeriod = policyVO.getGracePeriod();   // 무료 회차 (10분)
