@@ -54,15 +54,12 @@ public class ParkingDAOImpl implements ParkingDAO {
             preparedStatement.setString(1, last4);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Timestamp entryTime = resultSet.getTimestamp("entry_time");
-                Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
                         .parkingId(resultSet.getInt("parking_id"))
                         .memberId(resultSet.getInt("member_id"))
                         .carNum(resultSet.getString("car_num"))
                         .spaceId(resultSet.getString("space_id"))
-                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
-                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
+                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
                         .totalTime(resultSet.getInt("total_time"))
                         .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
@@ -85,16 +82,12 @@ public class ParkingDAOImpl implements ParkingDAO {
             preparedStatement.setString(1, carNum);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Timestamp entryTime = resultSet.getTimestamp("entry_time");
-                Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
                         .parkingId(resultSet.getInt("parking_id"))
                         .carNum(resultSet.getString("car_num"))
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
-                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
-                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
-                        .totalTime(resultSet.getInt("total_time"))
+                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
                         .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
                         .build();
@@ -142,16 +135,12 @@ public class ParkingDAOImpl implements ParkingDAO {
             preparedStatement.setInt(1, parkingId);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Timestamp entryTime = resultSet.getTimestamp("entry_time");
-                Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
                         .parkingId(resultSet.getInt("parking_id"))
                         .carNum(resultSet.getString("car_num"))
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
-                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
-                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
-                        .totalTime(resultSet.getInt("total_time"))
+                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
                         .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
                         .build();
@@ -174,16 +163,12 @@ public class ParkingDAOImpl implements ParkingDAO {
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Timestamp entryTime = resultSet.getTimestamp("entry_time");
-                Timestamp exitTime = resultSet.getTimestamp("exit_time");
                 ParkingVO parkingVO = ParkingVO.builder()
                         .parkingId(resultSet.getInt("parking_id"))
                         .carNum(resultSet.getString("car_num"))
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
-                        .entryTime(entryTime != null ? entryTime.toLocalDateTime() : null)
-                        .exitTime(exitTime != null ? exitTime.toLocalDateTime() : null)
-                        .totalTime(resultSet.getInt("total_time"))
+                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
                         .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
                         .build();
