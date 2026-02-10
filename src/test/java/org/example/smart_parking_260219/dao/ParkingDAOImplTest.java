@@ -44,4 +44,13 @@ class ParkingDAOImplTest {
                 .build();
         parkingDAO.updateParking(parkingVO);
     }
+
+    @Test
+    public void selectParkingByIdTest() {
+        int id = 1;
+
+        ParkingVO parkingVO = parkingDAO.selectParkingByParkingId(id);
+        Assertions.assertNotNull(parkingVO);
+        log.info("parking: {}", parkingVO);
+    }
 }

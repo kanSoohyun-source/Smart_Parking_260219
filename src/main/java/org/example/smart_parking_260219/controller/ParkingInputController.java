@@ -6,18 +6,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.dto.ParkingDTO;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;
+import org.example.smart_parking_260219.service.MemberService;
 import org.example.smart_parking_260219.service.ParkingService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(name = "parkingInputController", value = "/parking/input")
 @Log4j2
-public class parkingInputController extends HttpServlet {
+public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
+    private final MemberService memberService = MemberService.Instance;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,9 +34,13 @@ public class parkingInputController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("/parking/input post...");
         String carNum = req.getParameter("carNum");
-        String memberId = req.getParameter("memberId");
         String spaceId = req.getParameter("spaceId");
-        String carType = req.getParameter("carType");
+        MemberDTO memberDTO = null;
+        try {
+            memberDTO = memberService.getOneMember(carNum);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
                 .carNum(carNum)
                 .spaceId(spaceId)
@@ -41,14 +49,14 @@ public class parkingInputController extends HttpServlet {
         parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
 
         ParkingDTO parkingDTO = ParkingDTO.builder()
-                .memberId(Integer.parseInt(memberId))
+                .memberId(memberDTO.getMemberId())
                 .carNum(carNum)
                 .spaceId(spaceId)
-                .carType(Integer.parseInt(carType))
+                .carType(memberDTO.getCarType())
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
 
-        resp.sendRedirect("webapp/dashboard/dashboard.jsp");
+        resp.sendRedirect("/dashboard/dashboard.jsp");
     }
 }

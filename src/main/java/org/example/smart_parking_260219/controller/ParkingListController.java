@@ -10,11 +10,10 @@ import org.example.smart_parking_260219.dto.ParkingDTO;
 import org.example.smart_parking_260219.service.ParkingService;
 
 import java.io.IOException;
-import java.util.List;
 
 @Log4j2
 @WebServlet(name = "parkingGetController", value = "/parking/get")
-public class parkingListController extends HttpServlet {
+public class ParkingListController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
 
     @Override

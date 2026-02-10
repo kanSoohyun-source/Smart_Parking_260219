@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @WebServlet(name = "parkingOutputController", value = "/parking/output")
 @Log4j2
-public class parkingOutputController extends HttpServlet {
+public class ParkingOutputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
@@ -23,11 +23,11 @@ public class parkingOutputController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("/exit/exit.jsp");
 
-        req.getRequestDispatcher("webapp/exit/exit.jsp").forward(req, resp);
+        req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/output post...");
         String CarNum = req.getParameter("carNum");
         ParkingDTO parkingDTO = ParkingDTO.builder()
@@ -42,7 +42,8 @@ public class parkingOutputController extends HttpServlet {
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
-        resp.sendRedirect("webapp/payment/payment.jsp");
+        req.setAttribute("carNum", CarNum);
+        req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
     }
 }
 
