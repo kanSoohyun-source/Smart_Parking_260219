@@ -23,11 +23,11 @@ public class ParkingOutputController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("/exit/exit.jsp");
 
-        req.getRequestDispatcher("webapp/exit/exit.jsp").forward(req, resp);
+        req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/output post...");
         String CarNum = req.getParameter("carNum");
         ParkingDTO parkingDTO = ParkingDTO.builder()
@@ -42,7 +42,8 @@ public class ParkingOutputController extends HttpServlet {
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
-        resp.sendRedirect("/payment/payment.jsp");
+        req.setAttribute("carNum", CarNum);
+        req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
     }
 }
 
