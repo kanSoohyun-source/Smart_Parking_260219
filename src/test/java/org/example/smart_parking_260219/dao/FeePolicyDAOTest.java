@@ -40,41 +40,13 @@ class FeePolicyDAOTest {
 
     @Test
     void selectOnePolicy() {
-        int policyId = 4;
 
-        FeePolicyVO vo = feePolicyDAO.selectOnePolicy(policyId);
+        FeePolicyVO vo = feePolicyDAO.selectOnePolicy();
+
         log.info("조회 결과: {}", vo);
 
+        assertNotNull(vo);          // 활성 정책은 반드시 1개 존재
+        assertTrue(vo.isActive());  // active = true 확인
     }
-
-
-    @Test
-    public void updatePolicyTest() {
-        FeePolicyVO feePolicyVo = FeePolicyVO.builder()
-                .policyId(1) // ★ 실제 DB에 존재하는 ID로
-                .gracePeriod(5)
-                .defaultTime(30)
-                .defaultFee(3000)
-                .extraTime(10)
-                .extraFee(500)
-                .lightDiscount(0.2)
-                .disabledDiscount(0.5)
-                .subscribedFee(120000)
-                .maxDailyFee(20000)
-                .isActive(true)
-                .build();
-
-        int updated = feePolicyDAO.updatePolicy(feePolicyVo);
-        assertEquals(1, updated);
-    }
-
-    @Test
-    public void deletePolicyTest() {
-        int result = feePolicyDAO.deletePolicy(1);
-        assertEquals(1, result);
-    }
-
-
-
 }
 

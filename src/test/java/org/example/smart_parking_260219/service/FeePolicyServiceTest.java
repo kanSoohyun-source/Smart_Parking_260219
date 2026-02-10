@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @Log4j2
 class FeePolicyServiceTest {
@@ -42,39 +44,11 @@ class FeePolicyServiceTest {
 
     @Test
     public void getPolicy() {
-        int policyId = 4;
+        FeePolicyDTO feePolicyDTO = feePolicyService.getPolicy();
 
-        FeePolicyDTO dto = feePolicyService.getPolicy(policyId);
-        log.info("정책 상세 조회 결과: {}", dto);
-    }
+        log.info("정책 상세 조회 결과: {}", feePolicyDTO);
 
-    @Test
-    public void modifyPolicy() {
-
-        FeePolicyDTO dto = FeePolicyDTO.builder()
-                .policyId(4)
-                .gracePeriod(10)
-                .defaultTime(20)
-                .defaultFee(3000)
-                .extraTime(10)
-                .extraFee(500)
-                .lightDiscount(0.2)
-                .disabledDiscount(0.4)
-                .subscribedFee(120000)
-                .maxDailyFee(20000)
-                .isActive(true)
-                .build();
-
-        int result = feePolicyService.modifyPolicy(dto);
-        log.info("정책 수정 결과(result=1이면 성공): {}", result);
-    }
-
-    @Test
-    public void removePolicy() {
-        int policyId = 3;
-
-        int result = feePolicyService.removePolicy(policyId);
-        log.info("정책 삭제 결과(result=1이면 성공): {}", result);
+        assertNotNull(feePolicyDTO);   // 활성 정책이 반드시 1개 존재해야 함
     }
 
 
