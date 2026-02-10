@@ -30,12 +30,12 @@ class MemberDAOTest {
 
     @Test
     public void memberDummy() throws SQLException {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             MemberVO memberVO = MemberVO.builder()
-                    .carNum("111" + i)
+                    .carNum("333" + i)
                     .carType(1)
-                    .name("이름" + i)
-                    .phone("111-2222-333" + i)
+                    .name("이름10" + i)
+                    .phone("123-1234-123" + i)
                     .createDate(LocalDateTime.now())
                     .subscribed(false)
                     .build();

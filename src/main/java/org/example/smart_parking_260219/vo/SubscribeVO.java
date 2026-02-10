@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @ToString
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SubscribeVO {
     private int subscriptionId;  // 월정액 이력 고유 ID
-    private int memberId;  // 구독한 회원 ID (FK)
+    private String carNum;  // 차량 번호 (FK)
     private LocalDate startDate;  // 월정액 시작일
     private LocalDate endDate;  // 월정액 종료일
     private boolean status;  // 월정액 유효 여부 (default true)
