@@ -8,7 +8,7 @@
         <li><a href="../member/add_member.jsp">회원 등록</a></li>
         <li><a href="../member/member_list.jsp">회원 목록</a></li>
         <li><a href="../member/member_search.jsp">회원 조회</a></li>
-        <li><a href="../pricing/pricing.jsp">요금 부과 정책</a></li>
+        <li><a href="/policy/list">요금 부과 정책</a></li>
         <li><a href="../statistics/statistics.jsp">매출 통계</a></li>
         <li><a href="../logout/logout.jsp" onclick="confirmLogout_01();">관리자 추가</a></li>
         <li><a href="../logout/logout.jsp" onclick="confirmLogout();">로그아웃</a></li>

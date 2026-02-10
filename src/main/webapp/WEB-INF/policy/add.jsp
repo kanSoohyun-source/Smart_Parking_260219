@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>요금 부과 정책</title>
-    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="/CSS/style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -20,7 +20,6 @@
         <div class="col-md-8">
             <!-- 요금 정책 저장 폼 -->
             <form name="frmFeePolicy" action="/policy/add" method="post" class="form-horizontal">
-
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">무료 회차(분)</label>
                     <div class="col-sm-6">
@@ -59,7 +58,7 @@
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">월정액(원)</label>
                     <div class="col-sm-6">
-                        <input type="number" name="subscribedFee" class="form-control" value="100000" min="0"
+                        <input type="number" name="subscribedFee" class="form-control" value="15000" min="0"
                                required>
                     </div>
                 </div>
@@ -76,7 +75,7 @@
                     <div class="col-sm-6">
                         <input type="number" name="lightDiscount" class="form-control" value="30" min="0" max="100"
                                step="1" required>
-                        <small class="form-text text-muted">예: 30 = 30% 할인</small>
+                        <small class="form-text text-muted">예: 30% 할인</small>
                     </div>
                 </div>
 
@@ -85,7 +84,7 @@
                     <div class="col-sm-6">
                         <input type="number" name="disabledDiscount" class="form-control" value="50" min="0"
                                max="100" step="1" required>
-                        <small class="form-text text-muted">예: 50 = 50% 할인</small>
+                        <small class="form-text text-muted">예: 50% 할인</small>
                     </div>
                 </div>
 
