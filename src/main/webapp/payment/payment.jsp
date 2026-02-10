@@ -1,4 +1,5 @@
-<%--
+<%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
+<%@ page import="org.example.smart_parking_260219.service.ParkingService" %><%--
   Created by IntelliJ IDEA.
   User: PC
   Date: 26. 1. 28.
@@ -14,21 +15,25 @@
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
+<%
+    String carNum = (String) request.getAttribute("carNum");
+    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
+%>
 <div class="main-content">
   <!-- Content -->
     <div id="register" class="page">
         <h2>정산</h2>
         <div class="form-group">
             <label>차량 번호</label>
-            <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8">
+            <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" value="<%=parkingDTO.getCarNum()%>">
         </div>
         <div class="form-group">
             <label>총 주차 시간</label>
-            <input type="text" id="totalParkingTime" placeholder="총 주차 시간">
+            <input type="text" id="totalParkingTime" placeholder="총 주차 시간" value="<%=parkingDTO.getTotalTime()%>">
         </div>
         <div class="form-group">
             <label>차종(할인울)</label>
-            <input type="text" id="carType" placeholder="차종(할인울)">
+            <input type="text" id="carType" placeholder="차종(할인울)" value="<%=parkingDTO.getCarType()%>">
         </div>
         <div class="form-group">
             <label>총 주차 요금</label>
