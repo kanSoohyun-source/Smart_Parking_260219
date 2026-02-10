@@ -10,4 +10,5 @@ public interface ParkingSpotDAO {
     void updateInputParkingSpot(ParkingSpotVO parkingSpotVO);           // 주차 공간 입차 갱신
     void updateOutputParkingSpot(ParkingSpotVO parkingSpotVO);          // 주차 공간 출차 갱신
     List<ParkingSpotVO> selectEmptyParkingSpot();                   // 빈 주차 공간 찾기
+    ParkingSpotVO selectParkingSpotBySpaceId(String spaceId);
 }

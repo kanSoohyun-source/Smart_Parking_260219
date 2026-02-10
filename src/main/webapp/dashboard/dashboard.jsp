@@ -2,27 +2,12 @@
 <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.example.smart_parking_260219.dto.ParkingSpotDTO" %>
+<%@ page import="org.example.smart_parking_260219.service.ParkingSpotService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    /*
-    class Parking {
-        String id, carNum, entryTime;
-        Parking(String id, String carNum, LocalDateTime entryTime) {
-            this.id = id;
-            this.carNum = carNum;
-            this.entryTime = String.valueOf(entryTime);
-        }
-    }
+    List<ParkingSpotDTO> parkingSpotDTOList = ParkingSpotService.INSTANCE.getAllParkingSpot();
 
-    Parking[] occupied = {
-            *//*new Parking("A3", "123가 1234", "09:00"),
-            new Parking("A7", "345나 2334", "14:55"),
-            new Parking("A12", "567다 8765", "18:27")*//*
-            // new Parking(parkingDTO.getSpaceId(), parkingDTO.getCarNum(), parkingDTO.getEntryTime())
-    };
-    */
-    List<ParkingDTO> parkingDTOList = ParkingService.INSTANCE.getAllParking();
-    System.out.println(parkingDTOList);
 %>
 
 <html>
@@ -42,29 +27,27 @@
         <%
             for (int i = 1; i <= 20; i++) {
                 String id = "A" + i;
-                String carNum = null, entryTime = null;
+                String carNum = null;
+                Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
 
-                for (ParkingDTO dto : parkingDTOList) {
+                for (ParkingSpotDTO dto : parkingSpotDTOList) {
                     if (id.equals(dto.getSpaceId())) {
                         carNum = dto.getCarNum();
-                        entryTime = String.valueOf(dto.getEntryTime().toLocalTime());
                         break;
                     }
-                }
-                System.out.println(carNum);
-
+                };
         %>
-        <div class="slot-item <%= carNum == null ? "empty" : "occupied" %>"
+        <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
              data-id="<%= id %>"
-             data-empty="<%= carNum == null %>">
+             data-empty="<%= (!result) %>">
 
             <div class="slot-title"><%= id %></div>
 
-            <% if (carNum == null) { %>
+            <% if (!result) { %>
             <div class="slot-status">공차</div>
             <% } else { %>
             <div class="slot-status"><%= carNum %></div>
-            <div class="slot-time"><%= entryTime %> 입차</div>
+            <div class="slot-time"><%=LocalDateTime.now().toLocalTime().withNano(0)%> 입차</div>
             <% } %>
         </div>
         <% } %>
