@@ -1,37 +1,40 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String carNum = request.getParameter("regCarNum");
+    // (1:카드, 2:현금, 3:월정액)
+%>
 <html>
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/payment_style.css">
 </head>
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
-<form class="main-content">
-  <!-- Content -->
-    <div id="register" class="page">
+<div class="container main-content">
+    <div id="register" class="page mt-5">
         <h2>정산</h2>
-        <form name="payment" action="/payment/payment.jsp" method="post">
+        <form name="payment" action="../payment/payment" method="post">
             <div class="form-group">
                 <label>차량 번호</label>
-                <input type="text" id="CarNum" placeholder="차량번호 8자리" maxlength="8">
+                <input type="text" name="carNum" id="CarNum" class="form-control"
+                       placeholder="차량번호 8자리" maxlength="8" value="<%=carNum%>">
             </div>
             <div class="form-group">
-                <label>총 주차 시간</label>
-                <input type="text" id="totalTime" placeholder="총 주차 시간">
+                <label>결제 타입</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="paymentType" value="1" checked>카드</label>
+                    <label class="radio-item"><input type="radio" name="paymentType" value="2">현금</label>
+                    <label class="radio-item"><input type="radio" name="paymentType" value="3">월정액</label>
+                </div>
             </div>
-            <div class="form-group">
-                <label>차종(할인울)</label>
-                <input type="text" id="carType" placeholder="차종(할인울)">
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">확인</button>
             </div>
-            <div class="form-group">
-                <label>총 주차 요금</label>
-                <input type="text" id="totalFee" placeholder="총 주차 요금">
-            </div>
-            <button onclick="registerMember()">결제</button>
         </form>
     </div>
-</form>
+</div>
     <script src="../JS/menu.js"></script>
     <script src="../JS/function.js"></script>
 </body>

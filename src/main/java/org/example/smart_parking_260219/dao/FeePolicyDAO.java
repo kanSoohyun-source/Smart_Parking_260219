@@ -115,8 +115,6 @@ public class FeePolicyDAO {
                     .isActive(resultSet.getBoolean("is_active"))
                     .modifyDate(ts != null ? ts.toLocalDateTime() : null)
                     .build();
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

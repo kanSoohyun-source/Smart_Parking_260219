@@ -1,0 +1,25 @@
+/* 전체 그룹을 가로로 나열 */
+.radio-group {
+    display: flex;
+    flex-direction: row; /* 가로 방향 고정 */
+    gap: 25px;           /* 항목 간의 충분한 간격 */
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* 라디오 버튼 + 글자 한 세트 */
+.radio-item {
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* 글자가 절대 줄바꿈되지 않게 고정 */
+    cursor: pointer;
+    font-weight: normal;
+}
+
+/* 동그라미 버튼과 글자 사이 간격 */
+.radio-item input {
+    margin-right: 8px;
+    width: 18px;  /* 버튼 크기 살짝 조절 */
+    height: 18px;
+    cursor: pointer;
+}
