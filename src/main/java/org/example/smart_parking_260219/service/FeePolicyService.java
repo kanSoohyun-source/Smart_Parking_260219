@@ -97,4 +97,25 @@ public class FeePolicyService {
         }
         return toDto(feePolicyVO);
     }
+
+    public FeePolicyDTO getPolicyById(int policyId) throws Exception {
+        // DAO를 통해 DB에서 해당 ID의 정책 데이터를 조회해 옵니다.
+        // 예: return feePolicyDAO.selectOne(id);
+
+        // 현재는 전체 리스트에서 필터링하는 예시입니다.
+        return getPolicyList().stream()
+                .filter(policy -> policy.getPolicyId() == policyId)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void applyPolicy(int id) throws Exception {
+        // 1. 현재 활성화된 모든 정책을 꺼버림 (작성하신 메서드 호출)
+        feePolicyDAO.deactivateAllPolicies();
+
+        // 2. 선택한 특정 ID의 정책만 켬 (새로 추가한 메서드 호출)
+        feePolicyDAO.activatePolicy(id);
+
+        log.info(id + "번 요금 정책이 현재 정책으로 적용되었습니다.");
+    }
 }

@@ -134,5 +134,21 @@ public class FeePolicyDAO {
             throw new RuntimeException(e);
         }
     }
+
+    // 특정 ID의 정책을 활성화(true)로 변경하는 메서드
+    public int activatePolicy(int id) {
+        String sql = "UPDATE fee_policy SET is_active = true WHERE policy_id = ?";
+
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            return preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            log.error("정책 활성화 중 오류 발생 (ID: " + id + ")", e);
+            throw new RuntimeException(e);
+        }
+    }
 }
 

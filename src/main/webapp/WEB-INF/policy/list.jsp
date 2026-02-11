@@ -76,10 +76,11 @@
                         <% if (dto.isActive()) { %>
                         <span class="badge badge-success">적용중</span>
                         <% } else { %>
-                        <span class="badge badge-secondary">이전정책</span>
+                        <span class="badge badge-secondary">미적용</span>
                         <% } %>
                     </td>
-                    <td><%= dto.getDefaultTime() %>분 / <%= dto.getDefaultFee() %>원</td>
+                    <td><a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultTime() %>분</a>
+                        /<a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultFee() %>원</a></td>
                     <td><%= dto.getExtraTime() %>분 / <%= dto.getExtraFee() %>원</td>
                     <td><%= dto.getGracePeriod() %>분</td>
                     <td><%= dto.getLightDiscount()%>%</td>

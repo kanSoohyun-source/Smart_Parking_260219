@@ -11,77 +11,94 @@
     <title>요금 부과 정책</title>
     <link rel="stylesheet" href="/CSS/style.css">
 </head>
+<style>
+    /* 입력창의 최대 길이를 제한 */
+    .form-control {
+        max-width: 450px;
+    }
+
+    /* 라벨과 입력창 사이 간격 조정 */
+    .col-form-label {
+        font-weight: bold;
+        padding-right: 15px !important;
+    }
+
+</style>
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <div class="main-content">
     <!-- Content -->
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 mx-auto px-5 form-container">
             <!-- 요금 정책 저장 폼 -->
             <form name="frmFeePolicy" action="/policy/add" method="post" class="form-horizontal">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">무료 회차(분)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="gracePeriod" class="form-control" value="10" min="0" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">무료 회차(분)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="gracePeriod" class="form-control" value="10" min="0"
+                               required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">기본 시간(분)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="defaultTime" class="form-control" value="30" min="1" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">기본 시간(분)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="defaultTime" class="form-control" value="30" min="1"
+                               required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">기본 요금(원)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="defaultFee" class="form-control" value="2000" min="0" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">기본 요금(원)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="defaultFee" class="form-control" value="2000" min="0"
+                               required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">추가 시간(분)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="extraTime" class="form-control" value="10" min="1" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">추가 시간(분)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="extraTime" class="form-control" value="30" min="1" required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">추가 요금(원)</label>
-                    <div class="col-sm-6">
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">추가 요금(원)</label>
+                    <div class="col-sm-7">
                         <input type="number" name="extraFee" class="form-control" value="1000" min="0" required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">월정액(원)</label>
-                    <div class="col-sm-6">
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">월정액(원)</label>
+                    <div class="col-sm-7">
                         <input type="number" name="subscribedFee" class="form-control" value="15000" min="0"
                                required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">일일 최대(원)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="maxDailyFee" class="form-control" value="50000" min="0" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">일일 최대(원)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="maxDailyFee" class="form-control" value="50000" min="0"
+                               required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">경차 할인율(0~100)</label>
-                    <div class="col-sm-6">
-                        <input type="number" name="lightDiscount" class="form-control" value="30" min="0" max="100"
-                               step="1" required>
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">경차 할인율(0~100)</label>
+                    <div class="col-sm-7">
+                        <input type="number" name="lightDiscount" class="form-control" value="30" min="0"
+                               max="100" step="1" required>
                         <small class="form-text text-muted">예: 30% 할인</small>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">장애인 할인율(0~100)</label>
-                    <div class="col-sm-6">
+                <div class="form-group row mb-3">
+                    <label class="col-sm-5 col-form-label">장애인 할인율(0~100)</label>
+                    <div class="col-sm-7">
                         <input type="number" name="disabledDiscount" class="form-control" value="50" min="0"
                                max="100" step="1" required>
                         <small class="form-text text-muted">예: 50% 할인</small>
@@ -91,9 +108,17 @@
                 <!-- 새 정책은 활성으로 저장 -->
                 <input type="hidden" name="isActive" value="true">
 
-                <div class="form-group row">
-                    <div class="col-sm-offset-3 col-sm-9">
-                        <button type="submit" onclick="registerMember()">저장</button>
+                <%--                        <div class="form-group row">--%>
+                <%--                            <div class="col-sm-offset-3 col-sm-9">--%>
+                <%--                                <button type="submit" onclick="registerMember()">저장</button>--%>
+                <%--                            </div>--%>
+                <%--                        </div>--%>
+                <div class="form-group row mt-4">
+                    <div class="col-sm-12 text-center">
+                        <button type="submit" class="btn btn-primary px-4" onclick="registerMember()">저장</button>
+                        <button type="button" class="btn btn-danger px-4 ml-2"
+                                onclick="location.href='/policy/list'">취소
+                        </button>
                     </div>
                 </div>
             </form>
@@ -104,3 +129,4 @@
 <script src="../JS/menu.js"></script>
 </body>
 </html>
+
