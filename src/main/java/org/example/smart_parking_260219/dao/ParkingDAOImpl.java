@@ -109,8 +109,8 @@ public class ParkingDAOImpl implements ParkingDAO {
 
     // 출차 확인
     @Override
-    public void updateParking(ParkingVO parkingVO) {
-        LocalDateTime entry = selectParkingByCarNum(parkingVO.getCarNum()).getEntryTime();
+    public void updateParking(String carNum) {
+        LocalDateTime entry = selectParkingByCarNum(carNum).getEntryTime();
         if (entry == null) {
             log.error("entry is null");
             return;
@@ -125,7 +125,7 @@ public class ParkingDAOImpl implements ParkingDAO {
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(exit));
             preparedStatement.setLong(2, totalMinutes);
-            preparedStatement.setString(3, parkingVO.getCarNum());
+            preparedStatement.setString(3,carNum);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

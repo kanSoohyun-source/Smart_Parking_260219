@@ -43,4 +43,25 @@ public enum ManagerService {
         ManagerVO memberVo = modelMapper.map(managerDTO, ManagerVO.class);
         managerDAO.insertManager(memberVo);
     }
+
+    /*
+    // 비번 수정
+    public void modifyManager(ManagerDTO managerDTO) {
+        // 1. 먼저 DB에서 기존 정보를 VO로 가져옴 (수정 안 할 필드 유지를 위해)
+        ManagerVO existingVO = managerDAO.selectOne(managerDTO.getManagerId());
+
+        // 2. DTO에 새 비밀번호가 입력되어 있다면 암호화해서 교체
+        if (managerDTO.getPassword() != null && !managerDTO.getPassword().trim().isEmpty()) {
+            String encodedPw = managerDAO.passEncode(managerDTO.getPassword());
+            existingVO.setPassword(encodedPw);
+        }
+
+        // 3. 이름, 이메일 등 다른 정보는 DTO에서 VO로 복사
+        existingVO.setManagerName(managerDTO.getManagerName());
+        existingVO.setEmail(managerDTO.getEmail());
+
+        // 4. DAO에게 VO 전달 (DB 작업은 여기서만 VO 사용)
+        managerDAO.updateManager(existingVO);
+    }
+     */
 }

@@ -41,7 +41,7 @@
             <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
             <div id="adminSubMenu" class="dropdown-content">
                 <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
-                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>
+                <a href="${pageContext.request.contextPath}/mgr/modify">관리자 수정</a>
             </div>
         </li>
 

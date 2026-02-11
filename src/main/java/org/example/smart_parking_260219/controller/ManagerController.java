@@ -63,7 +63,7 @@ public class ManagerController extends HttpServlet {
             /* 수정 */
             case "/view":
                 log.info("관리자 수정 페이지 처리");
-                request.getRequestDispatcher("/WEB-INF/views/mgr_view.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/mgr_modify.jsp").forward(request, response);
                 break;
 
             /* 정의되지 않은 경로는 404 에러 */

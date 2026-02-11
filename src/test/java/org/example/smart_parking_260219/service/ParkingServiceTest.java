@@ -33,7 +33,7 @@ class ParkingServiceTest {
         ParkingDTO parkingDTO = ParkingDTO.builder()
                 .carNum(num)
                 .build();
-        parkingService.modifyParking(parkingDTO);
+        parkingService.modifyParking(parkingDTO.getCarNum());
     }
 
     @Test

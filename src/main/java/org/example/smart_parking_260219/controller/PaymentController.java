@@ -47,13 +47,15 @@ public class PaymentController extends HttpServlet {
                 .calculatedFee(calculatedFee)
                 .discountAmount(discountAmount)
                 .finalFee(finalFee).build();
-
+        log.info("/payment post paymentDTO: " + paymentDTO);
         try {
+            parkingService.modifyParking(carNum);
             paymentService.addPayment(paymentDTO);
+            log.info("/payment success...");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
+        log.info("/payment post starting...");
         resp.sendRedirect("/dashboard/dashboard.jsp");
     }
 }

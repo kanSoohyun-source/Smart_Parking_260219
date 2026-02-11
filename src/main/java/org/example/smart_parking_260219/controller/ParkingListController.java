@@ -34,7 +34,7 @@ public class ParkingListController extends HttpServlet {
                 .carNum(carNum)
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
-        parkingService.modifyParking(parkingDTO);
+        parkingService.modifyParking(parkingDTO.getCarNum());
 
         ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
                 .carNum(carNum)

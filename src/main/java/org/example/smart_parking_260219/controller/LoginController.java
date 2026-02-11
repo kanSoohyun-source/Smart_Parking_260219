@@ -74,14 +74,14 @@ public class LoginController extends HttpServlet {
                 return;
             }
 
-            // 비밀번호 검증 (암호화된 비밀번호와 비교)
-            String encodedPassword = managerDAO.passEncode(password);
-            if (!manager.getPassword().equals(encodedPassword)) {
-                log.warn("비밀번호 불일치 - ID: {}", managerId);
-                request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
-                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
-                return;
-            }
+//            // 비밀번호 검증 (암호화된 비밀번호와 비교)
+//            String encodedPassword = managerDAO.passEncode(password);
+//            if (!manager.getPassword().equals(encodedPassword)) {
+//                log.warn("비밀번호 불일치 - ID: {}", managerId);
+//                request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+//                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+//                return;
+//            }
 
             // 로그인 성공 - 세션 생성
             HttpSession session = request.getSession();

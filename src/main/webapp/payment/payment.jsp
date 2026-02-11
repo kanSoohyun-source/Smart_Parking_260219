@@ -1,5 +1,4 @@
 <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
-<%@ page import="org.example.smart_parking_260219.dto.PaymentDTO" %>
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.service.PaymentService" %>
 <%@ page import="org.example.smart_parking_260219.util.MapperUtil" %>
@@ -22,6 +21,11 @@
 
     if(carNum != null && !carNum.isEmpty() && !"null".equals(carNum)) {
         parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
+        // DB에서 차량을 못 찾았을 경우의 처리
+        if (parkingDTO == null) {
+            out.println("<script>alert('현재 주차 중인 차량이 아닙니다.'); location.href='../dashboard/dashboard.jsp';</script>");
+            return;
+        }
         calculatedFee = PaymentService.INSTANCE.calculateFeeLogic(parkingDTO);
         discountAmount = PaymentService.INSTANCE.calculateDiscountLogic(calculatedFee, parkingDTO.getCarType(),
                 MapperUtil.INSTANCE.getInstance().map(FeePolicyService.getInstance().getPolicy(), FeePolicyVO.class));
@@ -57,6 +61,10 @@
                     <label class="radio-item"><input type="radio" name="paymentType" value="2">현금</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="3">월정액</label>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>총 주차 시간</label>
+                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=parkingDTO.getTotalTime()%>분">
             </div>
             <div class="form-group">
                 <label>할인 전 요금</label>

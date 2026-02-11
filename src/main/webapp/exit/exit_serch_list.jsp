@@ -59,7 +59,7 @@
             </div>
             <div class="form-group">
                 <label>입차 시간</label>
-                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime().toLocalDate()%>">
+                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
             </div>
             <button onclick="registerMember()">정산</button>
 

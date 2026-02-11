@@ -50,15 +50,6 @@ public class PaymentDAO {
             preparedStatement.setInt(5, vo.getDiscountAmount());
             preparedStatement.setInt(6, vo.getFinalFee());
             preparedStatement.executeUpdate();
-
-            // 주차 상태 업데이트
-            String updateParkingSql = "UPDATE parking SET paid = TRUE, exit_time = NOW() WHERE parking_id = ?";
-
-            preparedStatement = connection.prepareStatement(updateParkingSql);
-            preparedStatement.setInt(1, vo.getParkingId());
-            preparedStatement.executeUpdate();
-
-            log.info("결제 및 출차 처리 완료");
         } catch (SQLException e) {
             throw new RuntimeException();
         }

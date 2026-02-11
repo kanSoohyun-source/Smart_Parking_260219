@@ -34,9 +34,8 @@ public enum ParkingService {
     }
 
     // 출차된 시간
-    public void modifyParking(ParkingDTO parkingDTO) {
-        ParkingVO parkingVO = modelMapper.map(parkingDTO, ParkingVO.class);
-        parkingDAO.updateParking(parkingVO);
+    public void modifyParking(String carNum) {
+        parkingDAO.updateParking(carNum);
     }
 
     // 프라이머리키 기준 차량 조회

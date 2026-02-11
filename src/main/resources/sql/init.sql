@@ -31,15 +31,15 @@ CREATE TABLE IF NOT EXISTS `manager`
 CREATE TABLE IF NOT EXISTS `subscribe`
 (
     `subscription_id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '월정액 이력 고유 ID',
-    `member_id`       INT     NOT NULL COMMENT '구독한 회원 ID (FK)',
-    `start_date`      DATE    NOT NULL COMMENT '월정액 시작일',
-    `end_date`        DATE    NOT NULL COMMENT '월정액 종료일',
-    `status`          BOOLEAN NOT NULL DEFAULT TRUE COMMENT '월정액 유효 여부',
-    `payment_amount`  INT     NOT NULL COMMENT '결제 금액',
-    `last_update`     DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '결제일',
+    `car_num`         VARCHAR(20) NOT NULL COMMENT '차량 번호 (FK)',
+    `start_date`      DATE        NOT NULL COMMENT '월정액 시작일',
+    `end_date`        DATE        NOT NULL COMMENT '월정액 종료일',
+    `status`          BOOLEAN     NOT NULL DEFAULT TRUE COMMENT '월정액 유효 여부',
+    `payment_amount`  INT         NOT NULL COMMENT '결제 금액',
+    `last_update`     DATETIME             DEFAULT CURRENT_TIMESTAMP COMMENT '결제일',
 
-    CONSTRAINT `fk_subscribe_member` FOREIGN KEY (`member_id`)
-        REFERENCES `member` (`member_id`) ON DELETE CASCADE
+    CONSTRAINT `fk_subscribe_member` FOREIGN KEY (`car_num`)
+        REFERENCES `member` (`car_num`) ON DELETE CASCADE
 );
 
 # parking_spot : 주차 공간 상태 테이블 [완료]
