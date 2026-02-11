@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.service.ParkingService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
+import org.modelmapper.internal.util.Assert;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -35,9 +36,16 @@ public class ParkingOutputController extends HttpServlet {
         String CarNum = req.getParameter("carNum");
         String spaceId = (String) req.getAttribute("id");
 
-        req.setAttribute("id", spaceId);
-        req.setAttribute("carNum", CarNum);
-        req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
+        log.info(CarNum);
+        if (parkingService.getParkingByCarNum(CarNum) != null) {
+            req.setAttribute("id", spaceId);
+            req.setAttribute("carNum", CarNum);
+            req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
+        } else {
+            resp.sendRedirect("/exit/exit.jsp?fail=false");
+        }
+
+
     }
 }
 

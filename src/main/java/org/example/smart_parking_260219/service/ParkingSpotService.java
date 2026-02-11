@@ -1,6 +1,7 @@
 package org.example.smart_parking_260219.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dao.ParkingDAO;
 import org.example.smart_parking_260219.dao.ParkingSpotDAO;
 import org.example.smart_parking_260219.dao.ParkingSpotDAOImpl;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;
@@ -51,6 +52,9 @@ public enum ParkingSpotService {
     }
 
     public ParkingSpotDTO getParkingSpotBySpaceId(String spaceId) {
-        return modelMapper.map(parkingSpotDAO.selectParkingSpotBySpaceId(spaceId), ParkingSpotDTO.class);
+        if (spaceId == null) return null;
+        ParkingSpotVO parkingSpotVO = parkingSpotDAO.selectParkingSpotBySpaceId(spaceId);
+        if (parkingSpotVO == null) return null;
+        return modelMapper.map(parkingSpotVO, ParkingSpotDTO.class);
     }
 }
