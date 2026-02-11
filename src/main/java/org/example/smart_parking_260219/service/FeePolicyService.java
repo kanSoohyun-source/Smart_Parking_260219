@@ -1,12 +1,14 @@
 package org.example.smart_parking_260219.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.dao.FeePolicyDAO;
 import org.example.smart_parking_260219.dto.FeePolicyDTO;
 import org.example.smart_parking_260219.vo.FeePolicyVO;
 import org.modelmapper.ModelMapper;
 import org.example.smart_parking_260219.util.MapperUtil;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,13 @@ public class FeePolicyService {
         return modelMapper.map(dto, FeePolicyVO.class);
     }
 
+    // 신규 추가: 월정액 요금 조회
+    public Integer getSubscribedFee() throws Exception {
+        log.info("getSubscribedFee() 호출");
+        try (Connection connection = DBConnection.INSTANCE.getConnection()) {
+            return feePolicyDAO.getSubscribedFee(connection);
+        }
+    }
 
     public void addPolicy(FeePolicyDTO feePolicyDTO) {
         log.info("addPolicy()");

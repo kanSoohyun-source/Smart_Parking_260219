@@ -6,6 +6,7 @@ import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.vo.FeePolicyVO;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,13 @@ public class FeePolicyDAO {
         /* 데이터베이스에 정책을 추가하는 메서드 */
         log.info("feePolicyVo : {}", feePolicyVo);
 
+        LocalDateTime registrationTime = LocalDateTime.now();
+        log.info("feePolicyVo : {} | 등록 시각 : {}", feePolicyVo, registrationTime);
+
         String sql = "INSERT INTO fee_policy " +
                 " (grace_period, default_time, default_fee, extra_time, extra_fee, light_discount, " +
                 "disabled_discount, subscribed_fee, max_daily_fee, is_active, modify_date) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         try {
@@ -44,6 +48,8 @@ public class FeePolicyDAO {
             preparedStatement.setInt(8, feePolicyVo.getSubscribedFee());
             preparedStatement.setInt(9, feePolicyVo.getMaxDailyFee());
             preparedStatement.setBoolean(10, feePolicyVo.isActive());
+
+            preparedStatement.setTimestamp(11, Timestamp.valueOf(registrationTime));
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -119,6 +125,22 @@ public class FeePolicyDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public Integer getSubscribedFee(Connection connection) throws SQLException {
+        String sql = "SELECT subscribed_fee FROM fee_policy LIMIT 1";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("subscribe_fee");
+            }
+
+            // 기본값 반환
+            log.warn("fee_policy 테이블에 데이터 없음. 기본값 100000 반환");
+            return 100000;
         }
     }
 
