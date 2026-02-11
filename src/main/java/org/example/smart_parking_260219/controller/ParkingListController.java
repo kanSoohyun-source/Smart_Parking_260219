@@ -22,6 +22,8 @@ public class ParkingListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("parking get...");
+        String CarNum = req.getParameter("carNum");
+        req.setAttribute("carNum", CarNum);
         req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
     }
 

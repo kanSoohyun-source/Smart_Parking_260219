@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: PC
-  Date: 26. 1. 28.
-  Time: 오후 9:00
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -17,7 +10,10 @@
 <%
     String space = request.getParameter("id");
     String carNum = request.getParameter("carNum");
-    System.out.println(carNum);
+    String failInput = request.getParameter("fail");
+    if ("false".equals(failInput)) {
+        out.println("<script>alert('존재하지 않는 차량입니다.'); history.back();</script>");
+    }
 %>
 <div class="main-content">
   <!-- Content -->

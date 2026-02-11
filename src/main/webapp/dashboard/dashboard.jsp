@@ -37,7 +37,8 @@
         %>
         <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
              data-id="<%= id %>"
-             data-empty="<%= (!result) %>">
+             data-empty="<%= (!result) %>"
+             data-carnum="<%= carNum %>">
 
             <div class="slot-title"><%= id %></div>
 

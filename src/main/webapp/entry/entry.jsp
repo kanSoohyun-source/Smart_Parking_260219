@@ -1,10 +1,4 @@
-<%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %><%--
-  Created by IntelliJ IDEA.
-  User: PC
-  Date: 26. 1. 28.
-  Time: 오후 9:00
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -24,7 +18,7 @@
         <form action="../parking/input" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 자리</label>
-                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=space%>">
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=(space != null) ? space : ""%>">
                 <label>차량 번호</label>
                 <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
             </div>

@@ -16,8 +16,9 @@
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
-    String carNum = (String) request.getAttribute("carNum");
-    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
+    String carNum = request.getParameter("carNum");
+    System.out.println(carNum);
+    ParkingDTO parkingDTO = ParkingService.INSTANCE.getAllParkingByCarNum(carNum);
 %>
 <div class="main-content">
   <!-- Content -->
