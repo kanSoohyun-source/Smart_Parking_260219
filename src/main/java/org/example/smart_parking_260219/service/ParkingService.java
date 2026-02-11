@@ -3,9 +3,7 @@ package org.example.smart_parking_260219.service;
 import org.example.smart_parking_260219.dao.ParkingDAO;
 import org.example.smart_parking_260219.dao.ParkingDAOImpl;
 import org.example.smart_parking_260219.dto.ParkingDTO;
-import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.util.MapperUtil;
-import org.example.smart_parking_260219.vo.ParkingSpotVO;
 import org.example.smart_parking_260219.vo.ParkingVO;
 import org.modelmapper.ModelMapper;
 
@@ -53,5 +51,9 @@ public enum ParkingService {
 
     public ParkingDTO getParkingByCarNum(String carNum) {
         return modelMapper.map(parkingDAO.selectParkingByCarNum(carNum), ParkingDTO.class);
+    }
+
+    public ParkingDTO getLastParkingByCarNum(String carNum) {
+        return modelMapper.map(parkingDAO.selectLastParkingByCarNum(carNum), ParkingDTO.class);
     }
 }

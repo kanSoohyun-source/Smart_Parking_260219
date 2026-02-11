@@ -4,7 +4,6 @@ import lombok.Cleanup;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.vo.ParkingSpotVO;
-import org.example.smart_parking_260219.vo.ParkingVO;
 
 import java.sql.*;
 import java.util.ArrayList;

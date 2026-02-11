@@ -1,12 +1,10 @@
 <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
 <%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.service.MemberService" %>
 <%@ page import="java.sql.SQLException" %>
-<%@ page import="org.example.smart_parking_260219.dao.ParkingDAO" %>
-<%@ page import="org.example.smart_parking_260219.dao.ParkingDAOImpl" %><%--
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.Duration" %><%--
   Created by IntelliJ IDEA.
   User: PC
   Date: 26. 1. 28.
@@ -24,13 +22,15 @@
 <%@ include file="/main/menu.jsp" %>
 <%
     String carNum = (String) request.getAttribute("carNum");
-    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
+    ParkingDTO parkingDTO = ParkingService.INSTANCE.getLastParkingByCarNum(carNum);
+    String space = (String) request.getAttribute("id");
     MemberDTO memberDTO = null;
     try {
         memberDTO = MemberService.Instance.getOneMember(carNum);
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }
+    long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
 %>
 <div class="main-content">
   <!-- Content -->
@@ -39,7 +39,7 @@
         <form action = "../parking/get" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 구역</label>
-                <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=parkingDTO.getSpaceId()%>">
+                <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=(space != null) ? space : ""%>">
             </div>
             <div class="form-group">
                 <label>전화 번호</label>
@@ -62,11 +62,11 @@
             </div>
             <div class="form-group">
                 <label>총 주차 시간</label>
-                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=parkingDTO.getTotalTime()%>분">
+                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=totalTime%>분">
             </div>
             <div class="form-group">
                 <label>입차 시간</label>
-                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime().toLocalDate()%>">
+                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
             </div>
             <button onclick="registerMember()">정산</button>
 

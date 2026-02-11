@@ -45,24 +45,28 @@ public class ParkingInputController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                .carNum(carNum)
-                .spaceId(spaceId)
-                .build();
-        log.info("parkingSpotDTO: {}", parkingSpotDTO);
-        parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
+        log.info(parkingService.getLastParkingByCarNum(carNum).isPaid());
+        if (parkingService.getLastParkingByCarNum(carNum).isPaid()) {
+            ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
+                    .carNum(carNum)
+                    .spaceId(spaceId)
+                    .build();
+            log.info("parkingSpotDTO: {}", parkingSpotDTO);
+            parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
 
-        ParkingDTO parkingDTO = ParkingDTO.builder()
-                .memberId(memberDTO.getMemberId())
-                .carNum(carNum)
-                .spaceId(spaceId)
-                .carType(memberDTO.getCarType())
-                .build();
-        log.info("parkingDTO: {}", parkingDTO);
-        parkingService.addParking(parkingDTO);
+            ParkingDTO parkingDTO = ParkingDTO.builder()
+                    .memberId(memberDTO.getMemberId())
+                    .carNum(carNum)
+                    .spaceId(spaceId)
+                    .carType(memberDTO.getCarType())
+                    .build();
+            log.info("parkingDTO: {}", parkingDTO);
+            parkingService.addParking(parkingDTO);
 
+            resp.sendRedirect("/dashboard/dashboard.jsp");
+        } else {
+            resp.sendRedirect("/dashboard/dashboard.jsp?fail=false");
+        }
 
-
-        resp.sendRedirect("/dashboard/dashboard.jsp");
     }
 }

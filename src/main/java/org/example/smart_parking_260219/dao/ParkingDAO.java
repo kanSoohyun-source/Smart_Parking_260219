@@ -11,4 +11,6 @@ public interface ParkingDAO {
     void updateParking(ParkingVO parkingVO);               // 출차된 시간
     ParkingVO selectParkingByParkingId(int parkingId);      // 프라이머리키 기준 차량 조회
     List<ParkingVO> selectAllParking();
+    ParkingVO selectLastParkingByCarNum(String carNum);   //
+
 }

@@ -15,16 +15,19 @@
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
-
+    String space = request.getParameter("id");
+    String carNum = request.getParameter("carNum");
+    System.out.println(carNum);
 %>
 <div class="main-content">
   <!-- Content -->
     <div id="exit" class="page">
         <form action="../parking/output" method="post" class="form-horizontal">
+            <input type="hidden" id="exitSpaceId" name="id" value="<%=space%>">
             <h2>출차</h2>
             <div class="form-group">
                 <label>차량 번호</label>
-                <input type="text" id="exitCarNum" placeholder="차량번호 8자리" name="carNum">
+                <input type="text" id="exitCarNum" placeholder="차량번호 8자리" name="carNum" value="<%=(carNum != null) ? carNum : ""%>">
             </div>
             <button>정산</button>
         </form>
