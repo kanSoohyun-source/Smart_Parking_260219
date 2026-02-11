@@ -12,6 +12,7 @@ import org.example.smart_parking_260219.service.ParkingService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 @Log4j2
 @WebServlet(name = "parkingGetController", value = "/parking/get")
@@ -28,22 +29,19 @@ public class ParkingListController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("parking post...");
-        String CarNum = req.getParameter("carNum");
+        String carNum = req.getParameter("carNum");
         ParkingDTO parkingDTO = ParkingDTO.builder()
-                .carNum(CarNum)
+                .carNum(carNum)
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.modifyParking(parkingDTO);
 
         ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                .carNum(CarNum)
+                .carNum(carNum)
                 .build();
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
-        req.setAttribute("carNum", CarNum);
-        log.info("1");
-        req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
-        log.info("2");
+        resp.sendRedirect("/payment/payment?carNum=" + URLEncoder.encode(carNum, "UTF-8"));
     }
 }

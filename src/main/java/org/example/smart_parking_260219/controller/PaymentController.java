@@ -40,6 +40,7 @@ public class PaymentController extends HttpServlet {
         int finalFee = Integer.parseInt(req.getParameter("finalFee"));
 
         PaymentDTO paymentDTO = PaymentDTO.builder()
+                .carNum(carNum)
                 .parkingId(parkingService.getParkingByCarNum(carNum).getParkingId())
                 .policyId(feePolicyService.getPolicy().getPolicyId())
                 .paymentType(paymentType)
@@ -53,6 +54,6 @@ public class PaymentController extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        req.getRequestDispatcher("/dashboard/dashboard.jsp").forward(req, resp);
+        resp.sendRedirect("/dashboard/dashboard.jsp");
     }
 }

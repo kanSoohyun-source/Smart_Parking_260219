@@ -7,30 +7,29 @@
 <%@ page import="org.example.smart_parking_260219.vo.FeePolicyVO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // 1. Controller가 setAttribute로 보낸 값 확인
-    String carNum = (String) request.getAttribute("carNum");
+    String carNum = request.getParameter("carNum");
 
-    // 2. 만약 null이면 이전 페이지에서 넘어온 Parameter 확인
-    if(carNum == null) {
-        carNum = request.getParameter("carNum");
+    // 2. 만약 Forward로 올 경우
+    if(carNum == null || carNum.isEmpty()) {
+        carNum = (String) request.getAttribute("carNum");
     }
 
-    // 3. carNum이 확실히 있을 때만 Service 호출 (NPE 방지)
+    // 3. 데이터가 없을 때 DB 조회를 시도하면 에러가 나므로 조건문 처리
     ParkingDTO parkingDTO = null;
-    PaymentDTO paymentDTO = null;
-
     int calculatedFee = 0;
     int discountAmount = 0;
     int finalFee = 0;
 
-    if(carNum != null && !carNum.isEmpty()) {
+    if(carNum != null && !carNum.isEmpty() && !"null".equals(carNum)) {
         parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-        if(parkingDTO != null) {
-            calculatedFee = PaymentService.INSTANCE.calculateFeeLogic(parkingDTO);
-            discountAmount = PaymentService.INSTANCE.calculateDiscountLogic(calculatedFee, parkingDTO.getCarType(),
-                    MapperUtil.INSTANCE.getInstance().map(FeePolicyService.getInstance().getPolicy(), FeePolicyVO.class));
-            finalFee = calculatedFee - discountAmount;
-        }
+        calculatedFee = PaymentService.INSTANCE.calculateFeeLogic(parkingDTO);
+        discountAmount = PaymentService.INSTANCE.calculateDiscountLogic(calculatedFee, parkingDTO.getCarType(),
+                MapperUtil.INSTANCE.getInstance().map(FeePolicyService.getInstance().getPolicy(), FeePolicyVO.class));
+        finalFee = calculatedFee - discountAmount;
+    } else {
+        // 차 번호가 없으면 에러 페이지로 보내거나 메시지 출력
+        out.println("<script>alert('차량 정보가 없습니다.'); history.back();</script>");
+        return;
     }
 %>
 <html>
@@ -42,7 +41,7 @@
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
-<form class="main-content">
+<div class="main-content">
     <!-- Content -->
     <div id="register" class="page">
         <h2>정산</h2>
@@ -74,7 +73,7 @@
             <button type="submit" class="btn btn-primary">확인</button>
         </form>
     </div>
-</form>
+</div>
 <script src="../JS/menu.js"></script>
 <script src="../JS/function.js"></script>
 </body>

@@ -19,9 +19,9 @@ class ParkingDAOImplTest {
     public void insertParkingTest() {
         ParkingVO parkingVO = ParkingVO.builder()
                 .memberId(1)
-                .carNum("가1111")
-                .spaceId("A1")
-                .carType(1)
+                .carNum("다1111")
+                .spaceId("A3")
+                .carType(3)
                 .build();
         parkingDAO.insertParking(parkingVO);
     }
