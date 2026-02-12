@@ -31,13 +31,14 @@ public enum MemberService {
     public List<MemberDTO> getAllMember() throws SQLException {
         List<MemberVO> memberVOList = memberDAO.selectAllMember();
 
-        List<MemberDTO> memberDTOS = memberVOList.stream()
+        return memberVOList.stream()
                 .map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
-        return memberDTOS;
     }
 
     public MemberDTO getOneMember(String carNum) throws SQLException {
-        return modelMapper.map(memberDAO.selectOneMember(carNum), MemberDTO.class);
+        MemberVO memberVO = memberDAO.selectOneMember(carNum);
+        if (memberVO == null) return null;
+        return modelMapper.map(memberVO, MemberDTO.class);
     }
 
     public void modifyMember(MemberDTO memberDTO) throws SQLException {

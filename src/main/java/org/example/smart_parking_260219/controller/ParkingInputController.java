@@ -34,16 +34,22 @@ public class ParkingInputController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/input post...");
         String carNum = req.getParameter("carNum");
         log.info(carNum);
         String spaceId = req.getParameter("spaceId");
-        MemberDTO memberDTO = null;
+        MemberDTO memberDTO;
         try {
             memberDTO = memberService.getOneMember(carNum);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            memberDTO = null;
+        }
+        if (memberDTO == null) {
+            req.setAttribute("carNum", carNum);
+            req.setAttribute("id", spaceId);
+            req.getRequestDispatcher("/entry/add_non_member.jsp").forward(req, resp);
+            return;
         }
         log.info(parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty());
         if (parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty()) {
