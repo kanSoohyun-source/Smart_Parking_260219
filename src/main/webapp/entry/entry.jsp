@@ -10,6 +10,10 @@
 <%@ include file="/main/menu.jsp" %>
 <%
     String space = request.getParameter("id");
+    String failInput = request.getParameter("fail");
+    if ("false".equals(failInput)) {
+        out.println("<script>alert('이미 입차된 구역입니다.'); history.back();</script>");
+    }
 %>
 <div class="main-content">
   <!-- Content -->
