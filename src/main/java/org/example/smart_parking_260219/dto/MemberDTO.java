@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,6 +21,9 @@ public class MemberDTO {
     private String phone; // 운전자 연락처
     private LocalDateTime createDate;  // 가입일
     private boolean subscribed; // 월정액 회원 여부 (default false)
+
+    private LocalDate subscribeStartDate;
+    private LocalDate subscribeEndDate;
 
     // 차량 타입 변환 메서드
     public String getCarTypeName() {

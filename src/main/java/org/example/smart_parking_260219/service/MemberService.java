@@ -39,7 +39,14 @@ public enum MemberService {
     }
 
     public MemberDTO getOneMember(String carNum) throws SQLException {
-        return modelMapper.map(memberDAO.selectOneMember(carNum), MemberDTO.class);
+        MemberVO memberVO = memberDAO.selectOneMember(carNum);
+
+        if (memberVO == null) {
+            log.info("회원 정보 없음: {}", carNum);
+            return null;
+        }
+
+        return modelMapper.map(memberVO, MemberDTO.class);
     }
 
     public List<MemberDTO> getCarNum(String car4Num) throws Exception {

@@ -43,7 +43,7 @@ public class SubscribeDAO {
     // 월정액 회원 조회
     // 월정액 회원으로 한번 이상 등록된 회원 조회
     public List<SubscribeVO> selectAllSubscribe() throws SQLException {
-        String sql = "SELECT * FROM subscribe";
+        String sql = "SELECT * FROM subscribe ORDER BY subscribe.last_update DESC ";
 
         List<SubscribeVO> subscribeVOS = new ArrayList<>();
 

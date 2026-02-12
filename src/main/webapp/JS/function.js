@@ -298,3 +298,24 @@ function closeModal() {
 
 // Initialize
 renderParkingGrid();
+
+// 차량번호 입력 시 실시간 중복 확인
+document.getElementById('carNum').addEventListener('blur', function() {
+    const carNum = this.value.trim();
+    const msg = document.getElementById('carNumMsg');
+
+    if (!carNum) return;
+
+    // 서버에 중복 확인 요청
+    fetch('/member/check_carnum?carNum=' + encodeURIComponent(carNum))
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                msg.textContent = '이미 등록된 차량번호입니다.';
+                msg.style.color = 'red';
+            } else {
+                msg.textContent = '등록 가능한 차량번호입니다.';
+                msg.style.color = 'green';
+            }
+        });
+});

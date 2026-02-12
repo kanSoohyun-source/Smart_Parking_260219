@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.MemberDTO;
+import org.example.smart_parking_260219.dto.SubscribeDTO;
 import org.example.smart_parking_260219.service.MemberService;
+import org.example.smart_parking_260219.service.SubscribeService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,12 +20,14 @@ import java.util.List;
 @WebServlet(name = "memberController", value = "/member/member_list")
 public class MemberListController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
+    private final SubscribeService subscribeService = SubscribeService.INSTANCE;
 
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("=== member list 시작 ===");
 
+        /* 페이징 처리 */
         // 페이지 번호 가져오기 (기본값: 1)
         String pageParam = req.getParameter("page");
         int currentPage = 1;
@@ -55,6 +59,18 @@ public class MemberListController extends HttpServlet {
                 ? allMembers.subList(startIndex, endIndex)
                 : new ArrayList<>();
 
+        for (MemberDTO member : pagedMembers) {
+            try {
+                SubscribeDTO subscribe = subscribeService.getOneSubscribe(member.getCarNum());
+                if (subscribe != null) {
+                    member.setSubscribeStartDate(subscribe.getStartDate());
+                    member.setSubscribeEndDate(subscribe.getEndDate());
+                }
+            } catch (Exception e) {
+                log.warn("구독 정보 없음 (일반 회원): {}", member.getCarNum());
+            }
+        }
+
         // ✅ 시작 번호 계산 (역순)
         // 예: 총 25명, 1페이지 → startNo = 25
         //     총 25명, 2페이지 → startNo = 15
@@ -73,7 +89,7 @@ public class MemberListController extends HttpServlet {
         log.info("시작 인덱스: " + startIndex + ", 끝 인덱스: " + endIndex);
         log.info("시작 번호: " + startNo);
 
-        req.getRequestDispatcher("/member/member_list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/member/member_list.jsp").forward(req, resp);
     }
 }
 

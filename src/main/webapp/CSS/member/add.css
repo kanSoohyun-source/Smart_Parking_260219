@@ -1,0 +1,38 @@
+
+/* 비활성화된 버튼 스타일 */
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+    color: #999;
+}
+
+button:disabled:hover {
+    background-color: #ddd;
+}
+
+/* 조회 버튼 스타일 */
+.btn-detail {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-detail:hover {
+    background-color: #2980b9;
+}
+
+/* 비활성화된 버튼 스타일 */
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+    color: #999;
+}
+
+button:disabled:hover {
+    background-color: #ddd;
+}

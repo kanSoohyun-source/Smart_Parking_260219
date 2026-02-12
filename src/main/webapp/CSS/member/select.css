@@ -1,0 +1,73 @@
+.select-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.notice-box {
+    background-color: #e8f4f8;
+    border: 1px solid #b3d9e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.notice-box p {
+    margin: 5px 0;
+    color: #2c3e50;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.member-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.member-select-item {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.member-select-item:first-child {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+}
+
+.member-select-item:hover {
+    border-color: #3498db;
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.select-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #7f8c8d;
+    font-size: 13px;
+}
+
+.select-value {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.car-num, .car-num-value {
+    flex: 1;
+    text-align: left;
+}
+
+.phone-num, .phone-num-value {
+    flex: 1;
+    text-align: right;
+}
