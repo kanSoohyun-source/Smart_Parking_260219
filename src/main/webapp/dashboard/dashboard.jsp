@@ -51,7 +51,24 @@
         </div>
         <% } %>
     </div>
+    <div align="left">
+        <form id="searchForm">
+            <table>
+                <tr>
+                    <td width="100%" align="left">&nbsp;&nbsp;
+                        <input name="keyword" type="text" value=""/>
+                        <input type="submit" id="btnAdd" class="btn btn-primary " value="검색"/>
+                        <input type="submit" class="btn btn-danger" id="resetBtn" value="취소"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
 <script src="../JS/tlqkf.js"></script>
+<script src="../JS/parkingList.js"></script>
+<script>
+
+</script>
 </body>
 </html>
