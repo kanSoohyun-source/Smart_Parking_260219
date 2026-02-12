@@ -37,6 +37,10 @@ public class ParkingInputController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/input post...");
         String carNum = req.getParameter("carNum");
+        if (carNum.isEmpty() || carNum.length() > 8) {
+            resp.sendRedirect("/entry/entry.jsp?fail=over");
+            return;
+        }
         log.info(carNum);
         String spaceId = req.getParameter("spaceId");
         MemberDTO memberDTO;

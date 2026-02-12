@@ -5,6 +5,7 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.Duration" %>
+<%@ page import="java.util.Objects" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -22,13 +23,15 @@
     String carNum = request.getParameter("carNum");
     System.out.println(carNum);
     ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-    MemberDTO memberDTO;
+    String phone;
     try {
-        memberDTO = MemberService.Instance.getOneMember(carNum);
+        MemberDTO memberDTO = MemberService.Instance.getOneMember(carNum);
+        phone = (memberDTO != null) ? memberDTO.getPhone() : null;
     } catch (SQLException e) {
-        throw new RuntimeException(e);
+        phone = null;
     }
     long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
+
 %>
 <div class="main-content">
   <!-- Content -->
@@ -41,11 +44,11 @@
             </div>
             <div class="form-group">
                 <label>전화 번호</label>
-                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=memberDTO.getPhone()%>">
+                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=phone%>">
             </div>
             <div class="form-group">
                 <label>차량 번호</label>
-                <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" name="carNum" value="<%=memberDTO.getCarNum()%>">
+                <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" name="carNum" value="<%=parkingDTO.getCarNum()%>">
             </div>
             <div class="form-group">
                 <label>차량 타입</label>
