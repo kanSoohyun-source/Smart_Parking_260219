@@ -1,7 +1,6 @@
 package org.example.smart_parking_260219.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.example.smart_parking_260219.dao.ParkingDAO;
 import org.example.smart_parking_260219.dao.ParkingSpotDAO;
 import org.example.smart_parking_260219.dao.ParkingSpotDAOImpl;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;

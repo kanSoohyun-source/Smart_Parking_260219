@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.service.ParkingService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
-import org.modelmapper.internal.util.Assert;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @WebServlet(name = "parkingOutputController", value = "/parking/output")
 @Log4j2

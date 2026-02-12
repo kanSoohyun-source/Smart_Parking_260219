@@ -45,8 +45,7 @@ public class ParkingInputController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        log.info(parkingService.getLastParkingByCarNum(carNum).isPaid());
-        if (parkingService.getLastParkingByCarNum(carNum).isPaid()) {
+        if (parkingService.getParkingByCarNum(carNum) == null || parkingService.getParkingByCarNum(carNum).isPaid()) {
             ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
                     .carNum(carNum)
                     .spaceId(spaceId)
