@@ -19,18 +19,19 @@ public class SendAuthCodeController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        // ✅ 요청 인코딩 설정
-        req.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8");  // 한글 깨짐 방지
 
-        String email = req.getParameter("email");
+        String email = req.getParameter("email");  // email 파라미터 값 추출
 
         try {
-            validationService.sendAuthCode(email);
+            validationService.sendAuthCode(email);  // validationService에 이메일 발송 요청
 
-            // ✅ 응답 인코딩 설정 (반드시 getWriter() 전에 호출)
+            // 성공 응답 설정, HTTP 헤더에 JSON 형식이며 UTF-8임을 명시
+            // 응답 인코딩 설정 (반드시 getWriter() 전에 호출)
             resp.setContentType("application/json; charset=UTF-8");
             resp.setCharacterEncoding("UTF-8");
 
+            // 클라이언트에게 성공 메시지 전송 (JSON 포맷)
             PrintWriter out = resp.getWriter();
             out.write("{\"success\": true, \"message\": \"인증코드가 발송되었습니다.\"}");
             out.flush();
@@ -39,10 +40,12 @@ public class SendAuthCodeController extends HttpServlet {
         } catch (Exception e) {
             log.error("인증코드 발송 실패: " + email, e);
 
+            // 예외 발생 -> HTTP 상태 코드를 500(서버 에러)으로 설정
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.setContentType("application/json; charset=UTF-8");
             resp.setCharacterEncoding("UTF-8");
 
+            // 클라이언트에게 에러 원인 메시지 전송
             PrintWriter out = resp.getWriter();
             out.write("{\"success\": false, \"message\": \"발송 실패: " + e.getMessage() + "\"}");
             out.flush();

@@ -19,17 +19,19 @@ public class VerifyAuthCodeController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        // ✅ 요청 인코딩 설정
-        req.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8");  // 한글 깨짐 방지
 
+        // 클라이언트가 보낸 데이터(이메일, 인증번호) 수신
         String email = req.getParameter("email");
         String code = req.getParameter("code");
 
         log.info("인증 검증 요청 - Email: " + email + ", Code: " + code);
 
+        // 서비스 계층에 검층
         boolean isValid = validationService.verifyAuthCode(email, code);
 
-        // ✅ 응답 인코딩 설정 (반드시 getWriter() 전에 호출)
+        // 응답 헤더 설정 (JSON 형태, 한글 설정)
+        // 응답 인코딩 설정 (반드시 getWriter() 전에 호출)
         resp.setContentType("application/json; charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
@@ -43,6 +45,7 @@ public class VerifyAuthCodeController extends HttpServlet {
             out.write("{\"success\": false, \"message\": \"인증 실패 또는 만료\"}");
         }
 
+        // 스트림 비우기 (데이터 즉시 전송)
         out.flush();
     }
 }

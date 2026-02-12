@@ -16,14 +16,14 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
 
-    private ManagerDAO managerDAO = ManagerDAO.getInstance();
+    private final ManagerDAO managerDAO = ManagerDAO.getInstance();
 
     @Override
     /* 로그인 폼 요청 처리 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 세션 확인 - 이미 로그인된 경우 대시보드로 리다이렉트
+        // 세션 확인 - 이미 로그인된 경우 대시보드로 리다이렉트 (중복 로그인 방지)
         HttpSession session = request.getSession(false);  // 기존 세션이 없으면 null 반환
         if (session != null && session.getAttribute("loginManager") != null) {
             // 이미 로그인 정보가 세션에 있다면 굳이 로그인 창을 보여줄 필요가 없으므로 대시보드로 이동
@@ -36,6 +36,7 @@ public class LoginController extends HttpServlet {
 
     @Override
     /* 로그인 데이터 처리 */
+    // 1차 로그인 데이터 처리 및 2차 인증
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -55,10 +56,10 @@ public class LoginController extends HttpServlet {
         }
 
         try {
-            // DB에서 관리자 정보 조회
+            // DB에서 관리자 정보 조회 (1차 인증)
             ManagerVO manager = managerDAO.selectOne(managerId);
 
-            // 관리자 존재 여부 확인
+            // 계정 존재 여부 확인
             if (manager == null) {
                 log.warn("존재하지 않는 관리자 ID: {}", managerId);
                 request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -89,24 +90,43 @@ public class LoginController extends HttpServlet {
 //                return;
 //            }
 
+            log.info("1차 인증 성공: {}, 권한: {}", managerId, manager.getRole());
+
             // 로그인 성공 - 세션 생성
+            // 세션에 임시 정보 저장 (2차 인증 전 단계)
             HttpSession session = request.getSession();
             session.setAttribute("loginManager", manager);  // 객체 전체 저장
             session.setAttribute("managerId", manager.getManagerId());  // ID 별도 저장
             session.setAttribute("managerName", manager.getManagerName());  // 이름 별도 저장
+            session.setAttribute("managerRole", manager.getRole());  // 관리자 권한 저장
 
+            // 권한(Role)에 따른 2차 인증 페이지 분기
+            if ("ADMIN".equals(manager.getRole())) {
+                // 최고관리자: 이메일 + OTP
+                log.info("최고관리자 2차 인증(OTP) 단계로 이동");
+                // WEB-INF 내부에 있는 파일은 forward로만 접근 가능
+                request.getRequestDispatcher("/WEB-INF/views/login_email_otp.jsp").forward(request, response);
+            } else {
+                log.info("일반관리자 2차 인증 단계로 이동");
+                request.getRequestDispatcher("/WEB-INF/views/login_email.jsp").forward(request, response);
+            }
             // 세션 타임아웃 설정 (30분)
             // session.setMaxInactiveInterval(30 * 60);
 
-            log.info("로그인 성공 - 관리자: {} ({})", manager.getManagerName(), managerId);
-
             // 대시보드로 리다이렉트
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+//            response.sendRedirect(request.getContextPath() + "/dashboard");
 
         } catch (Exception e) {
             log.error("로그인 처리 중 오류 발생", e);
             request.setAttribute("error", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+//            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }
+    }
+
+    /* 에러 메시지 처리를 위한 공통 메서드 */
+    private void sendError(HttpServletRequest request, HttpServletResponse response, String message)
+            throws ServletException, IOException {
+        request.setAttribute("error", message);
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
 }
