@@ -1,12 +1,9 @@
-
 const form = document.getElementById("searchForm");
 const keywordInput = document.querySelector("input[name='keyword']");
 const slots = document.querySelectorAll(".slot-item");
 const resetBtn = document.getElementById("resetBtn");
 
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
+function selectCarNum() {
     const keyword = keywordInput.value.trim();
     if (keyword === "") {
         slot.forEach(slot => {
@@ -37,12 +34,12 @@ form.addEventListener("submit", function (e) {
         } else {
             slot.style.display = "none";
         }
+    })
+}
 
-        resetBtn.addEventListener("click", function () {
-            keywordInput.value = "";
-            slots.forEach(slot => {
-                slot.style.display = "block";
-            });
-        });
+function cancelCarNum() {
+    keywordInput.value = "";
+    slots.forEach(slot => {
+        slot.style.display = "block";
     });
-});
+}

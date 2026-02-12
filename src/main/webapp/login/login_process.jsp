@@ -8,7 +8,7 @@
     // 세션에 로그인 정보 저장
     session.setAttribute("isLoggedIn", "true");
     // 로그인 성공 시 메인 화면(예: dashboard.jsp)으로 이동
-    response.sendRedirect("../dashboard/dashboard.jsp");
+    request.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(request, response);
   } else {
     // 로그인 실패 시 알림창을 띄우고 이전 페이지로 이동
     out.println("<script>");

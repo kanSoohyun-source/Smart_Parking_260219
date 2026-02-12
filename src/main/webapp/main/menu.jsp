@@ -2,7 +2,7 @@
 <nav>
     <h1>주차장 관리 시스템</h1>
     <ul id="navMenu">
-        <li><a href="../dashboard/dashboard.jsp">주차 현황</a></li>
+        <li><a href="../WEB-INF/view/dashboard/dashboard.jsp">주차 현황</a></li>
         <li><a href="../entry/entry.jsp">입차</a></li>
         <li><a href="../exit/exit.jsp">출차</a></li>
         <li><a href="../member/add_member.jsp">회원 등록</a></li>

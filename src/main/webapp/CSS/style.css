@@ -346,3 +346,7 @@ table tr:hover {
     border-color: #3498db;
     background: #f8f9fa;
 }
+
+.form-group input.search-input {
+    width: 30% !important;
+}
