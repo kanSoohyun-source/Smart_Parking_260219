@@ -12,4 +12,5 @@ public interface ParkingDAO {
     ParkingVO selectParkingByParkingId(int parkingId);      // 프라이머리키 기준 차량 조회
     List<ParkingVO> selectAllParking();                     // 주차 구역 목록 (대시보드 주차 구역 출력에 필요)
     ParkingVO selectALLParkingByCarNum(String carNum);         // 차번호 전체 일치 차량 조회
+
 }
