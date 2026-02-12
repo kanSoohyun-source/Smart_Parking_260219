@@ -18,4 +18,5 @@ public class ParkingDTO {
     private LocalDateTime exitTime;  // 출차 시간 (주차중이면 Null)
     private int totalTime;  // 주차 시간(분), default 0
     private boolean paid;  //정산 오나료 여부, default false
+    private String phone;   // 전화번호
 }

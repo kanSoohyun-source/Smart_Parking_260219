@@ -20,6 +20,10 @@
             <input type="hidden" id="carNum" name="carNum" value="<%=carNum%>">
             <h2>비회원 입차 출력</h2>
             <div class="form-group">
+                <label>연락처</label>
+                <input type="text" id="regPhone" name="phone" placeholder="연락처">
+            </div>
+            <div class="form-group">
                 <label>차량 타입</label>
                 <label><input type="radio" name="finish" value="1">일반</label>
                 <label><input type="radio" name="finish" value="2">월정액</label>

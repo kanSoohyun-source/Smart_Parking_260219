@@ -36,6 +36,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
         String carNum = req.getParameter("carNum");
         String spaceId = req.getParameter("id");
         String carType = req.getParameter("finish");
+        String phone = req.getParameter("phone");
 
         log.info(spaceId);
 
@@ -50,6 +51,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
                 .memberId(0)
                 .carNum(carNum)
                 .spaceId(spaceId)
+                .phone(phone)
                 .carType(Integer.parseInt(carType))
                 .build();
         log.info("parkingDTO: {}", parkingDTO);

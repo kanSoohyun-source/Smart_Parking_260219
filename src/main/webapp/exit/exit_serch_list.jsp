@@ -23,15 +23,7 @@
     String carNum = request.getParameter("carNum");
     System.out.println(carNum);
     ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-    String phone;
-    try {
-        MemberDTO memberDTO = MemberService.Instance.getOneMember(carNum);
-        phone = (memberDTO != null) ? memberDTO.getPhone() : null;
-    } catch (SQLException e) {
-        phone = null;
-    }
     long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
-
 %>
 <div class="main-content">
   <!-- Content -->
@@ -40,11 +32,11 @@
         <form action = "../parking/get" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 구역</label>
-                <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=ParkingService.INSTANCE.getParkingByCarNum(carNum).getSpaceId()%>">
+                <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=parkingDTO.getSpaceId()%>">
             </div>
             <div class="form-group">
                 <label>전화 번호</label>
-                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=phone%>">
+                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=parkingDTO.getPhone()%>">
             </div>
             <div class="form-group">
                 <label>차량 번호</label>

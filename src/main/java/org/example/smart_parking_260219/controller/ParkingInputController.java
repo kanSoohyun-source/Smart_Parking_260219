@@ -74,6 +74,7 @@ public class ParkingInputController extends HttpServlet {
                     .carNum(carNum)
                     .spaceId(spaceId)
                     .carType(memberDTO.getCarType())
+                    .phone(memberDTO.getPhone())
                     .build();
             log.info("parkingDTO: {}", parkingDTO);
             parkingService.addParking(parkingDTO);
