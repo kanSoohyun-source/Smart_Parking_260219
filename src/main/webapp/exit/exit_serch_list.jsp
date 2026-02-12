@@ -21,7 +21,7 @@
     }
     String carNum = request.getParameter("carNum");
     System.out.println(carNum);
-    ParkingDTO parkingDTO = ParkingService.INSTANCE.getLastParkingByCarNum(carNum);
+    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
     MemberDTO memberDTO;
     try {
         memberDTO = MemberService.Instance.getOneMember(carNum);

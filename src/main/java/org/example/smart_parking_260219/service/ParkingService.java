@@ -59,8 +59,4 @@ public enum ParkingService {
     public ParkingDTO getAllParkingByCarNum(String carNum) {
         return modelMapper.map(parkingDAO.selectALLParkingByCarNum(carNum), ParkingDTO.class);
     }
-
-    public ParkingDTO getLastParkingByCarNum(String carNum) {
-        return modelMapper.map(parkingDAO.selectLastParkingByCarNum(carNum), ParkingDTO.class);
-    }
 }

@@ -20,11 +20,7 @@ public class ParkingOutputController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("/exit/exit.jsp");
-        String spaceId = (String) req.getAttribute("id");
-        String carNum = req.getParameter("carNum");
 
-        req.setAttribute("carNum", carNum);
-        req.setAttribute("id", spaceId);
         req.getRequestDispatcher("/exit/exit_serch_list.jsp").forward(req, resp);
     }
 

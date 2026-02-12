@@ -180,33 +180,6 @@ public class ParkingDAOImpl implements ParkingDAO {
     }
 
     @Override
-    public ParkingVO selectLastParkingByCarNum(String carNum) {
-        String sql = "SELECT * FROM smart_parking_team2.parking WHERE car_num = ? ORDER BY entry_time DESC LIMIT 1";
-        try {
-            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
-            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carNum);
-            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                ParkingVO parkingVO = ParkingVO.builder()
-                        .parkingId(resultSet.getInt("parking_id"))
-                        .carNum(resultSet.getString("car_num"))
-                        .memberId(resultSet.getInt("member_id"))
-                        .spaceId(resultSet.getString("space_id"))
-                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
-                        .carType(resultSet.getInt("car_type"))
-                        .paid(resultSet.getBoolean("paid"))
-                        .build();
-                log.info("parkingVO : {}", parkingVO);
-                return parkingVO;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
-
-    @Override
     public ParkingVO selectALLParkingByCarNum(String carNum) {
         String sql = "SELECT * FROM smart_parking_team2.parking WHERE car_num = ?";
         try {
