@@ -13,8 +13,8 @@
 <html>
 <head>
     <title>주차 현황</title>
-    <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../CSS/tlqkf.css">
+    <link rel="stylesheet" href="../../../CSS/style.css">
+    <link rel="stylesheet" href="../../../CSS/tlqkf.css">
 </head>
 <body>
 <%@ include file="/main/menu.jsp" %>
@@ -51,22 +51,18 @@
         </div>
         <% } %>
     </div>
-    <div align="left">
+    <div align="center">
         <form id="searchForm">
-            <table>
-                <tr>
-                    <td width="100%" align="left">&nbsp;&nbsp;
-                        <input name="keyword" type="text" value=""/>
-                        <input type="submit" id="btnAdd" class="btn btn-primary " value="검색"/>
-                        <input type="submit" class="btn btn-danger" id="resetBtn" value="취소"/>
-                    </td>
-                </tr>
-            </table>
+            <div class="form-group">
+                    <input name="keyword" type="text" class="search-input" value=""/>
+                <button type="button" onclick="selectCarNum()">검색</button>
+                <button type="button" onclick="cancelCarNum()">취소</button>
+            </div>
         </form>
     </div>
 </div>
-<script src="../JS/tlqkf.js"></script>
-<script src="../JS/parkingList.js"></script>
+<script src="../../../JS/tlqkf.js"></script>
+<script src="../../../JS/parkingList.js"></script>
 <script>
 
 </script>
