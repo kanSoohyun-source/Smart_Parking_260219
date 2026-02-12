@@ -24,8 +24,21 @@ CREATE TABLE IF NOT EXISTS `manager`
     `manager_name` VARCHAR(20)  NOT NULL COMMENT '관리자 이름',
     `password`     VARCHAR(255) NOT NULL COMMENT '관리자 비밀번호 (해시 암호화)',
     `email`        VARCHAR(100) NOT NULL COMMENT '관리자 이메일(2차 인증)',
-    `active`       BOOLEAN      NOT NULL DEFAULT TRUE COMMENT '계정 활성화 여부'
+    `active`       BOOLEAN      NOT NULL DEFAULT TRUE COMMENT '계정 활성화 여부',
+    `role`         VARCHAR(20)  NOT NULL DEFAULT 'NORMAL'
+        COMMENT '관리자 권한: ADMIN(최고관리자), NORMAL(일반관리자)'
 );
+-- 최고 관리자(ADMIN) 초기 데이터 삽입
+INSERT INTO `manager` (`manager_id`, `manager_name`, `password`, `email`, `active`, `role`)
+VALUES ('admin',
+        '최고관리자',
+#         SHA2('admin1234', 256), -- 초기 비밀번호 설정
+        password('admin1234'), -- 초기 비밀번호 설정
+        'admin@example.com',
+        TRUE,
+        'ADMIN')
+ON DUPLICATE KEY UPDATE
+    `role` = 'ADMIN'; -- 이미 존재할 경우 권한만 ADMIN으로 보장
 
 # subscribe : 월정액 회원 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `subscribe`
@@ -94,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `payment`
     `parking_id`      INT      NOT NULL COMMENT '주차 기록 ID (FK)',
     `policy_id`       INT               DEFAULT NULL COMMENT '적용된 요금 정책 ID (FK)',
     `payment_type`    TINYINT  NOT NULL COMMENT '결제 수단 (1:카드, 2:현금, 3:월정액)',
-    `calculated_fee`    INT      NOT NULL DEFAULT 0 COMMENT '할인 전 요금',
+    `calculated_fee`  INT      NOT NULL DEFAULT 0 COMMENT '할인 전 요금',
     `discount_amount` INT      NOT NULL DEFAULT 0 COMMENT '총 할인 금액',
     `final_fee`       INT      NOT NULL DEFAULT 0 COMMENT '최종 결제 금액',
     `payment_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '실제 결제 일시',

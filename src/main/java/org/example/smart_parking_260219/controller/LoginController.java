@@ -82,6 +82,12 @@ public class LoginController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
                 return;
             }
+            // 임시 테스트용 (DB에 1234가 평문으로 있을 때)
+//            if (manager.getPassword().equals(password)) {
+//                // 성공 처리
+//                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+//                return;
+//            }
 
             // 로그인 성공 - 세션 생성
             HttpSession session = request.getSession();

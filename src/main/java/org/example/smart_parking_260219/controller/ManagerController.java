@@ -63,6 +63,43 @@ public class ManagerController extends HttpServlet {
             /* 수정 */
             case "/view":
                 log.info("관리자 수정 페이지 처리");
+
+                // 1. URL 파라미터에서 조회할 아이디를 가져옴 (예: /mgr/view?id=admin)
+                String viewId = request.getParameter("id");
+                log.info("조회할 관리자 ID: {}", viewId);
+
+                // 2. [추가] 만약 파라미터가 없다면 세션에서 로그인한 본인 아이디를 사용
+                if (viewId == null || viewId.trim().isEmpty()) {
+                    log.info("ID 파라미터가 없어 세션에서 정보를 찾습니다.");
+                    ManagerVO loginManager = (ManagerVO) session.getAttribute("loginManager");
+                    if (loginManager != null) {
+                        viewId = loginManager.getManagerId();
+                    }
+                }
+
+                log.info("최종 조회할 관리자 ID: {}", viewId);
+
+                if (viewId != null && !viewId.isEmpty()) {
+                    try {
+                        // DAO를 통해 DB에서 관리자 정보 조회
+                        ManagerVO manager = managerDAO.selectOne(viewId);
+
+                        if (manager != null) {
+                            request.setAttribute("manager", manager);
+                            log.info("관리자 데이터 조회 성공: {}", manager.getManagerName());
+                        } else {
+                            log.warn("ID가 {}인 관리자를 찾을 수 없음", viewId);
+                            request.setAttribute("error", "존재하지 않는 관리자입니다.");
+                        }
+                    } catch (Exception e) {
+                        log.error("관리자 조회 중 DB 오류", e);
+                        request.setAttribute("error", "데이터를 가져오는 중 오류가 발생했습니다.");
+                    }
+                } else {
+                    log.warn("조회할 ID를 찾을 수 없음 (파라미터X, 세션X)");
+                    request.setAttribute("error", "조회할 관리자 정보를 특정할 수 없습니다.");
+                }
+
                 request.getRequestDispatcher("/WEB-INF/views/mgr_view.jsp").forward(request, response);
                 break;
 

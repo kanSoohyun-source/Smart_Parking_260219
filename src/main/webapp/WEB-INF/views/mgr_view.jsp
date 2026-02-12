@@ -5,29 +5,55 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 정보</title>
+    <link rel="stylesheet" href="/CSS/style.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        /*body {*/
+        /*    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+        /*    background: #f5f5f5;*/
+        /*    display: flex;*/
+        /*}*/
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
+            margin: 0;
+
             display: flex;
+            justify-content: center; /* 가로 중앙 */
+            align-items: center;     /* 세로 중앙 */
+            min-height: 100vh;
         }
+        /*.main-content {*/
+        /*    flex: 1;*/
+        /*    padding: 20px;*/
+        /*    margin-left: 250px; !* 사이드바 너비만큼 *!*/
+        /*}*/
         .main-content {
-            flex: 1;
-            padding: 20px;
-            margin-left: 250px; /* 사이드바 너비만큼 */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        /*.container {*/
+        /*    max-width: 800px;*/
+        /*    margin: 0 auto;*/
+        /*    background: white;*/
+        /*    padding: 30px;*/
+        /*    border-radius: 10px;*/
+        /*    box-shadow: 0 2px 10px rgba(0,0,0,0.1);*/
+        /*}*/
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            /* 기존 margin: 0 auto; 는 flex 환경에서 무시되므로 삭제해도 무방합니다. */
         }
         h2 {
             color: #333;
@@ -154,6 +180,11 @@
 
 <div class="main-content">
     <div class="container">
+
+<%--        <%--%>
+<%--            out.print("디버깅 - manager 객체 존재 여부: " + (request.getAttribute("manager") != null));--%>
+<%--        %>--%>
+
         <h2>관리자 정보</h2>
 
         <%-- 성공 메시지 표시 --%>
@@ -179,10 +210,10 @@
         %>
         <!-- 관리자 정보 표시 -->
         <div class="info-section">
-            <div class="info-row">
-                <div class="info-label">관리자 번호</div>
-                <div class="info-value"><%= manager.getManagerNo() %></div>
-            </div>
+<%--            <div class="info-row">--%>
+<%--                <div class="info-label">관리자 번호</div>--%>
+<%--                <div class="info-value"><%= manager.getManagerNo() %></div>--%>
+<%--            </div>--%>
             <div class="info-row">
                 <div class="info-label">아이디</div>
                 <div class="info-value"><%= manager.getManagerId() %></div>
