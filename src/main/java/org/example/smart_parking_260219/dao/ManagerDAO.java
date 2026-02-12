@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 public class ManagerDAO {
@@ -81,6 +83,33 @@ public class ManagerDAO {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    /* 모든 관리자 목록 조회 [테스트 완료] */
+    public List<ManagerVO> selectAll() {
+        String sql = "SELECT * FROM manager ORDER BY manager_no DESC";
+        List<ManagerVO> list = new ArrayList<>();
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                ManagerVO vo = ManagerVO.builder()
+                        .managerNo(resultSet.getInt("manager_no"))
+                        .managerId(resultSet.getString("manager_id"))
+                        .managerName(resultSet.getString("manager_name"))
+                        .password(resultSet.getString("password"))
+                        .email(resultSet.getString("email"))
+                        .active(resultSet.getBoolean("active"))
+                        .role(resultSet.getString("role"))
+                        .build();
+                list.add(vo);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 
     /* 관리자 계정 사용(활성화, 비활성화 수정) - [테스트 완료] */

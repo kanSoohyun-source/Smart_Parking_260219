@@ -241,7 +241,7 @@
         <!-- 버튼 그룹 -->
         <div class="btn-group">
             <button type="button" class="btn btn-secondary"
-                    onclick="location.href='${pageContext.request.contextPath}/dashboard'">
+                    onclick="location.href='${pageContext.request.contextPath}/mgr/list'">
                 돌아가기
             </button>
             

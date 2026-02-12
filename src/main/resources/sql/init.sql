@@ -37,8 +37,15 @@ VALUES ('admin',
         'admin@example.com',
         TRUE,
         'ADMIN')
-ON DUPLICATE KEY UPDATE
-    `role` = 'ADMIN'; -- 이미 존재할 경우 권한만 ADMIN으로 보장
+ON DUPLICATE KEY UPDATE `role` = 'ADMIN'; -- 이미 존재할 경우 권한만 ADMIN으로 보장
+
+CREATE TABLE IF NOT EXISTS `validation`
+(
+    `no` int auto_increment primary key,
+    `string_otp` char(6) not null,
+    `email` varchar(100) not null,
+    `expiry_time` datetime not null comment '만료시간'
+);
 
 # subscribe : 월정액 회원 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `subscribe`

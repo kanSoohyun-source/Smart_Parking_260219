@@ -3,5 +3,8 @@
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/ManagerDAO.java" value="ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/MemberDAO.java" value="ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/ValidationDAO.java" value="ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sql/init.sql" value="ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d/console.sql" value="ebe6cd66-b5c0-47d8-9a0b-ae104fd5cf4d" />
   </component>
 </project>

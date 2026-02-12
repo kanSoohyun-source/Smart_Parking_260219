@@ -199,8 +199,8 @@
         <form id="managerForm" action="${pageContext.request.contextPath}/mgr/add" method="post">
             <div class="form-group">
                 <label for="id">아이디 <span class="required">*</span></label>
-                <input type="text" id="id" name="id" 
-                       value="<%= request.getAttribute("managerId") != null ? request.getAttribute("managerId") : "" %>" 
+                <input type="text" id="id" name="id"
+                       value="<%= request.getAttribute("managerId") != null ? request.getAttribute("managerId") : "" %>"
                        maxlength="50"
                        required>
                 <div class="field-hint">영문, 숫자 조합 4-50자</div>
@@ -209,8 +209,8 @@
 
             <div class="form-group">
                 <label for="name">이름 <span class="required">*</span></label>
-                <input type="text" id="name" name="name" 
-                       value="<%= request.getAttribute("managerName") != null ? request.getAttribute("managerName") : "" %>" 
+                <input type="text" id="name" name="name"
+                       value="<%= request.getAttribute("managerName") != null ? request.getAttribute("managerName") : "" %>"
                        maxlength="20"
                        required>
                 <div class="field-hint">최대 20자</div>
@@ -233,12 +233,26 @@
 
             <div class="form-group">
                 <label for="email">이메일 <span class="required">*</span></label>
-                <input type="email" id="email" name="email" 
-                       value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" 
-                       maxlength="100"
-                       placeholder="example@email.com" required>
+                <div style="display: flex; gap: 8px;">
+                    <input type="email" id="email" name="email"
+                           value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>"
+                           maxlength="100"
+                           placeholder="example@email.com" required
+                           style="flex: 1; margin-bottom: 0;"> <button type="button" id="sendEmailBtn" class="btn btn-secondary"
+                                                                       style="width: 100px; padding: 0; font-size: 14px; height: 45px;">인증요청</button>
+                </div>
                 <div class="field-hint">2차 인증에 사용됩니다</div>
                 <div class="field-error" id="emailError"></div>
+
+                <div id="emailAuthGroup" style="margin-top: 12px; display: none;">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="authCode" placeholder="인증번호 6자리"
+                               maxlength="6" style="flex: 1; margin-bottom: 0;">
+                        <button type="button" id="verifyBtn" class="btn btn-primary"
+                                style="width: 100px; padding: 0; font-size: 14px; height: 45px;">확인</button>
+                    </div>
+                    <div class="field-hint" id="authHint">이메일로 발송된 번호를 입력해주세요.</div>
+                </div>
             </div>
 
             <div class="btn-group">
@@ -261,6 +275,8 @@
     const passwordConfirmInput = document.getElementById('passwordConfirm');
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submitBtn');
+    // ✅ 이메일 인증 상태 추적 변수 추가
+    let isEmailVerified = false;
 
     // 에러 메시지 표시 함수
     function showError(inputId, message) {
@@ -307,7 +323,7 @@
     pwInput.addEventListener('input', function() {
         const password = this.value;
         const strengthBar = document.getElementById('passwordStrength');
-        
+
         if (password.length === 0) {
             strengthBar.className = 'password-strength';
             return;
@@ -345,7 +361,7 @@
     passwordConfirmInput.addEventListener('blur', function() {
         const password = pwInput.value;
         const confirmPassword = this.value;
-        
+
         if (confirmPassword.length === 0) {
             showError('passwordConfirm', '비밀번호 확인을 입력해주세요.');
         } else if (password !== confirmPassword) {
@@ -359,7 +375,7 @@
     emailInput.addEventListener('blur', function() {
         const value = this.value.trim();
         const emailPattern = /^[A-Za-z0-9+_.-]+@(.+)$/;
-        
+
         if (value.length === 0) {
             showError('email', '이메일을 입력해주세요.');
         } else if (!emailPattern.test(value)) {
@@ -419,6 +435,160 @@
         input.addEventListener('input', function() {
             hideError(this.id);
         });
+    });
+
+    // 이메일 인증 요청 버튼 클릭 시
+    document.getElementById('sendEmailBtn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const sendBtn = this;
+
+        if(!email || !email.includes('@')) {
+            alert('올바른 이메일을 입력해주세요.');
+            return;
+        }
+
+        // 버튼 비활성화 (중복 클릭 방지)
+        sendBtn.disabled = true;
+        sendBtn.textContent = '발송 중...';
+
+        // 서버에 이메일 발송 요청
+        fetch('${pageContext.request.contextPath}/auth/sendCode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'email=' + encodeURIComponent(email)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert(email + '로 인증번호를 발송했습니다.');
+                    // 인증번호 입력창 보이기
+                    document.getElementById('emailAuthGroup').style.display = 'block';
+                } else {
+                    alert('인증번호 발송 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('인증번호 발송 중 오류가 발생했습니다.');
+            })
+            .finally(() => {
+                // 버튼 다시 활성화
+                sendBtn.disabled = false;
+                sendBtn.textContent = '인증요청';
+            });
+    });
+
+    // 확인 버튼 클릭 시
+    document.getElementById('verifyBtn').addEventListener('click', function() {
+        const code = document.getElementById('authCode').value;
+        const email = document.getElementById('email').value;
+        const verifyBtn = this;
+
+        if(code === "") {
+            alert('인증번호를 입력해주세요.');
+            return;
+        }
+
+        // 버튼 비활성화
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = '확인 중...';
+
+        // 서버에 인증번호 검증 요청
+        fetch('${pageContext.request.contextPath}/auth/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(code)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert('인증이 완료되었습니다.');
+                    // ✅ 인증 성공 플래그 설정
+                    isEmailVerified = true;
+                    document.getElementById('email').readOnly = true; // 이메일 수정 불가
+                    verifyBtn.disabled = true; // 확인 버튼 비활성화
+                    verifyBtn.textContent = '인증완료';
+                    document.getElementById('sendEmailBtn').disabled = true;
+                } else {
+                    alert('인증 실패: ' + data.message);
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = '확인';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('인증 확인 중 오류가 발생했습니다.');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '확인';
+            });
+    });
+
+    // 폼 제출 시 전체 유효성 검사
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // 아이디 검사
+        if (idInput.value.trim().length < 4 || !/^[a-zA-Z0-9]+$/.test(idInput.value.trim())) {
+            showError('id', '올바른 아이디를 입력해주세요.');
+            isValid = false;
+        }
+
+        // 이름 검사
+        if (nameInput.value.trim().length === 0) {
+            showError('name', '이름을 입력해주세요.');
+            isValid = false;
+        }
+
+        // 비밀번호 검사
+        if (pwInput.value.length < 4) {
+            showError('pw', '비밀번호는 최소 4자 이상이어야 합니다.');
+            isValid = false;
+        }
+
+        // 비밀번호 확인 검사
+        if (pwInput.value !== passwordConfirmInput.value) {
+            showError('passwordConfirm', '비밀번호가 일치하지 않습니다.');
+            isValid = false;
+        }
+
+        // 이메일 검사
+        const emailPattern = /^[A-Za-z0-9+_.-]+@(.+)$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+            showError('email', '올바른 이메일 형식이 아닙니다.');
+            isValid = false;
+        }
+
+        // ✅ 이메일 인증 완료 여부 검사 추가
+        if (!isEmailVerified) {
+            showError('email', '이메일 인증을 완료해주세요.');
+            alert('이메일 인증을 완료해주세요.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+
+        // 제출 중 버튼 비활성화
+        submitBtn.disabled = true;
+        submitBtn.textContent = '추가 중...';
+    });
+
+    // 이메일 입력 필드 변경 시 인증 상태 초기화
+    emailInput.addEventListener('input', function() {
+        if (isEmailVerified) {
+            isEmailVerified = false;
+            this.readOnly = false;
+            document.getElementById('sendEmailBtn').disabled = false;
+            document.getElementById('emailAuthGroup').style.display = 'none';
+            document.getElementById('authCode').value = '';
+        }
+        hideError(this.id);
     });
 </script>
 </body>

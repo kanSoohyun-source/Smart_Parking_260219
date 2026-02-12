@@ -41,7 +41,8 @@
             <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
             <div id="adminSubMenu" class="dropdown-content">
                 <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
-                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>
+                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>
+<%--                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>--%>
             </div>
         </li>
 
@@ -85,8 +86,8 @@
 
     // 로그아웃 함수
     function confirmLogout() {
-        if (confirm("로그아웃을 하시겠습니까?")) {  // confirm()은 확인을 누르면 true, 취소를 누르면 false를 반환합니다.
-            ${pageContext.request.contextPath}  // '확인' 클릭 시: true가 반환되어 href 주소(/logout)로 이동합니다.
+        if (confirm("로그아웃을 하시겠습니까?")) {  // confirm()은 확인을 누르면 true, 취소를 누르면 false를 반환
+            ${pageContext.request.contextPath}  // '확인' 클릭 시: true가 반환되어 href 주소(/logout)로 이동
             return true;
         } else {
             return false; // confirm() 취소를 누르면 false -> 이동 취소 (현재 화면 유지)
@@ -101,7 +102,7 @@
         dropdown.classList.toggle("show");
     }
 
-    // 메뉴 외부 클릭 시 드롭다운 닫기 (선택 사항)
+    // 메뉴 외부 클릭 시 드롭다운 닫기
     window.onclick = function(event) {
         if (!event.target.matches('.dropbtn')) {
             const dropdowns = document.getElementsByClassName("dropdown-content");
