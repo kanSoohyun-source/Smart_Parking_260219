@@ -233,12 +233,26 @@
 
             <div class="form-group">
                 <label for="email">이메일 <span class="required">*</span></label>
-                <input type="email" id="email" name="email" 
-                       value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" 
-                       maxlength="100"
-                       placeholder="example@email.com" required>
+                <div style="display: flex; gap: 8px;">
+                    <input type="email" id="email" name="email"
+                           value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>"
+                           maxlength="100"
+                           placeholder="example@email.com" required
+                           style="flex: 1; margin-bottom: 0;"> <button type="button" id="sendEmailBtn" class="btn btn-secondary"
+                                                                       style="width: 100px; padding: 0; font-size: 14px; height: 45px;">인증요청</button>
+                </div>
                 <div class="field-hint">2차 인증에 사용됩니다</div>
                 <div class="field-error" id="emailError"></div>
+
+                <div id="emailAuthGroup" style="margin-top: 12px; display: none;">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="authCode" placeholder="인증번호 6자리"
+                               maxlength="6" style="flex: 1; margin-bottom: 0;">
+                        <button type="button" id="verifyBtn" class="btn btn-primary"
+                                style="width: 100px; padding: 0; font-size: 14px; height: 45px;">확인</button>
+                    </div>
+                    <div class="field-hint" id="authHint">이메일로 발송된 번호를 입력해주세요.</div>
+                </div>
             </div>
 
             <div class="btn-group">
@@ -419,6 +433,37 @@
         input.addEventListener('input', function() {
             hideError(this.id);
         });
+    });
+
+    // 이메일 인증 요청 버튼 클릭 시
+    document.getElementById('sendEmailBtn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+
+        if(!email || !email.includes('@')) {
+            alert('올바른 이메일을 입력해주세요.');
+            return;
+        }
+
+        // 서버(Controller)에 이메일 발송 요청 Ajax 호출 필요
+
+        alert(email + '로 인증번호를 발송했습니다.');
+        // 인증번호 입력창 보이기
+        document.getElementById('emailAuthGroup').style.display = 'block';
+    });
+
+    // 확인 버튼 클릭 시
+    document.getElementById('verifyBtn').addEventListener('click', function() {
+        const code = document.getElementById('authCode').value;
+
+        if(code === "") {
+            alert('인증번호를 입력해주세요.');
+            return;
+        }
+
+        // 서버에서 보낸 번호와 맞는지 검증하는 로직
+        alert('인증이 완료되었습니다.');
+        document.getElementById('email').readOnly = true; // 이메일 수정 불가하게 고정
+        this.disabled = true; // 확인 버튼 비활성화
     });
 </script>
 </body>

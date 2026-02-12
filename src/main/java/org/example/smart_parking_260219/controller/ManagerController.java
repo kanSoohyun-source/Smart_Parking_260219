@@ -8,9 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dao.ManagerDAO;
+import org.example.smart_parking_260219.dto.ManagerDTO;
+import org.example.smart_parking_260219.service.ManagerService;
 import org.example.smart_parking_260219.vo.ManagerVO;
 
 import java.io.IOException;
+import java.util.List;
 
 @Log4j2
 @WebServlet("/mgr/*")
@@ -101,6 +104,23 @@ public class ManagerController extends HttpServlet {
                 }
 
                 request.getRequestDispatcher("/WEB-INF/views/mgr_view.jsp").forward(request, response);
+                break;
+
+            /* 관리자 목록 조회 */
+            case "/list":
+                log.info("관리자 목록 조회 요청 처리 중..");
+                try {
+                    // Service를 통해 DTO 리스트를 가져옵니다.
+                    List<ManagerDTO> dtoList = ManagerService.INSTANCE.getAllManagers();
+                    request.setAttribute("managerList", dtoList);
+                    log.info("목록 조회 완료: {}명", dtoList.size());
+
+                } catch (Exception e) {
+                    log.error("목록 조회 중 오류 발생", e);
+                    request.setAttribute("error", "목록을 불러오는 중 오류가 발생했습니다.");
+                }
+                // 목록 페이지로 포워딩
+                request.getRequestDispatcher("/WEB-INF/views/mgr_list.jsp").forward(request, response);
                 break;
 
             /* 정의되지 않은 경로는 404 에러 */
@@ -253,38 +273,47 @@ public class ManagerController extends HttpServlet {
     private void toggleManagerActive(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 현재 세션에 로그인된 관리자 ID 가져오기 (본인 차단 방지용)
         HttpSession session = request.getSession(false);
-        String currentLoginId = (session != null) ? session.getAttribute("managerId").toString() : null;
 
-        // 파라미터 수신
-        String targetId = request.getParameter("managerId");  // 변경할 대상 ID
-        String activeStr = request.getParameter("active");  // 변경할 상태값
+        String currentLoginId = null;
+        if (session != null) {
+            ManagerVO loginVO = (ManagerVO) session.getAttribute("loginManager");
+            if (loginVO != null) {
+                currentLoginId = loginVO.getManagerId();
+            }
+        }
+
+
+        String targetId = request.getParameter("managerId");
+        String activeStr = request.getParameter("active");
         log.info("관리자 상태 변경 요청 - ID: {}, active: {}", targetId, activeStr);
 
         if (targetId == null || activeStr == null) {
-            log.warn("필수 파라미터 누락- ID: {}, active: {}", targetId, activeStr);
+            log.warn("필수 파라미터 누락");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        // 활성화 : string->boolean 형변환
-        boolean active = Boolean.parseBoolean(activeStr);  //"true"이면 true, 그외 모두 false
+        boolean active = Boolean.parseBoolean(activeStr);
 
-        // 본인 계정은 스스로 비활성화(false) 할 수 없게 방어
         if (!active && targetId.equals(currentLoginId)) {
             log.warn("본인 계정 비활성화 시도 차단 - ID: {}", targetId);
-            // 에러 메시지와 함께 목록으로 돌아가기
-            response.sendRedirect(request.getContextPath() + "/mgr/list?error=self");
+            // JSP에서 에러를 보여주기 위해 세션에 에러 메시지 저장
+            session.setAttribute("error", "본인 계정은 비활성화할 수 없습니다.");
+            response.sendRedirect(request.getContextPath() + "/mgr/view?id=" + targetId);
             return;
         }
 
         try {
-            // DB 업데이트 수행 (DAO에는 변호나된 boolean 값 전달)
+            // DB 업데이트
             managerDAO.updateActive(active, targetId);
             log.info("관리자 계정 상태 변경 성공 - ID: {}, 활성화: {}", targetId, active);
-            // 성공 시 관리자 목록 페이지로 이동
-            response.sendRedirect(request.getContextPath() + "/mgr/list");
+
+            // 성공 메시지 저장 및 리다이렉트 경로
+            String statusText = active ? "활성화" : "비활성화";
+            session.setAttribute("successMessage", targetId + " 계정이 " + statusText + " 되었습니다.");
+
+            response.sendRedirect(request.getContextPath() + "/mgr/view?id=" + targetId);
 
         } catch (Exception e) {
             log.error("관리자 계정 상태 변경 중 오류 발생", e);

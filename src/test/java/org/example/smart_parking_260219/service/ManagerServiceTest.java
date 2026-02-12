@@ -92,4 +92,23 @@ class ManagerServiceTest {
         log.info("비활성화 계정 인증 결과: " + result);
         Assertions.assertFalse(result, "비활성화 계정 = false(0)");
     }
+
+    @Test
+    public void testGetAllManagers() {
+        log.info("=== 전체 관리자 목록 조회(Service) 테스트 ===");
+
+        // 1. When: 서비스의 목록 조회 메서드 호출
+        java.util.List<ManagerDTO> dtoList = managerService.getAllManagers();
+
+        // 2. Then: 결과 검증
+        // 리스트 객체 자체가 null이면 안 됨
+        Assertions.assertNotNull(dtoList);
+
+        // 최소한 하나 이상의 데이터가 들어있는지 확인 (테스트 DB 환경에 따라 조절)
+        Assertions.assertTrue(dtoList.size() > 0, "조회된 관리자 DTO 목록이 비어있습니다.");
+
+        // 3. Log: 데이터 확인
+        dtoList.forEach(dto -> log.info("조회된 DTO: {}", dto));
+        log.info("총 관리자 수: {}", dtoList.size());
+    }
 }
