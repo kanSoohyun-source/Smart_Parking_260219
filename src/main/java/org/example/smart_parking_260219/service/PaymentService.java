@@ -27,8 +27,8 @@ public enum PaymentService {
     private final ParkingDAO parkingDAO = new ParkingDAOImpl();
     private final FeePolicyDAO feePolicyDAO = new FeePolicyDAO();
 
-    PaymentService() {
-        paymentDAO = new PaymentDAO();
+    private PaymentService() {
+        paymentDAO = PaymentDAO.getInstance();
         modelMapper = MapperUtil.INSTANCE.getInstance();
     }
 

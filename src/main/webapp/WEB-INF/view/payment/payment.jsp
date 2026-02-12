@@ -38,10 +38,21 @@
 %>
 <html>
 <head>
-    <title>Title</title>
-    <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../CSS/payment_style.css">
+    <title>Payment</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/payment_style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/modal.css">
 </head>
+<div id="customModal" class="modal-overlay">
+    <div class="modal-content">
+        <div id="modalBody" class="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" onclick="handleConfirm()">확인</button>
+            <button class="btn-cancel" onclick="closeModal()">취소</button>
+        </div>
+    </div>
+</div>
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
@@ -49,7 +60,7 @@
     <!-- Content -->
     <div id="register" class="page">
         <h2>정산</h2>
-        <form name="payment" action="../payment/payment" method="post">
+        <form name="payment" action="${pageContext.request.contextPath}/payment/payment" method="post">
             <div class="form-group">
                 <label>차량 번호</label>
                 <input type="text" name ="carNum" id="carNum" placeholder="차량번호 8자리" maxlength="8" value="<%=carNum%>">
@@ -57,9 +68,11 @@
             <div class="form-group">
                 <label>결제 타입</label>
                 <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="paymentType" value="1" checked>카드</label>
+                    <label class="radio-item"><input type="radio" name="paymentType" value="1"
+                        <% if(parkingDTO.getCarType() != 2) {out.println("checked");} %>>카드</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="2">현금</label>
-                    <label class="radio-item"><input type="radio" name="paymentType" value="3">월정액</label>
+                    <label class="radio-item"><input type="radio" name="paymentType" value="3"
+                    <% if(parkingDTO.getCarType() == 2) {out.println("checked");} %>>월정액</label>
                 </div>
             </div>
             <div class="form-group">
@@ -78,11 +91,43 @@
                 <label>총 주차 요금</label>
                 <input type="text" name="finalFee" id="finalFee" placeholder="총 주차 요금" value="<%=finalFee%>">
             </div>
-            <button type="submit" class="btn btn-primary">확인</button>
+            <button type="button" class="btn btn-primary" onclick="showReceipt()">확인</button>
         </form>
     </div>
+    <div id="printArea" style="display: none;">
+        <div style="width: 300px; padding: 20px; border: 1px solid #000; font-family: 'Courier New', Courier, monospace;">
+            <h2 style="text-align: center;">[ 주차 영수증 ]</h2>
+            <hr style="border-top: 1px dashed #000;">
+            <p>차량번호: <span id="p-carNum"></span></p>
+            <p>입차시간: <span id="p-entryTime"></span></p>
+            <p>출차시간: <span id="p-exitTime"></span></p>
+            <p>주차시간: <span id="p-totalTime"></span></p>
+            <hr style="border-top: 1px dashed #000;">
+            <p>할인전금액: <span id="p-calcFee"></span>원</p>
+            <p>할인액: -<span id="p-discount"></span>원</p>
+            <h3 style="text-align: right;">최종금액: <span id="p-finalFee"></span>원</h3>
+            <hr style="border-top: 1px dashed #000;">
+            <p style="text-align: center;">감사합니다!</p>
+        </div>
+    </div>
 </div>
-<script src="../JS/menu.js"></script>
-<script src="../JS/function.js"></script>
+<script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+<script src="${pageContext.request.contextPath}/JS/function.js"></script>
+
+<script>
+    const entryTime = "<%= (parkingDTO != null && parkingDTO.getEntryTime() != null) ? parkingDTO.getEntryTime() : "" %>";
+
+    <%
+        String exitTimeStr = "";
+        if (parkingDTO != null && parkingDTO.getExitTime() != null) {
+            exitTimeStr = parkingDTO.getExitTime().toString();
+        } else {
+            exitTimeStr = java.time.LocalDateTime.now().toString();
+        }
+    %>
+    const exitTime = "<%= exitTimeStr %>";
+</script>
+
+<script src="${pageContext.request.contextPath}/JS/payment.js"></script>
 </body>
 </html>

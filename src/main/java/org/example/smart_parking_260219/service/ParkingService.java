@@ -45,7 +45,6 @@ public enum ParkingService {
 
     public List<ParkingDTO> getAllParking() {
         List<ParkingVO> parkingVOList = parkingDAO.selectAllParking();
-
         return parkingVOList.stream()
                 .map(parkingVO -> modelMapper.map(parkingVO, ParkingDTO.class)).toList();
     }

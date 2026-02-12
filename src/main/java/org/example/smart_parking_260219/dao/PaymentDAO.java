@@ -18,7 +18,7 @@ public class PaymentDAO {
 
     private static PaymentDAO instance;
 
-    public PaymentDAO() {}
+    private PaymentDAO() {}
 
     public static PaymentDAO getInstance() {
         if(instance == null) {

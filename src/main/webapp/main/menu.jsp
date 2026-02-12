@@ -34,7 +34,7 @@
         <li><a href="../member/member_list.jsp">회원 목록</a></li>
         <li><a href="../member/member_search.jsp">회원 조회</a></li>
         <li><a href="../pricing/pricing.jsp">요금 부과 정책</a></li>
-        <li><a href="../statistics/statistics.jsp">매출 통계</a></li>
+        <li><a href="../statistics/statistics">매출 통계</a></li>
 <%--        <li><a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a></li>--%>
 
         <li class="dropdown">
