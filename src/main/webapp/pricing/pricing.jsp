@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-8">
             <!-- 요금 정책 저장 폼 -->
-            <form name="frmFeePolicy" action="/policy/addActiveProcess" method="post" class="form-horizontal">
+            <form name="frmFeePolicy" action="/policy/add" method="post" class="form-horizontal">
 
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">무료 회차(분)</label>
@@ -52,7 +52,7 @@
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">월정액(원)</label>
                     <div class="col-sm-6">
-                        <input type="number" name="subscribedFee" class="form-control" value="15000" min="0"
+                        <input type="number" name="subscribedFee" class="form-control" value="100000" min="0"
                                required>
                     </div>
                 </div>
@@ -65,20 +65,20 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">경차 할인율(0~1)</label>
+                    <label class="col-sm-3 col-form-label">경차 할인율(0~100)</label>
                     <div class="col-sm-6">
-                        <input type="number" name="lightDiscount" class="form-control" value="0.3" min="0" max="1"
-                               step="0.01" required>
-                        <small class="form-text text-muted">예: 0.3 = 30% 할인</small>
+                        <input type="number" name="lightDiscount" class="form-control" value="30" min="0" max="100"
+                               step="1" required>
+                        <small class="form-text text-muted">예: 30 = 30% 할인</small>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">장애인 할인율(0~1)</label>
+                    <label class="col-sm-3 col-form-label">장애인 할인율(0~100)</label>
                     <div class="col-sm-6">
-                        <input type="number" name="disabledDiscount" class="form-control" value="0.5" min="0"
-                               max="1" step="0.01" required>
-                        <small class="form-text text-muted">예: 0.5 = 50% 할인</small>
+                        <input type="number" name="disabledDiscount" class="form-control" value="50" min="0"
+                               max="100" step="1" required>
+                        <small class="form-text text-muted">예: 50 = 50% 할인</small>
                     </div>
                 </div>
 
@@ -87,10 +87,9 @@
 
                 <div class="form-group row">
                     <div class="col-sm-offset-3 col-sm-9">
-                        <button onclick="registerMember()">저장</button>
+                        <button type="submit" onclick="registerMember()">저장</button>
                     </div>
                 </div>
-
             </form>
 
         </div>

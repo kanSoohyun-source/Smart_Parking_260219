@@ -78,6 +78,9 @@
         <li><a href="../pricing/pricing.jsp">요금 부과 정책</a></li>
         <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
         <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
+        <li><a href="${pageContext.request.contextPath}/view/list">요금 부과 정책</a></li>
+            <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
+            <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
     </ul>
 </nav>
 

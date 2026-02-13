@@ -6,6 +6,7 @@ import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.vo.FeePolicyVO;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,13 @@ public class FeePolicyDAO {
         /* 데이터베이스에 정책을 추가하는 메서드 */
         log.info("feePolicyVo : {}", feePolicyVo);
 
+        LocalDateTime registrationTime = LocalDateTime.now();
+        log.info("feePolicyVo : {} | 등록 시각 : {}", feePolicyVo, registrationTime);
+
         String sql = "INSERT INTO fee_policy " +
                 " (grace_period, default_time, default_fee, extra_time, extra_fee, light_discount, " +
                 "disabled_discount, subscribed_fee, max_daily_fee, is_active, modify_date) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         try {
@@ -44,6 +48,8 @@ public class FeePolicyDAO {
             preparedStatement.setInt(8, feePolicyVo.getSubscribedFee());
             preparedStatement.setInt(9, feePolicyVo.getMaxDailyFee());
             preparedStatement.setBoolean(10, feePolicyVo.isActive());
+
+            preparedStatement.setTimestamp(11, Timestamp.valueOf(registrationTime));
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -120,6 +126,22 @@ public class FeePolicyDAO {
         }
     }
 
+    public Integer getSubscribedFee(Connection connection) throws SQLException {
+        String sql = "SELECT subscribed_fee FROM fee_policy LIMIT 1";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("subscribe_fee");
+            }
+
+            // 기본값 반환
+            log.warn("fee_policy 테이블에 데이터 없음. 기본값 100000 반환");
+            return 100000;
+        }
+    }
+
     // 현재 활성화된 정책 모두 false로 변경
     public int deactivateAllPolicies() {
         String sql = "UPDATE fee_policy SET is_active = false WHERE is_active = true";
@@ -129,6 +151,22 @@ public class FeePolicyDAO {
             @Cleanup PreparedStatement ps = connection.prepareStatement(sql);
             return ps.executeUpdate();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 특정 ID의 정책을 활성화(true)로 변경하는 메서드
+    public int activatePolicy(int id) {
+        String sql = "UPDATE fee_policy SET is_active = true WHERE policy_id = ?";
+
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            return preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            log.error("정책 활성화 중 오류 발생 (ID: " + id + ")", e);
             throw new RuntimeException(e);
         }
     }

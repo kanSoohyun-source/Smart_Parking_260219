@@ -1,13 +1,11 @@
 package org.example.smart_parking_260219.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,4 +23,5 @@ public class FeePolicyDTO {
     private int maxDailyFee;  // 일일 최대 요금 - 15,000원
     private boolean isActive;  // 현재 정책 활성화 여부
     private LocalDateTime modifyDate;  // 정책 수정일
+
 }

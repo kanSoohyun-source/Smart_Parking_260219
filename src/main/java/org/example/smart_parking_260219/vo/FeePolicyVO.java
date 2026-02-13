@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter // setter 사용 불가
 @ToString
 @Builder
 @NoArgsConstructor
