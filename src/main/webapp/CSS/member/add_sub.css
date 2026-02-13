@@ -1,0 +1,39 @@
+/* 라디오 버튼 그룹 */
+.radio-group {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 20px;
+}
+
+.radio-group label {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.radio-group input[type="radio"] {
+    cursor: pointer;
+    margin: 0 5px 0 0 !important;
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group button {
+    flex: 1;
+}
+
+.button-group button[type="button"] {
+    background-color: #6c757d;
+}
+
+.button-group button[type="button"]:hover {
+    background-color: #5a6268;
+}

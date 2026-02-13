@@ -1,18 +1,20 @@
 package org.example.smart_parking_260219.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.dao.MemberDAO;
 import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.util.MapperUtil;
 import org.example.smart_parking_260219.vo.MemberVO;
 import org.modelmapper.ModelMapper;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 @Log4j2
 public enum MemberService {
-    Instance;
+    INSTANCE;
 
     private MemberDAO memberDAO;
     private ModelMapper modelMapper;
@@ -37,7 +39,23 @@ public enum MemberService {
     }
 
     public MemberDTO getOneMember(String carNum) throws SQLException {
-        return modelMapper.map(memberDAO.selectOneMember(carNum), MemberDTO.class);
+        MemberVO memberVO = memberDAO.selectOneMember(carNum);
+
+        if (memberVO == null) {
+            log.info("회원 정보 없음: {}", carNum);
+            return null;
+        }
+
+        return modelMapper.map(memberVO, MemberDTO.class);
+    }
+
+    public List<MemberDTO> getCarNum(String car4Num) throws Exception {
+
+            List<MemberVO> memberVOList = memberDAO.selectCar4Num(car4Num);
+
+            return memberVOList.stream()
+                    .map(vo -> modelMapper.map(vo, MemberDTO.class)).toList();
+
     }
 
     public void modifyMember(MemberDTO memberDTO) throws SQLException {
@@ -48,6 +66,10 @@ public enum MemberService {
     public void removeMember(String carNum) throws SQLException {
         memberDAO.deleteMember(carNum);
     }
+
+
+
+
 
 
 }

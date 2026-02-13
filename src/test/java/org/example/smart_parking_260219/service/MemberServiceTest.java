@@ -17,7 +17,7 @@ class MemberServiceTest {
 
     @BeforeEach
     public void ready() {
-        memberService = MemberService.Instance;
+        memberService = MemberService.INSTANCE;
     }
 
     @Test
