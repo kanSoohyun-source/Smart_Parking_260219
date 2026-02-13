@@ -57,7 +57,7 @@
             </div>
             <div class="form-group">
                 <label>입차 시간</label>
-                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
+                <input type="text" class="time" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
             </div>
             <button onclick="registerMember()">정산</button>
         </form>
@@ -65,5 +65,17 @@
 </div>
     <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
     <script src="${pageContext.request.contextPath}/JS/function.js"></script>
+    <script>
+        function formatDateTime(dtStr) {
+            if(!dtStr || dtStr === "null" || dtStr === "") return "-";
+            return dtStr.replace('T', ' ').substring(0, 16);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".time").forEach(el => {
+                el.value = formatDateTime(el.value);
+            });
+        });
+    </script>
 </body>
 </html>

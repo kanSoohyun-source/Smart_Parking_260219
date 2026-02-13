@@ -71,7 +71,7 @@
 
         <li><a href="${pageContext.request.contextPath}/dashboard">주차 현황</a></li>
         <li><a href="${pageContext.request.contextPath}/input">입차</a></li>
-        <li><a href="${pageContext.request.contextPath}/output">출차</a></li>
+        <li><a href="${pageContext.request.contextPath}/list">출차</a></li>
         <li><a href="../member/add_member.jsp">회원 등록</a></li>
         <li><a href="../member/member_list.jsp">회원 목록</a></li>
         <li><a href="../member/member_search.jsp">회원 조회</a></li>
