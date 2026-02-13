@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-md-8 mx-auto px-5 form-container">
             <!-- 요금 정책 저장 폼 -->
-            <form name="frmFeePolicy" action="/policy/add" method="post" class="form-horizontal">
+            <form name="frmFeePolicy" action="/view/add" method="post" class="form-horizontal">
                 <div class="form-group row mb-3">
                     <label class="col-sm-5 col-form-label">무료 회차(분)</label>
                     <div class="col-sm-7">
@@ -117,7 +117,7 @@
                     <div class="col-sm-12 text-center">
                         <button type="submit" class="btn btn-primary px-4" onclick="registerMember()">저장</button>
                         <button type="button" class="btn btn-danger px-4 ml-2"
-                                onclick="location.href='/policy/list'">취소
+                                onclick="location.href='/view/list'">취소
                         </button>
                     </div>
                 </div>

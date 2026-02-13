@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "FeePolicyListController", value = "/policy/list")
+@WebServlet(name = "FeePolicyListController", value = "/view/list")
 public class FeePolicyListController extends HttpServlet {
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
 
@@ -53,6 +53,6 @@ public class FeePolicyListController extends HttpServlet {
         req.setAttribute("pageResponseDto", pageResponseDto);
 
         //  목록 JSP로 포워딩
-        req.getRequestDispatcher("/WEB-INF/policy/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/list.jsp").forward(req, resp);
     }
 }

@@ -94,7 +94,7 @@
 
             <%-- 목록 버튼은 항상 노출 --%>
             <button type="button" class="btn btn-primary"
-                    onclick="location.href='/policy/list?pageNum=<%=pageNum%>&items=<%=items%>&keyword=<%=keyword%>'">목록으로</button>
+                    onclick="location.href='/view/list?pageNum=<%=pageNum%>&items=<%=items%>&keyword=<%=keyword%>'">목록으로</button>
         </div>
     </div>
 </div>

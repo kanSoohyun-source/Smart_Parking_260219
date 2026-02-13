@@ -10,7 +10,7 @@ import org.example.smart_parking_260219.service.FeePolicyService;
 
 import java.io.IOException;
 
-@WebServlet(name = "FeePolicyViewController", value = "/policy/view")
+@WebServlet(name = "FeePolicyViewController", value = "/view/view")
 public class FeePolicyViewController extends HttpServlet {
 
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
@@ -35,7 +35,7 @@ public class FeePolicyViewController extends HttpServlet {
 
         }
 
-        req.getRequestDispatcher("/WEB-INF/policy/view.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/view.jsp").forward(req, resp);
     }
 
 }

@@ -44,17 +44,17 @@
 
     <div id="entry" class="page">
         <h2>요금 정책 변경 이력</h2>
+        <span class="badge badge-success" style="font-size: 15px">전체 <%=pageResponseDto.getTotalCount()%>개</span>
 
         <div class="text-right" style="margin-bottom: 10px;">
-            <a href="/policy/add" class="btn btn-primary">신규 정책 등록</a>
-            <span class="badge badge-success">전체 <%=pageResponseDto.getTotalCount()%>개</span>
+            <a href="/view/add" class="btn btn-primary">신규 정책 등록</a>
         </div>
 
         <div class="row" style="padding-top: 30px">
             <table class="table">
                 <thead>
                 <tr>
-                    <th>상태</th>
+
                     <th>기본시간/요금</th>
                     <th>추가시간/요금</th>
                     <th>유예시간</th>
@@ -62,6 +62,7 @@
                     <th>장애인 할인율</th>
                     <th>일일최대</th>
                     <th>등록일</th>
+                    <th>상태</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -72,13 +73,7 @@
                             String rowStyle = dto.isActive() ? "background-color: #f0f8ff; font-weight: bold;" : "";
                 %>
                 <tr style="<%= rowStyle %>">
-                    <td>
-                        <% if (dto.isActive()) { %>
-                        <span class="badge badge-success">적용중</span>
-                        <% } else { %>
-                        <span class="badge badge-secondary">미적용</span>
-                        <% } %>
-                    </td>
+
                     <td><a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultTime() %>분</a>
                         /<a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultFee() %>원</a></td>
                     <td><%= dto.getExtraTime() %>분 / <%= dto.getExtraFee() %>원</td>
@@ -95,6 +90,13 @@
                                 out.print(dateStr);
                             }
                         %>
+                    </td>
+                    <td>
+                        <% if (dto.isActive()) { %>
+                        <span class="badge badge-success">적용중</span>
+                        <% } else { %>
+                        <span class="badge badge-secondary">미적용</span>
+                        <% } %>
                     </td>
                 </tr>
                 <%
@@ -126,7 +128,7 @@
                 %>
                 <%-- [이전] 버튼 --%>
                 <% if (firstPage != 1) {%>
-                <a href="/policy/list?pageNum=<%= (firstPage - 1) %>" class="btn btn-sm btn-outline-secondary">이전</a>
+                <a href="/view/list?pageNum=<%= (firstPage - 1) %>" class="btn btn-sm btn-outline-secondary">이전</a>
                 <%
                     }
                 %>
@@ -136,7 +138,7 @@
                         // 현재 페이지인 경우 btn-primary(파란색), 아닌 경우 btn-outline-secondary(회색 테두리)
                         String activeClass = (pageNum == i) ? "btn-primary" : "btn-outline-secondary";
                 %>
-                <a href="/policy/list?pageNum=<%=i%>&items=<%=items%>&keyword=<%=keyword%>"
+                <a href="/view/list?pageNum=<%=i%>&items=<%=items%>&keyword=<%=keyword%>"
                    class="btn btn-sm <%= activeClass %>" style="margin: 0 2px;">
                     <%= i %>
                 </a>
@@ -146,7 +148,7 @@
                 <%
                     if (lastPage < totalPage) {
                 %>
-                <a href="/policy/list?pageNum=<%=(lastPage + 1)%>&items=<%=items%>&keyword=<%=keyword%>"
+                <a href="/view/list?pageNum=<%=(lastPage + 1)%>&items=<%=items%>&keyword=<%=keyword%>"
                 class="btn btn-sm btn-outline-secondary">다음</a>
                 <%
                     }

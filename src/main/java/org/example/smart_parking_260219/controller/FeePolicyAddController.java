@@ -14,7 +14,7 @@ import java.io.IOException;
 import static java.lang.Integer.parseInt;
 
 @Log4j2
-@WebServlet(name = "FeePolicyAddController", value = "/policy/add")
+@WebServlet(name = "FeePolicyAddController", value = "/view/add")
 public class FeePolicyAddController extends HttpServlet {
 
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
@@ -22,7 +22,7 @@ public class FeePolicyAddController extends HttpServlet {
     // 등록 폼
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/policy/add.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/add.jsp").forward(req, resp);
 
     }
 
@@ -51,12 +51,12 @@ public class FeePolicyAddController extends HttpServlet {
             feePolicyService.addPolicy(feePolicyDTO);
 
             // 3. 성공 시 목록 페이지로 이동
-            resp.sendRedirect("/policy/list");
+            resp.sendRedirect("/view/list");
 
         } catch (Exception e) {
             log.error("등록 중 오류 발생: " + e.getMessage());
             // 4. 실패 시 에러 메시지와 함께 다시 등록 폼으로 이동
-            resp.sendRedirect("/policy/add?error=fail");
+            resp.sendRedirect("/view/add?error=fail");
         }
     }
 }
