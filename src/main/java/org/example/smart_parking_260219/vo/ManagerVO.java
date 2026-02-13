@@ -14,4 +14,5 @@ public class ManagerVO {
     private String password;  // 관리자 비밀번호 (해시 암호화)
     private String email;  // 관리자 이메일(2차 인증)
     private boolean active;  // 계정 활성화 여부 (default true)
+    private String role;  // 권한 (ADMIN/NORMAL)
 }

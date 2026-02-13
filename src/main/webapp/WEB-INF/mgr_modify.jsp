@@ -172,8 +172,7 @@
 
         <%-- 안내 메시지 --%>
         <div class="message info-message">
-            ℹ️ 정보 수정 시 이메일 인증이 필요합니다. <br>
-            ℹ️ 변경사항 적용 시 재로그인이 필요합니다.
+            ℹ️ 정보 수정 시 이메일 인증이 필요합니다.
         </div>
 
         <%-- 성공 메시지 표시 --%>
@@ -493,7 +492,7 @@
     // 이메일 입력 필드 변경 시 인증 상태 초기화
     emailInput.addEventListener('input', function() {
         const currentEmail = this.value.trim();
-
+        
         // 이메일이 변경되면 인증 상태 초기화
         if (currentEmail !== originalEmail) {
             if (isEmailVerified) {
@@ -507,19 +506,13 @@
             // 원래 이메일로 돌아가면 인증 불필요
             isEmailVerified = true;
         }
-
+        
         hideError(this.id);
     });
 
     // 폼 제출 시 전체 유효성 검사
     form.addEventListener('submit', function(e) {
         let isValid = true;
-
-        // 아이디 검사
-        if (idInput.value.trim().length < 4 || !/^[a-zA-Z0-9]+$/.test(idInput.value.trim())) {
-            showError('id', '올바른 아이디를 입력해주세요.');
-            isValid = false;
-        }
 
         // 이름 검사
         if (nameInput.value.trim().length === 0) {

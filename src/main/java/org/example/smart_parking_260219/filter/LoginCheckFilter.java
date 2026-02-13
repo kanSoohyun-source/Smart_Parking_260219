@@ -41,6 +41,16 @@ public class LoginCheckFilter implements Filter {
         String contextPath = req.getContextPath();
         String path = requestURI.substring(contextPath.length());  // 전체 주소에서 프로젝트 경로 제외
 
+        // 캐시 제어 로직 추가 (세션 없이 뒤로가기 시 보안 강화)
+        // 로그인/비밀번호 관련 페이지가 아니고, 정적 리소스(css, js)가 아닐 경우에만 캐시 금지 설정
+        if (!path.startsWith("/login") && !path.startsWith("/password") &&
+                !path.endsWith(".css") && !path.endsWith(".js")) {
+
+            resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+            resp.setHeader("Pragma", "no-cache"); // HTTP 1.0
+            resp.setHeader("Expires", "0"); // Proxies
+        }
+
         // 상세 로깅
 //        log.info("=== LoginCheckFilter ===");
 //        log.info("Request URI: {}", requestURI);

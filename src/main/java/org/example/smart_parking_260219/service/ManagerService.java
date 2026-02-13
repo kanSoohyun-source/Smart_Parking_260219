@@ -7,6 +7,8 @@ import org.example.smart_parking_260219.util.MapperUtil;
 import org.example.smart_parking_260219.vo.ManagerVO;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Log4j2
 public enum ManagerService {
     INSTANCE;
@@ -38,30 +40,25 @@ public enum ManagerService {
         return managerDTO;
     }
 
+    /* 관리자 전체 목록 조회 (DTO 변환 포함) */
+    public List<ManagerDTO> getAllManagers() {
+        log.info("getAllManagers... 호출");
+        List<ManagerVO> voList = managerDAO.selectAll();
+
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, ManagerDTO.class))
+                .toList();
+    }
+
     public void addManager(ManagerDTO managerDTO) {
         log.info("추가할 관리자 DTO: {}", managerDTO);
         ManagerVO memberVo = modelMapper.map(managerDTO, ManagerVO.class);
         managerDAO.insertManager(memberVo);
     }
 
-    /*
-    // 비번 수정
-    public void modifyManager(ManagerDTO managerDTO) {
-        // 1. 먼저 DB에서 기존 정보를 VO로 가져옴 (수정 안 할 필드 유지를 위해)
-        ManagerVO existingVO = managerDAO.selectOne(managerDTO.getManagerId());
-
-        // 2. DTO에 새 비밀번호가 입력되어 있다면 암호화해서 교체
-        if (managerDTO.getPassword() != null && !managerDTO.getPassword().trim().isEmpty()) {
-            String encodedPw = managerDAO.passEncode(managerDTO.getPassword());
-            existingVO.setPassword(encodedPw);
-        }
-
-        // 3. 이름, 이메일 등 다른 정보는 DTO에서 VO로 복사
-        existingVO.setManagerName(managerDTO.getManagerName());
-        existingVO.setEmail(managerDTO.getEmail());
-
-        // 4. DAO에게 VO 전달 (DB 작업은 여기서만 VO 사용)
-        managerDAO.updateManager(existingVO);
+    public void updateActiveStatus(String id, boolean active) {
+        log.info("서비스: 상태 변경 시도 - ID: {}, Target: {}", id, active);
+        // DAO 객체를 통해 DB 업데이트 실행
+        managerDAO.updateActive(active, id);
     }
-     */
 }

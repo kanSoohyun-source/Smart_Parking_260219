@@ -36,6 +36,25 @@ class ManagerDAOTest {
     }
 
     @Test
+    public void selectAllTest() {
+        log.info("=== 전체 관리자 목록 조회 테스트 ===");
+
+        // 1. When: 전체 목록 조회 메서드 실행
+        java.util.List<ManagerVO> list = managerDAO.selectAll();
+
+        // 2. Then: 결과 검증
+        // 리스트가 null이 아니어야 함
+        Assertions.assertNotNull(list, "조회된 리스트 객체가 null입니다.");
+
+        // 데이터가 최소 하나 이상은 있어야 함 (테스트 전 데이터가 있다는 가정 하에)
+        Assertions.assertFalse(list.isEmpty(), "조회된 관리자 목록이 비어있습니다.");
+
+        // 3. Log: 결과 출력
+        list.forEach(vo -> log.info("조회된 관리자: {}", vo));
+        log.info("총 관리자 수: {}", list.size());
+    }
+
+    @Test
     public void updateActiveTest() {
         // 1. Given: 테스트 대상 아이디와 변경할 상태 설정
         String managerId = "test01";
