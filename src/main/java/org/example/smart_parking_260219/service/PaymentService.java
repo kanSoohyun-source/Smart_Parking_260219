@@ -15,7 +15,9 @@ import org.example.smart_parking_260219.vo.PaymentVO;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 
@@ -62,18 +64,24 @@ public enum PaymentService {
         log.info("Service: 결제 등록 완료");
     }
 
-    // 결제 전체 목록 조회
+    // 결제 날짜별 목록 조회 서비스
     // 관리자 페이지 등에서 보여줄 전체 결제 내역
-    public List<PaymentDTO> getPaymentList() {
-        log.info("Service: getPaymentList 호출");
+    public List<PaymentDTO> getPaymentList(String targetDate) {
+        log.info("Service: getPaymentList 호출 - 날짜: " + targetDate);
 
-        // 1. DAO에서 전체 VO 목록 가져오기
-        List<PaymentVO> paymentVOList = paymentDAO.selectAllPayments();
+        // 1. DAO 호출 (검색 결과가 없으면 빈 리스트가 반환되도록 DAO 설계 권장)
+        List<PaymentVO> paymentVOList = paymentDAO.selectPaymentByDate(targetDate);
 
-        // 2. VO List -> DTO List 변환 (Stream API 사용)
-        List<PaymentDTO> paymentDTOList = paymentVOList.stream()
-                .map(paymentVO -> modelMapper.map(paymentVO, PaymentDTO.class)).toList();
-        return paymentDTOList;
+        // 2. 결과가 null인 경우 빈 리스트 반환 (안전장치)
+        if (paymentVOList == null || paymentVOList.isEmpty()) {
+            log.info("해당 날짜에 결제 내역이 없습니다.");
+            return Collections.emptyList();
+        }
+
+        // 3. VO List -> DTO List 변환 및 반환
+        return paymentVOList.stream()
+                .map(vo -> modelMapper.map(vo, PaymentDTO.class))
+                .collect(Collectors.toList());
     }
 
 

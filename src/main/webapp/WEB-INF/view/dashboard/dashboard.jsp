@@ -14,7 +14,7 @@
 <head>
     <title>주차 현황</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/tlqkf.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/dashboard.css">
 </head>
 <body>
 <%@ include file="/main/menu.jsp" %>

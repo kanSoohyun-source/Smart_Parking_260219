@@ -43,10 +43,11 @@
         <h2>매출 및 이용 통계</h2>
 
         <div class="section-card control-section">
-            <form action="${pageContext.request.contextPath}/statistics/statistics" method="get" class="control-bar">
+            <form action="${pageContext.request.contextPath}/payment/payment_list" method="get" class="control-bar">
                 <div class="selector-box">
                     <div class="btn-label">조회 기준일</div>
-                    <input type="date" name="targetDate" value="${targetDate}" onchange="this.form.submit()">
+                    <input type="date" name="targetDate" value="${targetDate}">
+                    <button type="submit" class="btn-search">조회</button>
                 </div>
             </form>
         </div>

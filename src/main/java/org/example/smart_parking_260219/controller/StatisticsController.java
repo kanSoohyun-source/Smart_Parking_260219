@@ -58,7 +58,8 @@ public class StatisticsController extends HttpServlet {
             req.setAttribute("dayTotal", dayTotal);
             req.setAttribute("monthTotal", monthTotal);
 
-            // 5. 결과를 보여줄 JSP로 포워딩 (경로는 실제 프로젝트 구조에 맞게 수정하세요)
+            // 5. 결과를 보여줄 JSP로 포워딩
+            log.info(req.getRequestURI());
             req.getRequestDispatcher("/WEB-INF/view/statistics/statistics.jsp").forward(req, resp);
 
         } catch (Exception e) {
