@@ -289,7 +289,7 @@
     sendOtpBtn.addEventListener('click', function() {
         addDebugLog('========================================');
         addDebugLog('인증요청 버튼 클릭');
-
+        
         const email = emailInput.value.trim();
         const emailPattern = /^[A-Za-z0-9+_.-]+@(.+)$/;
 
@@ -300,7 +300,7 @@
             emailInput.focus();
             return;
         }
-
+        
         if (!emailPattern.test(email)) {
             alert('올바른 이메일 형식을 입력해주세요.');
             emailInput.focus();
@@ -309,10 +309,10 @@
 
         sendOtpBtn.disabled = true;
         sendOtpBtn.textContent = '발송 중...';
-
+        
         const url = '${pageContext.request.contextPath}/login/sendLoginOtp';
         const body = 'email=' + encodeURIComponent(email);
-
+        
         addDebugLog('요청 URL: ' + url);
         addDebugLog('요청 Body: ' + body);
         addDebugLog('Fetch 시작...');
@@ -325,70 +325,70 @@
             },
             body: body
         })
-            .then(response => {
-                addDebugLog('응답 수신 완료');
-                addDebugLog('응답 상태: ' + response.status + ' ' + response.statusText);
-                addDebugLog('응답 헤더 Content-Type: ' + response.headers.get('Content-Type'));
-
-                if (!response.ok) {
-                    throw new Error('HTTP error! status: ' + response.status);
-                }
-
-                return response.text(); // 먼저 text로 받아서 확인
-            })
-            .then(text => {
-                addDebugLog('응답 본문(Text): ' + text);
-
-                try {
-                    const data = JSON.parse(text);
-                    addDebugLog('JSON 파싱 성공');
-                    addDebugLog('success: ' + data.success);
-                    addDebugLog('message: ' + data.message);
-
-                    if (data.success) {
-                        // 성공 메시지 표시
-                        const errorMessage = document.getElementById('errorMessage');
-                        if (errorMessage) {
-                            errorMessage.className = 'success-message';
-                            errorMessage.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
-                        } else {
-                            const successDiv = document.createElement('div');
-                            successDiv.className = 'success-message';
-                            successDiv.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
-                            otpForm.insertBefore(successDiv, otpForm.firstChild);
-                        }
-
-                        emailInput.readOnly = true;
-                        otpGroup.style.display = 'block';
-                        otpInput.focus();
-                        isEmailVerified = true;
-
-                        addDebugLog('✅ OTP 발송 성공!');
-                        addDebugLog('IntelliJ 콘솔에서 OTP를 확인하세요!');
-                        alert('✅ OTP가 발송되었습니다!\n\n📋 IntelliJ 콘솔 창에서\n"테스트용 OTP: ######" 를 확인하고\n해당 번호를 입력하세요.');
+        .then(response => {
+            addDebugLog('응답 수신 완료');
+            addDebugLog('응답 상태: ' + response.status + ' ' + response.statusText);
+            addDebugLog('응답 헤더 Content-Type: ' + response.headers.get('Content-Type'));
+            
+            if (!response.ok) {
+                throw new Error('HTTP error! status: ' + response.status);
+            }
+            
+            return response.text(); // 먼저 text로 받아서 확인
+        })
+        .then(text => {
+            addDebugLog('응답 본문(Text): ' + text);
+            
+            try {
+                const data = JSON.parse(text);
+                addDebugLog('JSON 파싱 성공');
+                addDebugLog('success: ' + data.success);
+                addDebugLog('message: ' + data.message);
+                
+                if (data.success) {
+                    // 성공 메시지 표시
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage) {
+                        errorMessage.className = 'success-message';
+                        errorMessage.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
                     } else {
-                        addDebugLog('❌ 발송 실패: ' + data.message);
-                        alert('인증번호 발송 실패: ' + (data.message || '알 수 없는 오류'));
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'success-message';
+                        successDiv.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
+                        otpForm.insertBefore(successDiv, otpForm.firstChild);
                     }
-                } catch (parseError) {
-                    addDebugLog('❌ JSON 파싱 실패: ' + parseError.message);
-                    addDebugLog('응답이 JSON이 아닙니다. HTML이거나 다른 형식일 수 있습니다.');
-                    alert('서버 응답 오류: JSON 파싱 실패\n콘솔을 확인하세요.');
+                    
+                    emailInput.readOnly = true;
+                    otpGroup.style.display = 'block';
+                    otpInput.focus();
+                    isEmailVerified = true;
+                    
+                    addDebugLog('✅ OTP 발송 성공!');
+                    addDebugLog('IntelliJ 콘솔에서 OTP를 확인하세요!');
+                    alert('✅ OTP가 발송되었습니다!\n\n📋 IntelliJ 콘솔 창에서\n"테스트용 OTP: ######" 를 확인하고\n해당 번호를 입력하세요.');
+                } else {
+                    addDebugLog('❌ 발송 실패: ' + data.message);
+                    alert('인증번호 발송 실패: ' + (data.message || '알 수 없는 오류'));
                 }
-            })
-            .catch(error => {
-                addDebugLog('❌ Fetch 오류 발생');
-                addDebugLog('오류 메시지: ' + error.message);
-                addDebugLog('오류 타입: ' + error.name);
-                console.error('전체 오류:', error);
-                alert('인증번호 발송 중 오류가 발생했습니다.\n\n오류: ' + error.message + '\n\n콘솔과 디버그 로그를 확인하세요.');
-            })
-            .finally(() => {
-                sendOtpBtn.disabled = false;
-                sendOtpBtn.textContent = isEmailVerified ? '재발송' : '인증요청';
-                addDebugLog('요청 완료');
-                addDebugLog('========================================');
-            });
+            } catch (parseError) {
+                addDebugLog('❌ JSON 파싱 실패: ' + parseError.message);
+                addDebugLog('응답이 JSON이 아닙니다. HTML이거나 다른 형식일 수 있습니다.');
+                alert('서버 응답 오류: JSON 파싱 실패\n콘솔을 확인하세요.');
+            }
+        })
+        .catch(error => {
+            addDebugLog('❌ Fetch 오류 발생');
+            addDebugLog('오류 메시지: ' + error.message);
+            addDebugLog('오류 타입: ' + error.name);
+            console.error('전체 오류:', error);
+            alert('인증번호 발송 중 오류가 발생했습니다.\n\n오류: ' + error.message + '\n\n콘솔과 디버그 로그를 확인하세요.');
+        })
+        .finally(() => {
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = isEmailVerified ? '재발송' : '인증요청';
+            addDebugLog('요청 완료');
+            addDebugLog('========================================');
+        });
     });
 
     // OTP 입력 시 숫자만 허용
@@ -399,10 +399,10 @@
     // 폼 제출
     otpForm.addEventListener('submit', function(e) {
         addDebugLog('OTP 폼 제출 시작');
-
+        
         const email = emailInput.value.trim();
         const otp = otpInput.value.trim();
-
+        
         addDebugLog('제출 - 이메일: ' + email);
         addDebugLog('제출 - OTP: ' + otp);
 
@@ -428,7 +428,7 @@
 
         submitBtn.disabled = true;
         submitBtn.textContent = '로그인 중...';
-
+        
         addDebugLog('폼 제출 진행');
         return true;
     });

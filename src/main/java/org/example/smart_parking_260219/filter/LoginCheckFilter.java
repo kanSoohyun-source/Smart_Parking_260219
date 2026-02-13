@@ -18,6 +18,7 @@ public class LoginCheckFilter implements Filter {
     // 로그인 검사를 제외할 경로 목록
     private static final List<String> EXCLUDE_URLS = Arrays.asList(
             "/login",
+            "/login/verifyEmail", "/login/sendLoginOtp", "/login/verifyEmailOtp",  // 로그인 2차 인증
             "/logout",
             "/resources",
             "/CSS",

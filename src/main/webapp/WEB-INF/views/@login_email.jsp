@@ -1,17 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%--%>
-<%--    // 1차 인증 통과 확인--%>
-<%--    String tempManagerId = (String) session.getAttribute("tempManagerId");--%>
-<%--    if (tempManagerId == null) {--%>
-<%--        response.sendRedirect(request.getContextPath() + "/login");--%>
-<%--        return;--%>
-<%--    }--%>
-<%--%>--%>
+<%
+    // 1차 인증 통과 확인
+    String tempManagerId = (String) session.getAttribute("tempManagerId");
+    if (tempManagerId == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2차 인증 - 이메일 확인</title>
     <style>
         * {
@@ -25,7 +24,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
         }
         .auth-container {
             background: white;
@@ -95,10 +94,6 @@
         .btn-primary:hover {
             background: #5568d3;
         }
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
         .btn-secondary {
             background: #6c757d;
             color: white;
@@ -128,7 +123,7 @@
 </head>
 <body>
 <div class="auth-container">
-    <h2>🔐 2차 인증</h2>
+    <h2>2차 인증</h2>
     <p class="subtitle">등록된 이메일 주소를 입력해주세요</p>
 
     <div class="info-box">
@@ -137,7 +132,7 @@
 
     <%-- 에러 메시지 표시 --%>
     <% String error = (String) request.getAttribute("error");
-        if (error != null && !error.isEmpty()) { %>
+        if (error != null) { %>
     <div class="error-message">
         <%= error %>
     </div>
@@ -151,22 +146,13 @@
         </div>
 
         <button type="submit" class="btn btn-primary" id="submitBtn">확인</button>
-        <button type="button" class="btn btn-secondary" id="cancelBtn">취소</button>
+        <button type="button" class="btn btn-secondary" onclick="location.href='../../login'">취소</button>
     </form>
 </div>
 
 <script>
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submitBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const emailForm = document.getElementById('emailForm');
-
-    // 페이지 로드 시 디버깅 정보
-    window.addEventListener('load', function() {
-        console.log('=== 2차 인증 페이지 로드 완료 ===');
-        console.log('Context Path:', '${pageContext.request.contextPath}');
-        console.log('Form Action:', emailForm.action);
-    });
 
     // 이메일 유효성 검사
     emailInput.addEventListener('blur', function() {
@@ -189,39 +175,16 @@
     });
 
     // 폼 제출
-    emailForm.addEventListener('submit', function(e) {
-        console.log('이메일 폼 제출 시작');
-        console.log('입력된 이메일:', emailInput.value);
-        
+    document.getElementById('emailForm').addEventListener('submit', function(e) {
         const emailPattern = /^[A-Za-z0-9+_.-]+@(.+)$/;
-        
-        if (!emailInput.value.trim()) {
-            e.preventDefault();
-            alert('이메일을 입력해주세요.');
-            emailInput.focus();
-            return false;
-        }
-        
         if (!emailPattern.test(emailInput.value.trim())) {
             e.preventDefault();
-            alert('올바른 이메일 형식을 입력해주세요.');
-            emailInput.focus();
+            alert('올바른 이메일을 입력해주세요.');
             return false;
         }
 
         submitBtn.disabled = true;
         submitBtn.textContent = '확인 중...';
-        
-        console.log('폼 제출 진행');
-        return true;
-    });
-
-    // 취소 버튼
-    cancelBtn.addEventListener('click', function() {
-        console.log('취소 버튼 클릭');
-        if (confirm('로그인을 취소하시겠습니까?')) {
-            window.location.href = '${pageContext.request.contextPath}/login';
-        }
     });
 </script>
 </body>
