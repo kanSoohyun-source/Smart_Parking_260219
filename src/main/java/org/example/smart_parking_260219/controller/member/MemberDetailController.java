@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.MemberDTO;
-import org.example.smart_parking_260219.dto.SubscribeDTO;
 import org.example.smart_parking_260219.service.MemberService;
-import org.example.smart_parking_260219.service.SubscribeService;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.List;
 @WebServlet(name = "memberDetailController", value = "/member/member_detail")
 public class MemberDetailController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
-    private final SubscribeService subscribeService = SubscribeService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,43 +35,35 @@ public class MemberDetailController extends HttpServlet {
             carNum = carNum.trim();
 
             // 뒤 4자리만 입력한 경우
-            if (carNum.length() == 4) {
-                log.info("뒤 4자리로 조회: {}", carNum);
-
-                // 뒤 4자리로 조회 (여러 건 가능)
-                List<MemberDTO> matchedMembers = memberService.getCarNum(carNum);
-
-                if (matchedMembers == null || matchedMembers.isEmpty()) {
-                    log.warn("조회 결과 없음");
-                    resp.sendRedirect("/member/member_search.jsp?error=notFound");
-                    return;
-                }
-
-                // 1건이면 바로 상세 페이지로
-                if (matchedMembers.size() == 1) {
-                    log.info("조회 결과 1건 - 상세 페이지로 이동");
-                    MemberDTO member = matchedMembers.get(0);
-
-                    SubscribeDTO subscribe = null;
-                    try {
-                        subscribe = subscribeService.getOneSubscribe(member.getCarNum());
-                        log.info("구독 정보 조회 성공");
-                    } catch (Exception e) {
-                        log.warn("구독 정보 없음 (일반 회원): {}", e.getMessage());
-                    }
-
-                    req.setAttribute("member", member);
-                    req.setAttribute("subscribe", subscribe);
-                    req.getRequestDispatcher("/WEB-INF/member/member_detail.jsp").forward(req, resp);
-                    return;
-                }
-
-                // 여러 건이면 선택 페이지로
-                log.info("조회 결과 {}건 - 선택 페이지로 이동", matchedMembers.size());
-                req.setAttribute("matchedMembers", matchedMembers);
-                req.getRequestDispatcher("/WEB-INF/member/member_select.jsp").forward(req, resp);
-                return;
-            }
+//            if (carNum.length() == 4) {
+//                log.info("뒤 4자리로 조회: {}", carNum);
+//
+//                // 뒤 4자리로 조회 (여러 건 가능)
+//                List<MemberDTO> matchedMembers = memberService.getCarNum(carNum);
+//
+//                if (matchedMembers == null || matchedMembers.isEmpty()) {
+//                    log.warn("조회 결과 없음");
+//                    resp.sendRedirect("/member/member_search.jsp?error=notFound");
+//                    return;
+//                }
+//
+//                // 1건이면 바로 상세 페이지로
+//                if (matchedMembers.size() == 1) {
+//                    log.info("조회 결과 1건 - 상세 페이지로 이동");
+//                    MemberDTO member = matchedMembers.get(0);
+//
+//
+//                    req.setAttribute("member", member);
+//                    req.getRequestDispatcher("/WEB-INF/member/member_detail.jsp").forward(req, resp);
+//                    return;
+//                }
+//
+//                // 여러 건이면 선택 페이지로
+//                log.info("조회 결과 {}건 - 선택 페이지로 이동", matchedMembers.size());
+//                req.setAttribute("matchedMembers", matchedMembers);
+//                req.getRequestDispatcher("/WEB-INF/member/member_select.jsp").forward(req, resp);
+//                return;
+//            }
 
             // 전체 차량번호를 입력한 경우
             log.info("전체 차량번호로 조회: {}", carNum);
@@ -87,17 +76,8 @@ public class MemberDetailController extends HttpServlet {
                 return;
             }
 
-            SubscribeDTO subscribe = null;
-            try {
-                subscribe = subscribeService.getOneSubscribe(member.getCarNum());
-                log.info("구독 정보 조회 성공");
-            } catch (Exception e) {
-                log.warn("구독 정보 없음 (일반 회원): {}", e.getMessage());
-            }
-
             log.info("조회 결과 1건 - 상세 페이지로 이동");
             req.setAttribute("member", member);
-            req.setAttribute("subscribe", subscribe);
             req.getRequestDispatcher("/WEB-INF/member/member_detail.jsp").forward(req, resp);
 
         } catch (Exception e) {

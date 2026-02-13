@@ -8,9 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.MemberDTO;
-import org.example.smart_parking_260219.dto.SubscribeDTO;
 import org.example.smart_parking_260219.service.MemberService;
-import org.example.smart_parking_260219.service.SubscribeService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import java.util.List;
 @WebServlet(name = "memberController", value = "/member/member_list")
 public class MemberListController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
-    private final SubscribeService subscribeService = SubscribeService.INSTANCE;
 
     @SneakyThrows
     @Override
@@ -59,17 +56,6 @@ public class MemberListController extends HttpServlet {
                 ? allMembers.subList(startIndex, endIndex)
                 : new ArrayList<>();
 
-        for (MemberDTO member : pagedMembers) {
-            try {
-                SubscribeDTO subscribe = subscribeService.getOneSubscribe(member.getCarNum());
-                if (subscribe != null) {
-                    member.setSubscribeStartDate(subscribe.getStartDate());
-                    member.setSubscribeEndDate(subscribe.getEndDate());
-                }
-            } catch (Exception e) {
-                log.warn("구독 정보 없음 (일반 회원): {}", member.getCarNum());
-            }
-        }
 
         // ✅ 시작 번호 계산 (역순)
         // 예: 총 25명, 1페이지 → startNo = 25

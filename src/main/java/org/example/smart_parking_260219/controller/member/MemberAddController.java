@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.MemberDTO;
-import org.example.smart_parking_260219.dto.SubscribeDTO;
 import org.example.smart_parking_260219.service.MemberService;
-import org.example.smart_parking_260219.service.SubscribeService;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
@@ -20,7 +17,6 @@ import java.time.LocalDate;
 @WebServlet(name = "memberAddController", value = "/member/member_add")
 public class MemberAddController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
-    private final SubscribeService subscribeService = SubscribeService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -68,15 +64,6 @@ public class MemberAddController extends HttpServlet {
                 LocalDate startDate = LocalDate.parse(startDateStr);
                 LocalDate endDate = LocalDate.parse(endDateStr);
 
-                SubscribeDTO subscribeDTO = SubscribeDTO.builder()
-                        .carNum(carNum)
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .status(true)
-                        .build();
-
-                subscribeService.addSubscribe(subscribeDTO);
-                log.info("월정액 가입 완료: {} ({} ~ {})", carNum, startDate, endDate);
             }
 
             out.println("<script>");

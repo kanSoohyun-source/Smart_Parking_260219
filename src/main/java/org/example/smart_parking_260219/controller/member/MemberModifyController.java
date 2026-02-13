@@ -8,9 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.MemberDTO;
-import org.example.smart_parking_260219.dto.SubscribeDTO;
 import org.example.smart_parking_260219.service.MemberService;
-import org.example.smart_parking_260219.service.SubscribeService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,7 +18,6 @@ import java.time.LocalDateTime;
 @WebServlet(name = "memberModifyController", value = "/member/member_modify")
 public class MemberModifyController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
-    private final SubscribeService subscribeService = SubscribeService.INSTANCE;
 
     @SneakyThrows
     @Override
@@ -41,16 +38,7 @@ public class MemberModifyController extends HttpServlet {
                 return;
             }
 
-            // 기존 구독 정보 조회
-            SubscribeDTO subscribe = null;
-            try {
-                subscribe = subscribeService.getOneSubscribe(carNum);
-            } catch (Exception e) {
-                log.warn("구독 정보 없음: {}", carNum);
-            }
-
             req.setAttribute("member", member);
-            req.setAttribute("subscribe", subscribe);
             req.getRequestDispatcher("/WEB-INF/member/member_modify.jsp").forward(req, resp);
 
         } catch (Exception e) {
@@ -94,44 +82,8 @@ public class MemberModifyController extends HttpServlet {
                 LocalDate startDate = LocalDate.parse(startDateStr);
                 LocalDate endDate = LocalDate.parse(endDateStr);
 
-                SubscribeDTO existSubscribe = null;
-                try {
-                    existSubscribe = subscribeService.getOneSubscribe(carNum);
-                } catch (Exception e) {
-                    log.warn("기존 구독 정보 없음: {}", carNum);
-                }
-
-                if (existSubscribe == null) {
-                    // 신규 월정액 가입
-                    SubscribeDTO newSubscribe = SubscribeDTO.builder()
-                            .carNum(carNum)
-                            .startDate(startDate)
-                            .endDate(endDate)
-                            .status(true)
-                            .build();
-                    subscribeService.addSubscribe(newSubscribe);
-                    log.info("신규 월정액 가입: {} ({} ~ {})", carNum, startDate, endDate);
-
-                } else {
-                    // 기간 연장
-                    existSubscribe.setStartDate(startDate);
-                    existSubscribe.setEndDate(endDate);
-                    existSubscribe.setStatus(true);
-                    subscribeService.modifySubscribe(existSubscribe);
-                    log.info("월정액 기간 연장: {} ({} ~ {})", carNum, startDate, endDate);
-                }
-
-            } else if ("cancel".equals(subscribeAction)) {
-                // 월정액 해지
-                SubscribeDTO existSubscribe = subscribeService.getOneSubscribe(carNum);
-                if (existSubscribe != null) {
-                    existSubscribe.setStatus(false);
-                    subscribeService.modifySubscribe(existSubscribe);
-                    log.info("월정액 해지: {}", carNum);
-                }
+                resp.sendRedirect("/member/member_list?success=modify");
             }
-
-            resp.sendRedirect("/member/member_list?success=modify");
 
         } catch (Exception e) {
             log.error("회원 수정 중 오류 발생", e);
