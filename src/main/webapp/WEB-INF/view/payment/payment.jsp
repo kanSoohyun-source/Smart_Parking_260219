@@ -5,6 +5,8 @@
 <%@ page import="org.example.smart_parking_260219.service.FeePolicyService" %>
 <%@ page import="org.example.smart_parking_260219.vo.FeePolicyVO" %>
 <%@ page import="org.example.smart_parking_260219.dto.PaymentDTO" %>
+<%@ page import="org.apache.logging.log4j.Logger" %>
+<%@ page import="org.apache.logging.log4j.LogManager" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String carNum = request.getParameter("carNum");
@@ -22,8 +24,11 @@
     int finalFee = 0;
 
     if(carNum != null && !carNum.isEmpty() && !"null".equals(carNum)) {
-        parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-        paymentDTO = PaymentService.INSTANCE.getPayment(paymentDTO.getParkingId());
+        parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum.trim());
+        if (parkingDTO != null) {
+            // 주차 정보가 있을 때만 실행
+            paymentDTO = PaymentService.INSTANCE.getPayment(parkingDTO.getParkingId());
+        }
 
         // DB에서 차량을 못 찾았을 경우의 처리
         if (parkingDTO == null) {
