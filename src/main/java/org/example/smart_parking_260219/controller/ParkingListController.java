@@ -15,34 +15,21 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 @Log4j2
-@WebServlet(name = "parkingGetController", value = "/parking/get")
+@WebServlet("/get")
 public class ParkingListController extends HttpServlet {
-    private final ParkingService parkingService = ParkingService.INSTANCE;
-    private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("parking get...");
         String CarNum = req.getParameter("carNum");
         req.setAttribute("carNum", CarNum);
-        req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/exit/exit_serch_list.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("parking post...");
         String carNum = req.getParameter("carNum");
-        ParkingDTO parkingDTO = ParkingDTO.builder()
-                .carNum(carNum)
-                .build();
-        log.info("parkingDTO: {}", parkingDTO);
-        parkingService.modifyParking(parkingDTO.getCarNum());
-
-        ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                .carNum(carNum)
-                .build();
-        log.info("parkingSpotDTO: {}", parkingSpotDTO);
-        parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
         req.setAttribute("carNum", carNum);
         req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }

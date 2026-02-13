@@ -13,7 +13,7 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
 
-@WebServlet(name = "parkingNonMemberInputController", value = "/parking/nonMember")
+@WebServlet("/nonMember")
 @Log4j2
 public class ParkingNonMemberInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
@@ -27,7 +27,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         log.info("/parking/non_member_entry post...");
         String carNum = req.getParameter("carNum");
         String spaceId = req.getParameter("id");
@@ -53,7 +53,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
 
-        req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp");
+        req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
 
     }
 }

@@ -6,7 +6,10 @@ document.addEventListener("click", e => {
     const isEmpty = slot.dataset.empty === "true"
     const carNum = slot.dataset.carnum;
 
+    // const contextPath = window.location.pathname.split("/")[1];
+    const base = "/" + contextPath;
+
     location.href = isEmpty
-        ? `/WEB-INF/view/entry/entry.jsp?id=${id}`
-        : `/WEB-INF/view/exit/exit_serch_list.jsp?id=${id}&carNum=${carNum}`;
+        ? `${contextPath}/input?id=${id}`
+        : `${contextPath}/get?id=${id}&carNum=${carNum}`;
 });

@@ -15,7 +15,7 @@
 <div class="main-content">
     <!-- Content -->
     <div id="exit" class="page">
-        <form action="../parking/nonMember" method="post" class="form-horizontal">
+        <form action="../nonMember" method="post" class="form-horizontal">
             <input type="hidden" id="id" name="id" value="<%=space%>">
             <input type="hidden" id="carNum" name="carNum" value="<%=carNum%>">
             <h2>비회원 입차 출력</h2>

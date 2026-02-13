@@ -18,7 +18,7 @@
 <div class="main-content">
   <!-- Content -->
     <div id="exit" class="page">
-        <form action="../parking/output" method="post" class="form-horizontal">
+        <form action="../output" method="post" class="form-horizontal">
             <input type="hidden" id="exitSpaceId" name="id" value="<%=space%>">
             <h2>출차</h2>
             <div class="form-group">

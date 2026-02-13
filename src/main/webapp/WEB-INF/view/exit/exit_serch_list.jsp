@@ -22,15 +22,14 @@
         space = (String) request.getAttribute("id");
     }
     String carNum = request.getParameter("carNum");
-    System.out.println(carNum);
+    System.out.println("exit_serch_list: " + carNum);
     ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-    long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
 %>
 <div class="main-content">
   <!-- Content -->
     <div id="register" class="page">
         <h2>출차</h2>
-        <form action = "../parking/get" method="post" class="form-horizontal">
+        <form action = "../get" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 구역</label>
                 <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=parkingDTO.getSpaceId()%>">
