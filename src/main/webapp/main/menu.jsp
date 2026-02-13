@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="org.example.smart_parking_260219.vo.ManagerVO" %>
 <nav>
     <h1>주차장 관리 시스템</h1>
 
@@ -6,6 +7,14 @@
         // 세션에서 "loginManager" 객체를 가져옴 -> Controller에서 session.setAttribute("loginManager", manager)
         Object loginManager = session.getAttribute("loginManager");
         String mName = (String) session.getAttribute("managerName");
+        // mRole을 초기화할 때 null 방지를 위해 빈 문자열로 시작
+        String mRole = "";
+
+        // 세션에서 꺼낸 객체가 ManagerVO 타입인지 확인하고 캐스팅
+        if (loginManager instanceof ManagerVO) {
+            ManagerVO vo = (ManagerVO) loginManager;
+            mRole = vo.getRole();
+        }
 
         if (loginManager != null && mName != null) {
     %>
@@ -27,6 +36,39 @@
     %>
 
     <ul id="navMenu">
+<%--        <div style="color: yellow; background: black; font-size: 10px;">--%>
+<%--            현재 인식된 권한: [<%= mRole %>]--%>
+<%--        </div>--%>
+
+<%--        <div style="background: yellow; color: black; padding: 10px;">--%>
+<%--            디버깅 정보:<br>--%>
+<%--            1. loginManager 존재 여부: <%= session.getAttribute("loginManager") != null %><br>--%>
+<%--            2. managerName 값: <%= session.getAttribute("managerName") %><br>--%>
+<%--            3. managerRole 값: <%= session.getAttribute("managerRole") %><br>--%>
+<%--            4. loginManager 객체의 타입: <%= session.getAttribute("loginManager") != null ? session.getAttribute("loginManager").getClass().getName() : "null" %>--%>
+<%--        </div>--%>
+
+<%--        <li class="dropdown">--%>
+<%--            <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>--%>
+<%--            <div id="adminSubMenu" class="dropdown-content">--%>
+<%--                <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>--%>
+<%--                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>--%>
+<%--                &lt;%&ndash;                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>&ndash;%&gt;--%>
+<%--            </div>--%>
+<%--        </li>--%>
+
+    <%-- 권한이 ADMIN일 때만 '관리자 메뉴' 출력 --%>
+    <% if ("ADMIN".equals(mRole)) { %>
+    <li class="dropdown">
+        <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
+        <div id="adminSubMenu" class="dropdown-content">
+            <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
+            <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>
+            <a href="${pageContext.request.contextPath}/mgr/modify">관리자 정보 수정</a>
+        </div>
+    </li>
+    <% } %>
+
         <li><a href="../dashboard/dashboard.jsp">주차 현황</a></li>
         <li><a href="../entry/entry.jsp">입차</a></li>
         <li><a href="../exit/exit.jsp">출차</a></li>
@@ -35,17 +77,6 @@
         <li><a href="../member/member_search.jsp">회원 조회</a></li>
         <li><a href="../pricing/pricing.jsp">요금 부과 정책</a></li>
         <li><a href="../statistics/statistics.jsp">매출 통계</a></li>
-<%--        <li><a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a></li>--%>
-
-        <li class="dropdown">
-            <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
-            <div id="adminSubMenu" class="dropdown-content">
-                <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
-                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>
-<%--                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>--%>
-            </div>
-        </li>
-
         <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
     </ul>
 </nav>
