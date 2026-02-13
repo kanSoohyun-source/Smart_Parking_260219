@@ -11,6 +11,7 @@
 <%
     String space = request.getParameter("id");
     String failInput = request.getParameter("fail");
+    String numInput = request.getParameter("id");
     if ("false".equals(failInput)) {
         out.println("<script>alert('이미 입차된 구역입니다.'); history.back();</script>");
     }
@@ -26,7 +27,7 @@
         <form action="../input" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 자리</label>
-                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=(space != null) ? space : ""%>">
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=(space != null) ? space : ""%>" <%=(numInput != null) ? "readonly" : ""%>>
                 <label>차량 번호</label>
                 <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
             </div>

@@ -52,8 +52,6 @@ public class ParkingNonMemberInputController extends HttpServlet {
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
-
         req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
-
     }
 }
