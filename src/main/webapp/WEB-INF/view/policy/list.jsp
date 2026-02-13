@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: PC
-  Date: 26. 1. 28.
-  Time: 오후 9:00
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.smart_parking_260219.dto.FeePolicyDTO" %>
@@ -20,80 +13,158 @@
 
     List<FeePolicyDTO> boardList = pageResponseDto.getBoardList();
     int totalCount = pageResponseDto.getTotalCount(); // 전체 게시글 개수
-
     int pageNum = pageResponseDto.getPageNum(); // 현재 페이지 번호
     int totalPage = pageResponseDto.getTotalPage(); // 전체 페이지 수
-
-    // 3. 번호 역순 계산
-    int n = totalCount - (5 * (pageResponseDto.getPageNum() - 1));
-
     String items = (request.getParameter("items") != null) ? request.getParameter("items") : "";
     String keyword = (request.getParameter("keyword") != null) ? request.getParameter("keyword") : "";
-
 %>
 
 <html>
 <head>
     <title>요금 정책 변경 이력</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
+    <style>
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+            background-color: #f8f9fc;
+        }
+
+        .list-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-top: 20px;
+
+            width: 100%;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f8f9fa;
+            padding-bottom: 15px;
+        }
+        .list-header h2 {
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        /* 테이블 스타일 개선 */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        .table thead th {
+            border: none;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .table tbody tr {
+            cursor: pointer; /* 마우스 오버 시 손가락 모양 */
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        .table tbody tr:hover {
+            transform: translateY(-2px);
+            background-color: #f8faff;
+        }
+        .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #f1f1f1;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .table td:first-child { border-left: 1px solid #f1f1f1; border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .table td:last-child { border-right: 1px solid #f1f1f1; border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+        .table-responsive {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .active-row { background-color: #f0f8ff !important; border: 1px solid #4e73df !important; }
+        .policy-link { font-weight: 700; color: #4e73df; text-decoration: none; }
+        .policy-link:hover { text-decoration: underline; }
+
+        /* 페이지네이션 스타일 */
+        .pagination-container .btn {
+            border-radius: 5px;
+            margin: 0 2px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 <%@ include file="/main/menu.jsp" %>
 <div class="main-content">
 
-    <div id="entry" class="page">
-        <h2>요금 정책 변경 이력</h2>
-        <span class="badge badge-success" style="font-size: 15px">전체 <%=pageResponseDto.getTotalCount()%>개</span>
-
-        <div class="text-right" style="margin-bottom: 10px;">
-            <a href="/view/add" class="btn btn-primary">신규 정책 등록</a>
+    <div class="list-card">
+        <div class="list-header">
+            <div>
+                <h2><i class="fas fa-history mr-2" style="color: #4e73df;"></i>요금 정책 변경 이력</h2>
+                <small class="text-muted">전체 <b class="text-primary"><%=pageResponseDto.getTotalCount()%></b>개의 정책 데이터가 있습니다.</small>
+            </div>
+            <a href="${pageContext.request.contextPath}/view/policy/add" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus mr-1"></i> 신규 정책 등록
+            </a>
         </div>
 
-        <div class="row" style="padding-top: 30px">
+        <div class="table-responsive">
             <table class="table">
                 <thead>
                 <tr>
-
-                    <th>기본시간/요금</th>
-                    <th>추가시간/요금</th>
+                    <th>기본 시간/요금</th>
+                    <th>추가 시간/요금</th>
                     <th>유예시간</th>
-                    <th>경차 할인율</th>
-                    <th>장애인 할인율</th>
+                    <th>경차 할인</th>
+                    <th>장애인 할인</th>
                     <th>일일최대</th>
-                    <th>등록일</th>
+                    <th>등록/수정일</th>
                     <th>상태</th>
                 </tr>
                 </thead>
                 <tbody>
-
                 <%
                     if (boardList != null && !boardList.isEmpty()) {
                         for (FeePolicyDTO dto : boardList) {
-                            String rowStyle = dto.isActive() ? "background-color: #f0f8ff; font-weight: bold;" : "";
+                            String activeClass = dto.isActive() ? "active-row" : "";
+                            // 클릭 시 이동할 URL 미리 생성
+                            String detailUrl = request.getContextPath() + "/view/policy?id=" + dto.getPolicyId() + "&pageNum=" + pageNum;
                 %>
-                <tr style="<%= rowStyle %>">
-
-                    <td><a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultTime() %>분</a>
-                        /<a href="./view?id=<%= dto.getPolicyId() %>&pageNum=<%= pageNum %>" style="text-decoration: none; font-weight: bold; color: #007bff;"><%= dto.getDefaultFee() %>원</a></td>
-                    <td><%= dto.getExtraTime() %>분 / <%= dto.getExtraFee() %>원</td>
-                    <td><%= dto.getGracePeriod() %>분</td>
-                    <td><%= dto.getLightDiscount()%>%</td>
-                    <td><%= dto.getDisabledDiscount()%>%</td>
-
-                    <td><%= dto.getMaxDailyFee() %>원</td>
+                <tr class="<%= activeClass %>" onclick="location.href='<%= detailUrl %>'">
                     <td>
-                        <%
-                            if (dto.getModifyDate() != null) {
-                                // LocalDateTime을 문자열로 바꾼 후 "T"를 " "로 교체
-                                String dateStr = dto.getModifyDate().toString().replace("T", " ");
-                                out.print(dateStr);
-                            }
-                        %>
+                        <span class="policy-text">
+                            <i class="far fa-clock mr-1"></i><%= dto.getDefaultTime() %>분 / <%= String.format("%,d", dto.getDefaultFee()) %>원
+                        </span>
+                    </td>
+                    <td><%= dto.getExtraTime() %>분 / <%= String.format("%,d", dto.getExtraFee()) %>원</td>
+                    <td><span class="badge badge-light"><%= dto.getGracePeriod() %>분</span></td>
+                    <td><b class="text-info"><%= dto.getLightDiscount() %>%</b></td>
+                    <td><b class="text-info"><%= dto.getDisabledDiscount() %>%</b></td>
+                    <td><b class="text-danger"><%= String.format("%,d", dto.getMaxDailyFee()) %>원</b></td>
+                    <td class="text-muted" style="font-size: 0.85rem;">
+                        <%= (dto.getModifyDate() != null) ? dto.getModifyDate().toString().replace("T", " ").substring(0, 19) : "-" %>
                     </td>
                     <td>
                         <% if (dto.isActive()) { %>
-                        <span class="badge badge-success">적용중</span>
+                        <span class="badge badge-primary"><i class="fas fa-check mr-1"></i>적용중</span>
                         <% } else { %>
                         <span class="badge badge-secondary">미적용</span>
                         <% } %>
@@ -105,59 +176,38 @@
                 %>
                 </tbody>
             </table>
-            <!-- 페이지 목록 -->
-            <div class="w-100 text-center" style="margin-top: 20px;">
-                <%
-                    int pagePerBlock = 5; // 한 블럭에 나올 페이지 수
+        </div>
 
-                    // 전체 블럭 수
-                    int totalBlock = (totalPage % pagePerBlock == 0) ? (totalPage / pagePerBlock) : (totalPage / pagePerBlock + 1);
+        <div class="pagination-container w-100 text-center" style="margin-top: 30px;">
+            <%
+                int pagePerBlock = 5;
+                int thisBlock = (pageNum - 1) / pagePerBlock + 1;
+                int firstPage = (thisBlock - 1) * pagePerBlock + 1;
+                int lastPage = Math.min(thisBlock * pagePerBlock, totalPage);
+            %>
 
-                    // 현재 블럭 ex) 8page -> 2, 30page -> 6
-                    int thisBlock = (pageNum - 1) / pagePerBlock + 1;
+            <% if (firstPage != 1) {%>
+            <a href="${pageContext.request.contextPath}/view/policy/list?pageNum=<%= (firstPage - 1) %>" class="btn btn-sm btn-outline-secondary">이전</a>
+            <% } %>
 
-                    // 현재 블럭의 첫 페이지 3block -> 11, 6block -> 26
-                    int firstPage = (thisBlock - 1) * pagePerBlock + 1;
+            <%
+                for (int i = firstPage; i <= lastPage; i++) {
+                    String activeBtn = (pageNum == i) ? "btn-primary" : "btn-outline-secondary";
+            %>
+            <a href="${pageContext.request.contextPath}/view/policy/list?pageNum=<%=i%>&items=<%=items%>&keyword=<%=keyword%>"
+               class="btn btn-sm <%= activeBtn %>">
+                <%= i %>
+            </a>
+            <% } %>
 
-                    // 현재 블럭의 마지막 페이지
-                    int lastPage = thisBlock * pagePerBlock; // firstPage + pagePerBlock - 1
-
-                    // 마지막 블럭의 마지막 페이지
-//                lastPage = (lastPage > totalPage) ? totalPage : lastPage;
-                    lastPage = Math.min(lastPage, totalPage);
-                %>
-                <%-- [이전] 버튼 --%>
-                <% if (firstPage != 1) {%>
-                <a href="/view/list?pageNum=<%= (firstPage - 1) %>" class="btn btn-sm btn-outline-secondary">이전</a>
-                <%
-                    }
-                %>
-                <%-- 페이지 번호 숫자들 --%>
-                <%
-                    for (int i = firstPage; i <= lastPage; i++) {
-                        // 현재 페이지인 경우 btn-primary(파란색), 아닌 경우 btn-outline-secondary(회색 테두리)
-                        String activeClass = (pageNum == i) ? "btn-primary" : "btn-outline-secondary";
-                %>
-                <a href="/view/list?pageNum=<%=i%>&items=<%=items%>&keyword=<%=keyword%>"
-                   class="btn btn-sm <%= activeClass %>" style="margin: 0 2px;">
-                    <%= i %>
-                </a>
-                <%
-                    }
-                %>
-                <%
-                    if (lastPage < totalPage) {
-                %>
-                <a href="/view/list?pageNum=<%=(lastPage + 1)%>&items=<%=items%>&keyword=<%=keyword%>"
-                class="btn btn-sm btn-outline-secondary">다음</a>
-                <%
-                    }
-                %>
-            </div>
+            <% if (lastPage < totalPage) { %>
+            <a href="${pageContext.request.contextPath}/view/policy/list?pageNum=<%=(lastPage + 1)%>&items=<%=items%>&keyword=<%=keyword%>"
+               class="btn btn-sm btn-outline-secondary">다음</a>
+            <% } %>
         </div>
     </div>
 </div>
-<script src="../JS/menu.js"></script>
-<script src="../JS/function.js"></script>
+<script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+<script src="${pageContext.request.contextPath}/JS/function.js"></script>
 </body>
 </html>

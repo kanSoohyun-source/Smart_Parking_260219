@@ -49,15 +49,6 @@ public enum MemberService {
         return modelMapper.map(memberVO, MemberDTO.class);
     }
 
-    public List<MemberDTO> getCarNum(String car4Num) throws Exception {
-
-            List<MemberVO> memberVOList = memberDAO.selectCar4Num(car4Num);
-
-            return memberVOList.stream()
-                    .map(vo -> modelMapper.map(vo, MemberDTO.class)).toList();
-
-    }
-
     public void modifyMember(MemberDTO memberDTO) throws SQLException {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         memberDAO.updateMember(memberVO);

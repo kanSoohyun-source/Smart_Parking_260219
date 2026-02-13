@@ -16,12 +16,12 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "parkingInputController", urlPatterns = "/parking/input")
+@WebServlet("/parking/input")
 @Log4j2
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
-    private final MemberService memberService = MemberService.Instance;
+    private final MemberService memberService = MemberService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
