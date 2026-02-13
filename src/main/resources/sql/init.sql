@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS `member`
     `name`        VARCHAR(20) NOT NULL COMMENT '운전자 이름',
     `phone`       VARCHAR(20) NOT NULL COMMENT '연락처',
     `create_date` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
-    `subscribed`  BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '현재 월정액 구독 중인지 여부'
+    `subscribed`  BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '현재 월정액 구독 중인지 여부',
+    `start_date`  DATE        NOT NULL COMMENT '월정액 시작일',
+    `end_date`    DATE        NOT NULL COMMENT '월정액 종료일'
 );
 
 # manager : 관리자 정보 테이블 [완료]
