@@ -40,7 +40,7 @@
 
 <div class="main-content">
     <div id="statistics" class="page">
-        <h2>📊 매출 및 이용 통계</h2>
+        <h2>매출 및 이용 통계</h2>
 
         <div class="section-card control-section">
             <form action="${pageContext.request.contextPath}/statistics/statistics" method="get" class="control-bar">
