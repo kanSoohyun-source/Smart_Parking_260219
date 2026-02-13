@@ -130,3 +130,5 @@ CREATE USER `admin`@`localhost` IDENTIFIED BY '0219';
 
 -- 사용자에게 DB 권한 부여
 GRANT ALL PRIVILEGES ON `smart_parking_team2`.* TO `admin`@`localhost`;
+
+ALTER TABLE parking ADD phone VARCHAR(10) null;

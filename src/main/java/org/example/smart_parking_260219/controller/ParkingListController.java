@@ -23,7 +23,9 @@ public class ParkingListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("parking get...");
-        req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
+        String CarNum = req.getParameter("carNum");
+        req.setAttribute("carNum", CarNum);
+        req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class ParkingListController extends HttpServlet {
                 .build();
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
-
-        resp.sendRedirect("/payment/payment?carNum=" + URLEncoder.encode(carNum, "UTF-8"));
+        req.setAttribute("carNum", carNum);
+        req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }
 }

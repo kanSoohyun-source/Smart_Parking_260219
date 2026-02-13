@@ -76,11 +76,9 @@
         <li><a href="../member/member_list.jsp">회원 목록</a></li>
         <li><a href="../member/member_search.jsp">회원 조회</a></li>
         <li><a href="../pricing/pricing.jsp">요금 부과 정책</a></li>
+        <li><a href="${pageContext.request.contextPath}/policy/list">요금 부과 정책</a></li>
         <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
         <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
-        <li><a href="${pageContext.request.contextPath}/policy/list">요금 부과 정책</a></li>
-            <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
-            <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
     </ul>
 </nav>
 
@@ -124,7 +122,8 @@
             ${pageContext.request.contextPath}  // '확인' 클릭 시: true가 반환되어 href 주소(/logout)로 이동
             return true;
         } else {
-            return false; // confirm() 취소를 누르면 false -> 이동 취소 (현재 화면 유지)
+            // '취소' 클릭 시 아무런 동작도 하지 않고 현재 페이지에 머묾
+            return false;
         }
     }
 </script>

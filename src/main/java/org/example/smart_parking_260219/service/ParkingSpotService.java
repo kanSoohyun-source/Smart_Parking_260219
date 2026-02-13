@@ -49,4 +49,11 @@ public enum ParkingSpotService {
         return parkingSpotVOList.stream()
                 .map(parkingSpotVO -> modelMapper.map(parkingSpotVO, ParkingSpotDTO.class)).toList();
     }
+
+    public ParkingSpotDTO getParkingSpotBySpaceId(String spaceId) {
+        if (spaceId == null) return null;
+        ParkingSpotVO parkingSpotVO = parkingSpotDAO.selectParkingSpotBySpaceId(spaceId);
+        if (parkingSpotVO == null) return null;
+        return modelMapper.map(parkingSpotVO, ParkingSpotDTO.class);
+    }
 }

@@ -3,25 +3,28 @@
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.service.MemberService" %>
 <%@ page import="java.sql.SQLException" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.Duration" %>
+<%@ page import="java.util.Objects" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Title</title>
-    <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../CSS/payment_style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/payment_style.css">
 </head>
 <body>
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
-    String carNum = (String) request.getAttribute("carNum");
-    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-    MemberDTO memberDTO = null;
-    try {
-        memberDTO = MemberService.Instance.getOneMember(carNum);
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
+    String space = request.getParameter("id");
+    if (space == null) {
+        space = (String) request.getAttribute("id");
     }
+    String carNum = request.getParameter("carNum");
+    System.out.println(carNum);
+    ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
+    long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
 %>
 <div class="main-content">
   <!-- Content -->
@@ -34,11 +37,11 @@
             </div>
             <div class="form-group">
                 <label>전화 번호</label>
-                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=memberDTO.getPhone()%>">
+                <input type="text" id="phone" placeholder="전화번호" name="phone" value="<%=parkingDTO.getPhone()%>">
             </div>
             <div class="form-group">
                 <label>차량 번호</label>
-                <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" name="carNum" value="<%=memberDTO.getCarNum()%>">
+                <input type="text" id="regCarNum" placeholder="차량번호 8자리" maxlength="8" name="carNum" value="<%=parkingDTO.getCarNum()%>">
             </div>
             <div class="form-group">
                 <label>차량 타입</label>
@@ -54,20 +57,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>총 주차 시간</label>
-                <input type="text" id="totalParkingTime" placeholder="총 주차 시간" name="totalTime" value="<%=parkingDTO.getTotalTime()%>분">
-            </div>
-            <div class="form-group">
                 <label>입차 시간</label>
                 <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
             </div>
             <button onclick="registerMember()">정산</button>
-
         </form>
     </div>
-
 </div>
-    <script src="../JS/menu.js"></script>
-    <script src="../JS/function.js"></script>
+    <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+    <script src="${pageContext.request.contextPath}/JS/function.js"></script>
 </body>
 </html>
