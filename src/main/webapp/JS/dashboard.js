@@ -1,3 +1,4 @@
+/*
 document.addEventListener("DOMContentLoaded", function() {
     renderParkingSlots();
 });
@@ -62,13 +63,13 @@ function renderParkingSlots() {
         slotDiv.addEventListener('click', function() {
             if (isEmpty) {
                 // 공차 -> 입차 페이지 (entry.jsp)
-                location.href = `../entry/entry.jsp`;
+                location.href = `webapp/WEB-INF/view/entry/entry.jsp`;
             } else {
                 // 주차 중 -> 출차 페이지 (exit.jsp)
-                location.href = `../exit/exit.jsp`;
+                location.href = `webapp/WEB-INF/view/exit/exit.jsp`;
             }
         });
 
         gridContainer.appendChild(slotDiv);
     });
-}
+}*/

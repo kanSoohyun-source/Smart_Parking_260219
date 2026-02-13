@@ -66,7 +66,7 @@
 </div>
 <script src="${pageContext.request.contextPath}/JS/tlqkf.js"></script>
 <script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
-<script>
+<script>const contextPath = "${pageContext.request.contextPath}";</script>
 
 </script>
 </body>
