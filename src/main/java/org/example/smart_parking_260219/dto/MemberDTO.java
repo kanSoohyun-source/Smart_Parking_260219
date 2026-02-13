@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
@@ -21,24 +19,4 @@ public class MemberDTO {
     private String phone; // 운전자 연락처
     private LocalDateTime createDate;  // 가입일
     private boolean subscribed; // 월정액 회원 여부 (default false)
-
-    private LocalDate subscribeStartDate;
-    private LocalDate subscribeEndDate;
-
-    // 차량 타입 변환 메서드
-    public String getCarTypeName() {
-        switch (this.carType) {
-            case 2: return "월정액";
-            case 3: return "경차";
-            case 4: return "장애인";
-            case 1:
-            default: return "일반";  // ✅ default를 일반으로 변경
-        }
-    }
-
-    // 가입일 시간 제외 년/월/일만 적용하는 메서드
-    public String getCreateDateOnly() {
-        if (this.createDate == null) return "";
-        return this.createDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
 }

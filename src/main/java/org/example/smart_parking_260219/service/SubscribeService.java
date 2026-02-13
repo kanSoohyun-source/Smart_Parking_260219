@@ -38,15 +38,6 @@ public enum SubscribeService {
 
     }
 
-    public SubscribeDTO getOneSubscribe(String carNum) throws SQLException {
-        SubscribeVO subscribeVO = subscribeDAO.selectOneSubscribe(carNum);
-
-        if (subscribeVO == null) {
-            log.info("구독 정보 없음: {}", carNum);
-            return null;
-        }
-
-        return modelMapper.map(subscribeVO, SubscribeDTO.class);
     }
 
     public void modifySubscribe(SubscribeDTO subscribeDTO) throws SQLException {
@@ -54,19 +45,6 @@ public enum SubscribeService {
         subscribeDAO.updateSubscribe(subscribeVO);
     }
 
-    public void removeSubscribe(String carNum) throws SQLException {
-        subscribeDAO.deletesubscribe(carNum);
     }
 
-    // 차량번호로 구독 정보 조회
-    public SubscribeDTO getCarNum(String carNum) throws Exception {
-        SubscribeVO vo = subscribeDAO.selectByCarNum(carNum);
-        if (vo == null) {
-            log.info("차량번호 {}의 구독 정보 없음", carNum);
-            return null;
         }
-        return modelMapper.map(vo, SubscribeDTO.class);
-        }
-    }
-
-
