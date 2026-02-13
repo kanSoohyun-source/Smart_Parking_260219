@@ -168,11 +168,12 @@
 
 <div class="main-content">
     <div class="container">
-        <h2>관리자 정보 수정</h2>
+        <h2>일반 관리자 정보 수정</h2>
 
         <%-- 안내 메시지 --%>
         <div class="message info-message">
-            ℹ️ 정보 수정 시 이메일 인증이 필요합니다.
+            ℹ️ 정보 수정 시 이메일 인증이 필요합니다. <br>
+            ℹ️ 변경사항 적용 시 재로그인이 필요합니다.
         </div>
 
         <%-- 성공 메시지 표시 --%>
@@ -200,9 +201,9 @@
             <!-- 아이디 (수정 불가) -->
             <div class="form-group">
                 <label for="id">아이디</label>
-                <input type="text" id="id" name="id" value="<%= manager.getManagerId() %>" disabled>
+                <input type="text" id="id" name="id" value="<%= manager.getManagerId() %>">
                 <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">
-                <div class="field-hint">아이디는 변경할 수 없습니다</div>
+                <div class="field-hint">변경할 아이디를 입력해주세요</div>
             </div>
 
             <!-- 이름 -->
@@ -492,7 +493,7 @@
     // 이메일 입력 필드 변경 시 인증 상태 초기화
     emailInput.addEventListener('input', function() {
         const currentEmail = this.value.trim();
-        
+
         // 이메일이 변경되면 인증 상태 초기화
         if (currentEmail !== originalEmail) {
             if (isEmailVerified) {
@@ -506,13 +507,19 @@
             // 원래 이메일로 돌아가면 인증 불필요
             isEmailVerified = true;
         }
-        
+
         hideError(this.id);
     });
 
     // 폼 제출 시 전체 유효성 검사
     form.addEventListener('submit', function(e) {
         let isValid = true;
+
+        // 아이디 검사
+        if (idInput.value.trim().length < 4 || !/^[a-zA-Z0-9]+$/.test(idInput.value.trim())) {
+            showError('id', '올바른 아이디를 입력해주세요.');
+            isValid = false;
+        }
 
         // 이름 검사
         if (nameInput.value.trim().length === 0) {
