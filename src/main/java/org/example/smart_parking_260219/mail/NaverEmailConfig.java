@@ -23,7 +23,7 @@ public class NaverEmailConfig {
         Properties props = new Properties();
         props.put("mail.username", username);
         props.put("mail.host", host);
-        props.put("mail.trasport.protocol", "smtp");
+        props.put("mail.transport.protocol", "smtp");
         props.put("mail.debug", "true");
         props.put("mail.smtp.ssl.trust", host);
         props.put("mail.smtp.ssl.enable", "true");
