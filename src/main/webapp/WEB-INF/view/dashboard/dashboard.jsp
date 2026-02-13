@@ -13,56 +13,59 @@
 <html>
 <head>
     <title>주차 현황</title>
-    <link rel="stylesheet" href="../../../CSS/style.css">
-    <link rel="stylesheet" href="../../../CSS/tlqkf.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/tlqkf.css">
 </head>
 <body>
 <%@ include file="/main/menu.jsp" %>
 <div class="main-content">
-    <h2>주차 현황</h2>
-    <div class="parking-grid">
-        <%
-            for (int i = 1; i <= 20; i++) {
-                String id = "A" + i;
-                String carNum = null, entryTime = null;
-                Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
+    <div id = "dashboard" class="page">
+        <h2>주차 현황</h2>
+        <div class="parking-grid">
+            <%
+                for (int i = 1; i <= 20; i++) {
+                    String id = "A" + i;
+                    String carNum = null, entryTime = null;
+                    Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
 
-                for (ParkingDTO dto : parkingDTOList) {
-                    if (id.equals(dto.getSpaceId())) {
-                        carNum = dto.getCarNum();
-                        entryTime = String.valueOf(dto.getEntryTime().toLocalTime());
-                        break;
-                    }
-                };
-        %>
-        <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
-             data-id="<%= id %>"
-             data-empty="<%= (!result) %>"
-             data-carnum="<%= carNum %>">
+                    for (ParkingDTO dto : parkingDTOList) {
+                        if (id.equals(dto.getSpaceId())) {
+                            carNum = dto.getCarNum();
+                            entryTime = String.valueOf(dto.getEntryTime().toLocalTime());
+                            break;
+                        }
+                    };
+            %>
+            <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
+                 data-id="<%= id %>"
+                 data-empty="<%= (!result) %>"
+                 data-carnum="<%= carNum %>">
 
-            <div class="slot-title"><%= id %></div>
+                <div class="slot-title"><%= id %></div>
 
-            <% if (!result) { %>
-            <div class="slot-status">공차</div>
-            <% } else { %>
-            <div class="slot-status"><%= carNum %></div>
-            <div class="slot-time"><%= entryTime %> 입차</div>
+                <% if (!result) { %>
+                <div class="slot-status">공차</div>
+                <% } else { %>
+                <div class="slot-status"><%= carNum %></div>
+                <div class="slot-time"><%= entryTime %> 입차</div>
+                <% } %>
+            </div>
             <% } %>
         </div>
-        <% } %>
+        <div align="center">
+            <form id="searchForm">
+                <div class="form-group">
+                    <input name="keyword" type="text" class="search-input" placeholder="조회할 차량 번호 입력" value=""/>
+                    <button type="button" onclick="selectCarNum()">검색</button>
+                    <button type="button" onclick="cancelCarNum()">취소</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div align="center">
-        <form id="searchForm">
-            <div class="form-group">
-                    <input name="keyword" type="text" class="search-input" value=""/>
-                <button type="button" onclick="selectCarNum()">검색</button>
-                <button type="button" onclick="cancelCarNum()">취소</button>
-            </div>
-        </form>
-    </div>
+
 </div>
-<script src="../../../JS/tlqkf.js"></script>
-<script src="../../../JS/parkingList.js"></script>
+<script src="${pageContext.request.contextPath}/JS/tlqkf.js"></script>
+<script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
 <script>
 
 </script>

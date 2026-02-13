@@ -7,6 +7,6 @@ document.addEventListener("click", e => {
     const carNum = slot.dataset.carnum;
 
     location.href = isEmpty
-        ? `../entry/entry.jsp?id=${id}`
-        : `../exit/exit_serch_list.jsp?id=${id}&carNum=${carNum}`;
+        ? `/WEB-INF/view/entry/entry.jsp?id=${id}`
+        : `/WEB-INF/view/exit/exit_serch_list.jsp?id=${id}&carNum=${carNum}`;
 });

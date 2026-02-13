@@ -24,7 +24,7 @@ public class ParkingListController extends HttpServlet {
         log.info("parking get...");
         String CarNum = req.getParameter("carNum");
         req.setAttribute("carNum", CarNum);
-        req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class ParkingListController extends HttpServlet {
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
         req.setAttribute("carNum", CarNum);
-        req.getRequestDispatcher("/payment/payment.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }
 }

@@ -16,7 +16,7 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "parkingInputController", value = "/parking/input")
+@WebServlet(name = "parkingInputController", urlPatterns = "/parking/input")
 @Log4j2
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
@@ -30,7 +30,7 @@ public class ParkingInputController extends HttpServlet {
 
         req.setAttribute("carNum", carNum);
 
-        req.getRequestDispatcher("webapp/entry/entry.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ParkingInputController extends HttpServlet {
         log.info("/parking/input post...");
         String carNum = req.getParameter("carNum");
         if (carNum.isEmpty() || carNum.length() > 8) {
-            resp.sendRedirect("/entry/entry.jsp?fail=over");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp?fail=over").forward(req, resp);
             return;
         }
         log.info(carNum);
@@ -52,12 +52,12 @@ public class ParkingInputController extends HttpServlet {
         if (memberDTO == null) {
             req.setAttribute("carNum", carNum);
             req.setAttribute("id", spaceId);
-            req.getRequestDispatcher("/entry/add_non_member.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
             return;
         }
         log.info(parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty());
         if (parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty()) {
-            resp.sendRedirect("/entry/entry.jsp?fail=false");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp?fail=false").forward(req, resp);
             return;
         }
 
@@ -79,9 +79,9 @@ public class ParkingInputController extends HttpServlet {
             log.info("parkingDTO: {}", parkingDTO);
             parkingService.addParking(parkingDTO);
 
-            resp.sendRedirect("/dashboard/dashboard.jsp");
+            req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
         } else {
-            resp.sendRedirect("/dashboard/dashboard.jsp?fail=false");
+            req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp?fail=false").forward(req, resp);
         }
 
     }

@@ -10,7 +10,7 @@
 <html>
 <head>
     <title>Title</title>
-    <link rel="stylesheet" href="../../../CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -65,7 +65,7 @@
         </form>
     </div>
 </div>
-    <script src="../../../JS/menu.js"></script>
-    <script src="../../../JS/function.js"></script>
+    <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+    <script src="${pageContext.request.contextPath}/JS/function.js"></script>
 </body>
 </html>

@@ -6,28 +6,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.dto.ParkingDTO;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;
-import org.example.smart_parking_260219.service.MemberService;
 import org.example.smart_parking_260219.service.ParkingService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "parkingNonMemberInputController", value = "/parking/nonMember")
 @Log4j2
 public class ParkingNonMemberInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
-    private final MemberService memberService = MemberService.Instance;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("/entry/non_member_entry.jsp");
+        log.info("/WEB-INF/view/entry/non_member_entry.jsp");
 
-        req.getRequestDispatcher("webapp/entry/add_non_member.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
     }
 
     @Override
@@ -57,7 +53,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
 
-        resp.sendRedirect("/dashboard/dashboard.jsp");
+        req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp");
 
     }
 }

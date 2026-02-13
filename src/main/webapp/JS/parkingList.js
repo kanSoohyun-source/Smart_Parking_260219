@@ -1,7 +1,6 @@
 const form = document.getElementById("searchForm");
 const keywordInput = document.querySelector("input[name='keyword']");
 const slots = document.querySelectorAll(".slot-item");
-const resetBtn = document.getElementById("resetBtn");
 
 function selectCarNum() {
     const keyword = keywordInput.value.trim();
