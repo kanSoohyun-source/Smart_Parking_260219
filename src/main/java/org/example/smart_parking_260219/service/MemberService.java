@@ -50,12 +50,10 @@ public enum MemberService {
     }
 
     public List<MemberDTO> getCarNum(String car4Num) throws Exception {
-
-            List<MemberVO> memberVOList = memberDAO.selectCar4Num(car4Num);
-
-            return memberVOList.stream()
-                    .map(vo -> modelMapper.map(vo, MemberDTO.class)).toList();
-
+        List<MemberVO> memberVOList = memberDAO.selectCar4Num(car4Num);
+        return memberVOList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class))
+                .toList();
     }
 
     public void modifyMember(MemberDTO memberDTO) throws SQLException {
@@ -66,6 +64,4 @@ public enum MemberService {
     public void removeMember(String carNum) throws SQLException {
         memberDAO.deleteMember(carNum);
     }
-
-
 }

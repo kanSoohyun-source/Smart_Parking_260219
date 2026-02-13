@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
-    private final MemberService memberService = MemberService.Instance;
+    private final MemberService memberService = MemberService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

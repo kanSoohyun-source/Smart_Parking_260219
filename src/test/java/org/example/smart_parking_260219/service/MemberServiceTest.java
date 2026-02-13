@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,11 +24,13 @@ class MemberServiceTest {
     @Test
     public void addTest() throws SQLException {
         MemberDTO memberDTO = MemberDTO.builder()
-                .carNum("service")
+                .carNum("12341234")
                 .carType(1)
                 .name("service")
-                .phone("service1234")
+                .phone("010-1111-2222")
                 .subscribed(true)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(2))
                 .build();
         memberService.addMember(memberDTO);
     }
@@ -41,7 +44,7 @@ class MemberServiceTest {
 
     @Test
     public void getOneTest() throws SQLException{
-        String carNum = "service";
+        String carNum = "12341234";
 
         MemberDTO memberDTO = memberService.getOneMember(carNum);
         log.info(memberDTO);
@@ -53,9 +56,11 @@ class MemberServiceTest {
         MemberDTO memberDTO = MemberDTO.builder()
                 .carType(3)
                 .name("update")
-                .phone("update1234")
+                .phone("010-3333-4444")
                 .subscribed(false)
-                .carNum("service")
+                .carNum("12341234")
+                .startDate(LocalDate.now().plusDays(1))
+                .endDate(LocalDate.now().plusMonths(2))
                 .build();
         memberService.modifyMember(memberDTO);
 
@@ -63,7 +68,7 @@ class MemberServiceTest {
 
     @Test
     public void remove() throws SQLException {
-        String carNum = "service";
+        String carNum = "12341234";
 
         memberService.removeMember(carNum);
     }
