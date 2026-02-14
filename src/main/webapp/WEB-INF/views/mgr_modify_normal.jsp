@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>관리자 정보 수정</title>
+    <title>일반 관리자 정보 수정</title>
     <link rel="stylesheet" href="/CSS/style.css">
 
     <style>
@@ -197,13 +197,14 @@
             ManagerVO manager = (ManagerVO) request.getAttribute("manager");
             if (manager != null) {
         %>
-        <form id="modifyForm" action="${pageContext.request.contextPath}/mgr/modify" method="post">
+        <form id="modifyForm" action="${pageContext.request.contextPath}/mgr/modify_normal" method="post">
             <!-- 아이디 (수정 불가) -->
             <div class="form-group">
                 <label for="id">아이디</label>
-                <input type="text" id="id" name="id" value="<%= manager.getManagerId() %>">
+                <div style="padding: 10px; font-weight: bold; color: #333;">
+                    <%= manager.getManagerId() %>
+                </div>
                 <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">
-                <div class="field-hint">변경할 아이디를 입력해주세요</div>
             </div>
 
             <!-- 이름 -->
@@ -514,12 +515,6 @@
     // 폼 제출 시 전체 유효성 검사
     form.addEventListener('submit', function(e) {
         let isValid = true;
-
-        // 아이디 검사
-        if (idInput.value.trim().length < 4 || !/^[a-zA-Z0-9]+$/.test(idInput.value.trim())) {
-            showError('id', '올바른 아이디를 입력해주세요.');
-            isValid = false;
-        }
 
         // 이름 검사
         if (nameInput.value.trim().length === 0) {

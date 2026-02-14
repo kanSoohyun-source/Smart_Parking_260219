@@ -244,6 +244,11 @@
                     onclick="location.href='${pageContext.request.contextPath}/mgr/list'">
                 돌아가기
             </button>
+
+            <button type="button" class="btn btn-primary" style="flex: 1;"
+                    onclick="location.href='${pageContext.request.contextPath}/mgr/modify_normal?id=<%= manager.getManagerId() %>'">
+                정보 수정
+            </button>
             
             <% if (manager.isActive()) { %>
             <form action="${pageContext.request.contextPath}/mgr/toggleActive" method="post" style="flex: 1;">

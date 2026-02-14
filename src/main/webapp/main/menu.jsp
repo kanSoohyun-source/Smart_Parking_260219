@@ -65,8 +65,6 @@
                 <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
                 <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>
                 <a href="${pageContext.request.contextPath}/mgr/modify">관리자 정보 수정</a>
-                <a href="${pageContext.request.contextPath}/mgr/modify_nomal">일반 관리자 정보 수정</a>
-
             </div>
         </li>
         <% } %>
