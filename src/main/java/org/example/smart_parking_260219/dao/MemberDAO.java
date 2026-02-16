@@ -145,6 +145,31 @@ public class MemberDAO {
         preparedStatement.executeUpdate();
     }
 
+    // ✅ 만료된 회원 subscribed → false 일괄 업데이트
+    public void updateExpiredSubscriptions() throws SQLException {
+        String sql = "UPDATE member SET subscribed = false " +
+                "WHERE subscribed = true AND end_date < ?";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setObject(1, LocalDate.now());
+        preparedStatement.executeUpdate();
+    }
+
+    // ✅ 월정액 갱신 (start_date, end_date, subscribed 업데이트)
+    public void updateSubscription(MemberVO memberVO) throws SQLException {
+        String sql = "UPDATE member SET subscribed = ?, start_date = ?, end_date = ? " +
+                "WHERE car_num = ?";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1, memberVO.isSubscribed());
+        preparedStatement.setObject(2, memberVO.getStartDate());
+        preparedStatement.setObject(3, memberVO.getEndDate());
+        preparedStatement.setString(4, memberVO.getCarNum());
+        preparedStatement.executeUpdate();
+    }
+
     public void deleteMember (String carNum) throws SQLException {
         String sql = "DELETE FROM member WHERE car_num = ?";
 

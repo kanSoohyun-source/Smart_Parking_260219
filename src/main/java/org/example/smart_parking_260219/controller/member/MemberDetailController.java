@@ -10,7 +10,6 @@ import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.service.MemberService;
 
 import java.io.IOException;
-import java.util.List;
 
 @Log4j2
 @WebServlet(name = "memberDetailController", value = "/member/member_detail")
@@ -19,7 +18,7 @@ public class MemberDetailController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("/member/detail get..");
+        log.info("member_detail doGet");
 
         try {
             String carNum = req.getParameter("carNum");
@@ -36,12 +35,19 @@ public class MemberDetailController extends HttpServlet {
                 return;
             }
 
+            String page = req.getParameter("page");
+            if (page == null || page.isEmpty()) page = "1";
+
             req.setAttribute("member", member);
+            req.setAttribute("page", page);
             req.getRequestDispatcher("/WEB-INF/member/member_detail.jsp").forward(req, resp);
 
         } catch (Exception e) {
-            log.error("회원 조회 중 오류 발생", e);
-            resp.sendRedirect("/member/member_list?error=fail");
+            // 디버그: 예외 클래스명과 메시지를 URL에 노출
+            log.error("회원 조회 오류: {}", e.getMessage(), e);
+            String msg = java.net.URLEncoder.encode(
+                    e.getClass().getSimpleName() + ": " + e.getMessage(), "UTF-8");
+            resp.sendRedirect("/member/member_list?error=fail&debug=" + msg);
         }
     }
 }

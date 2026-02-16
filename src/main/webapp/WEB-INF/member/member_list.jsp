@@ -4,21 +4,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-    List<MemberDTO> dtoList = (List<MemberDTO>) request.getAttribute("dtoList");
-    Integer currentPage = (Integer) request.getAttribute("currentPage");
-    Integer totalPages = (Integer) request.getAttribute("totalPages");
-    Integer totalItems = (Integer) request.getAttribute("totalItems");
-    Integer startNo = (Integer) request.getAttribute("startNo");
+    List<MemberDTO> dtoList     = (List<MemberDTO>) request.getAttribute("dtoList");
+    Integer currentPage         = (Integer) request.getAttribute("currentPage");
+    Integer totalPages          = (Integer) request.getAttribute("totalPages");
+    Integer totalItems          = (Integer) request.getAttribute("totalItems");
+    Integer startNo             = (Integer) request.getAttribute("startNo");
 
-    if (dtoList == null) dtoList = new java.util.ArrayList<>();
+    if (dtoList    == null) dtoList    = new java.util.ArrayList<>();
     if (currentPage == null) currentPage = 1;
-    if (totalPages == null) totalPages = 1;
-    if (totalItems == null) totalItems = 0;
-    if (startNo == null) startNo = 0;
+    if (totalPages  == null) totalPages  = 1;
+    if (totalItems  == null) totalItems  = 0;
+    if (startNo     == null) startNo     = 0;
 
-    int displayNo = startNo;
-    String success = request.getParameter("success");
-    LocalDate today = LocalDate.now();
+    int    displayNo = startNo;
+    String success   = request.getParameter("success");
+    String error     = request.getParameter("error");
 %>
 <html>
 <head>
@@ -27,102 +27,143 @@
     <link rel="stylesheet" href="../CSS/member/list.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
-
 <body>
-<!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <div class="main-content">
     <div id="memberList" class="page">
-        <!-- 헤더 영역 -->
-        <% if ("modify".equals(success)) { %>
+
+        <!-- 알림 메시지 -->
+        <% if ("renew".equals(success)) { %>
+        <div class="alert alert-success alert-dismissible fade show">
+            <strong>완료!</strong> 월정액이 1개월 갱신되었습니다.
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+        <% } else if ("modify".equals(success)) { %>
         <div class="alert alert-success alert-dismissible fade show">
             <strong>완료!</strong> 회원 정보가 수정되었습니다.
             <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
-        <% } %>
-        <% if ("delete".equals(success)) { %>
+        <% } else if ("delete".equals(success)) { %>
         <div class="alert alert-success alert-dismissible fade show">
             <strong>완료!</strong> 회원이 삭제되었습니다.
             <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
-        <% } %>
-
-        <div class="page-header">
-            <h2>월정액 회원 목록</h2>
-            <a href="/member/member_add" class="btn btn-primary">+ 등록</a>
+        <% } else if ("renewFail".equals(error)) { %>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>오류!</strong> 갱신에 실패했습니다.
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
-        <div class="text-right mb-2">
-            <span class="badge badge-success">전체 <%= totalItems %>건</span>
+        <% } else if ("modifyFail".equals(error)) { %>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>오류!</strong> 수정에 실패했습니다.
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
-    </div>
-
-    <div class="table-container">
-        <table>
-            <thead>
-            <tr>
-                <th>번호</th>
-                <th>차량 번호</th>
-                <th>차량 종류</th>
-                <th>회원 이름</th>
-                <th>전화번호</th>
-                <th>구독 시작일</th>
-                <th>구독 종료일</th>
-                <th>구독 비용</th>
-                <th>상태</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% if (dtoList.isEmpty()) { %>
-            <tr>
-                <td colspan="8" style="text-align: center;">등록된 월정액 회원이 없습니다.</td>
-            </tr>
-            <% } else {
-                for (MemberDTO memberDTO : dtoList) {
-                    // 만료 여부 확인
-                    boolean isExpired = memberDTO.getEndDate() != null
-                            && memberDTO.getEndDate().isBefore(today);
-            %>
-            <!-- 만료 회원은 연한 색으로 표시 -->
-            <tr class="clickable-row <%= isExpired ? "table-secondary" : "" %>"
-                onclick="location.href='/member/member_detail?carNum=<%= memberDTO.getCarNum() %>'">
-                <td><%= displayNo-- %></td>
-                <td><%= memberDTO.getCarNum() %></td>
-                <td><%= memberDTO.CarTypeText() %></td>
-                <td><%= memberDTO.getName() %></td>
-                <td><%= memberDTO.getPhone() %></td>
-                <td><%= memberDTO.getStartDate() != null ? memberDTO.getStartDate() : "-" %></td>
-                <td><%= memberDTO.getEndDate() != null ? memberDTO.getEndDate() : "-" %></td>
-                <td><%= memberDTO.getSubscribedFee()%></td>
-                <!-- 만료 여부 뱃지 -->
-                <td>
-                    <% if (isExpired) { %>
-                    <span class="badge badge-secondary">만료</span>
-                    <% } else { %>
-                    <span class="badge badge-success">구독중</span>
-                    <% } %>
-                </td>
-            </tr>
-            <% } } %>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="pagination">
-        <% if (currentPage > 1) { %>
-        <a href="?page=<%= currentPage - 1 %>"><button>◀ 이전</button></a>
-        <% } else { %>
-        <button disabled>◀ 이전</button>
+        <% } else if ("deleteFail".equals(error)) { %>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>오류!</strong> 삭제에 실패했습니다.
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
         <% } %>
 
-        <span id="pageInfo"><%= currentPage %> / <%= totalPages %></span>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">월정액 회원 목록</h2>
+            <a href="/member/member_add" class="btn btn-primary">회원 등록</a>
+        </div>
+        <hr class="mt-2 mb-2">
+        <div class="text-right mb-3">
+            <span class="badge badge-success mr-2">전체 <%= totalItems %>건</span>
+        </div>
 
-        <% if (currentPage < totalPages) { %>
-        <a href="?page=<%= currentPage + 1 %>"><button>다음 ▶</button></a>
-        <% } else { %>
-        <button disabled>다음 ▶</button>
-        <% } %>
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>차량 번호</th>
+                    <th>차량 종류</th>
+                    <th>회원 이름</th>
+                    <th>전화번호</th>
+                    <th>구독 시작일</th>
+                    <th>구독 종료일</th>
+                    <th>상태</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (dtoList.isEmpty()) { %>
+                <tr>
+                    <td colspan="9" class="text-center">등록된 회원이 없습니다.</td>
+                </tr>
+                <% } else {
+                    for (MemberDTO m : dtoList) {
+                        boolean isExpired = !m.isSubscribed();
+                %>
+                <tr class="<%= isExpired ? "table-secondary" : "" %>"
+                    style="cursor: pointer;"
+                    onclick="location.href='/member/member_detail?carNum=<%= m.getCarNum() %>&page=<%= currentPage %>'">
+                    <td><%= displayNo-- %></td>
+                    <td><%= m.getCarNum() %></td>
+                    <td><%= m.CarTypeText() %></td>
+                    <td><%= m.getName() %></td>
+                    <td><%= m.getPhone() %></td>
+                    <td><%= m.getStartDate() != null ? m.getStartDate() : "-" %></td>
+                    <td><%= m.getEndDate()   != null ? m.getEndDate()   : "-" %></td>
+                    <td>
+                        <% if (isExpired) { %>
+                        <span class="badge badge-secondary">만료</span>
+                        <% } else { %>
+                        <span class="badge badge-success">구독중</span>
+                        <% } %>
+                    </td>
+                    <!-- 갱신 버튼: tr 클릭과 분리 -->
+                    <td onclick="event.stopPropagation()" style="text-align:center; vertical-align:middle;">
+                        <% if (isExpired) { %>
+                        <form action="/member/member_list" method="post"
+                              style="display:inline; margin:0;">
+                            <input type="hidden" name="action" value="renew">
+                            <input type="hidden" name="carNum" value="<%= m.getCarNum() %>">
+                            <button type="submit"
+                                    onclick="event.stopPropagation(); return confirm('<%= m.getCarNum() %> 1개월 갱신하시겠습니까?')"
+                                    style="background:#e67e22; color:#fff; border:none; border-radius:4px;
+                                           padding:4px 12px; font-size:13px; cursor:pointer; width:60px;">
+                                갱신
+                            </button>
+                        </form>
+                        <% } else { %>
+                        <button disabled
+                                style="background:#2c3e50; color:#fff; border:none; border-radius:4px;
+                                       padding:4px 12px; font-size:13px; cursor:not-allowed; width:60px; opacity:0.7;">
+                            갱신
+                        </button>
+                        <% } %>
+                    </td>
+                </tr>
+                <% } } %>
+                </tbody>
+            </table>
+
+            <!-- 페이징 -->
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>"><button>◀ 이전</button></a>
+                <% } else { %>
+                <button disabled>◀ 이전</button>
+                <% } %>
+
+                <span id="pageInfo"><%= currentPage %> / <%= totalPages %></span>
+
+                <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>"><button>다음 ▶</button></a>
+                <% } else { %>
+                <button disabled>다음 ▶</button>
+                <% } %>
+            </div>
+        </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="../JS/menu.js"></script>
 <script src="../JS/function.js"></script>
 </body>

@@ -24,29 +24,20 @@ public class MemberListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("=== member list 시작 ===");
 
-        /* 페이징 처리 */
-        // 페이지 번호 가져오기 (기본값: 1)
+        // ✅ 만료된 회원 자동 처리
+        memberService.expireSubscriptions();
+
         String pageParam = req.getParameter("page");
         int currentPage = 1;
         if (pageParam != null) {
-            try {
-                currentPage = Integer.parseInt(pageParam);
-            } catch (NumberFormatException e) {
-                currentPage = 1;
-            }
+            try { currentPage = Integer.parseInt(pageParam); }
+            catch (NumberFormatException e) { currentPage = 1; }
         }
 
-        // 페이지당 항목 수
         int itemsPerPage = 10;
-
-        // 전체 회원 목록 조회
         List<MemberDTO> allMembers = memberService.getAllMember();
-        List<MemberDTO> subscribedMembers = new ArrayList<>();
-        for (MemberDTO m : allMembers) {
-            if (m.isSubscribed()) subscribedMembers.add(m);
-        }
 
-        int totalItems = subscribedMembers.size();
+        int totalItems = allMembers.size();
         int totalPages = (totalItems > 0) ? (int) Math.ceil((double) totalItems / itemsPerPage) : 1;
 
         if (currentPage < 1) currentPage = 1;
@@ -56,7 +47,7 @@ public class MemberListController extends HttpServlet {
         int endIndex = Math.min(startIndex + itemsPerPage, totalItems);
 
         List<MemberDTO> pagedMembers = (startIndex < totalItems)
-                ? subscribedMembers.subList(startIndex, endIndex)
+                ? allMembers.subList(startIndex, endIndex)
                 : new ArrayList<>();
 
         int startNo = totalItems - (currentPage - 1) * itemsPerPage;
@@ -68,6 +59,29 @@ public class MemberListController extends HttpServlet {
         req.setAttribute("startNo", startNo);
 
         req.getRequestDispatcher("/WEB-INF/member/member_list.jsp").forward(req, resp);
+    }
+
+    @SneakyThrows
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("=== member list POST - 갱신 처리 ===");
+
+        String action = req.getParameter("action");
+        String carNum = req.getParameter("carNum");
+
+        try {
+            if ("renew".equals(action)) {
+                // ✅ 1개월 갱신
+                memberService.renewSubscription(carNum);
+                log.info("갱신 완료: {}", carNum);
+                resp.sendRedirect("/member/member_list?success=renew");
+            } else {
+                resp.sendRedirect("/member/member_list");
+            }
+        } catch (Exception e) {
+            log.error("갱신 처리 오류", e);
+            resp.sendRedirect("/member/member_list?error=renewFail");
+        }
     }
 }
 
