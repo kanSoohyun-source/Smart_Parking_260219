@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/ManagerDAO.java" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/MemberDAO.java" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/PaymentDAO.java" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/ValidationDAO.java" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/init.sql" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/db8573f6-d9b6-4d4e-82e7-6146ce84e8a1/console.sql" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/db8573f6-d9b6-4d4e-82e7-6146ce84e8a1/console_1.sql" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/db8573f6-d9b6-4d4e-82e7-6146ce84e8a1/console_2.sql" value="db8573f6-d9b6-4d4e-82e7-6146ce84e8a1" />
   </component>
 </project>

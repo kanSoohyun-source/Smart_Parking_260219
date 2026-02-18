@@ -23,7 +23,8 @@ public class LoginCheckFilter implements Filter {
             "/resources",
             "/CSS",
             "/JS",
-            "/forgot-password"  // 비밀번호 찾기
+            "/forgot-password",  // 비밀번호 찾기
+            "/modify_nomal"
     );
 
     @Override

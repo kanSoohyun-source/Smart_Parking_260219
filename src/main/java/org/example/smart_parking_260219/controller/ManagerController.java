@@ -87,6 +87,20 @@ public class ManagerController extends HttpServlet {
                         ManagerVO manager = managerDAO.selectOne(viewId);
 
                         if (manager != null) {
+
+                            // ★ 추가: ADMIN 계정이면 view 접근 차단 후 목록으로 리다이렉트
+                            if ("ADMIN".equals(manager.getRole())) {
+                                log.warn("최고관리자 계정({}) view 접근 차단 → 목록으로 리다이렉트", viewId);
+                                HttpSession sess = request.getSession(false);
+                                if (sess != null) {
+                                    sess.setAttribute("error",
+                                            "최고 관리자 계정은 '최고 관리자 정보 수정' 메뉴를 이용해 주세요.");
+                                }
+                                response.sendRedirect(request.getContextPath() + "/mgr/list");
+                                return;   // ← 반드시 return
+                            }
+                            // ★ 추가 끝
+
                             // 조회한 정보 'manager'를 가져옴
                             request.setAttribute("manager", manager);
                             log.info("관리자 데이터 조회 성공: {}", manager.getManagerName());
@@ -169,6 +183,55 @@ public class ManagerController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/mgr_list.jsp").forward(request, response);
                 break;
 
+            /* 일반 관리자 정보 수정 페이지 호출 (ADMIN 전용) */
+            case "/modify_normal":
+                log.info("일반 관리자 수정 페이지 처리");
+
+                // 1. URL 파라미터에서 수정할 대상 ID를 가져옴
+                String targetId = request.getParameter("id");
+                log.info("수정 대상 ID: {}", targetId);
+
+                // 2. 파라미터가 없으면 목록으로 리다이렉트
+                if (targetId == null || targetId.trim().isEmpty()) {
+                    log.warn("수정할 ID가 없어 목록으로 돌아갑니다.");
+                    response.sendRedirect(request.getContextPath() + "/mgr/list");
+                    return;
+                }
+
+                try {
+                    // 3. DAO를 통해 수정할 관리자의 상세 정보를 가져옴
+                    ManagerVO targetManager = managerDAO.selectOne(targetId);
+
+                    // ★ 추가: ADMIN 계정은 이 경로로 수정 불가
+                    if (targetManager != null && "ADMIN".equals(targetManager.getRole())) {
+                        log.warn("최고관리자 계정({}) modify_normal 접근 차단", targetId);
+                        HttpSession sess = request.getSession(false);
+                        if (sess != null) {
+                            sess.setAttribute("error",
+                                    "최고 관리자 계정은 '최고 관리자 정보 수정' 메뉴를 이용해 주세요.");
+                        }
+                        response.sendRedirect(request.getContextPath() + "/mgr/list");
+                        return;
+                    }
+                    // ★ 추가 끝
+
+                    if (targetManager != null) {
+                        // JSP에서 사용할 수 있도록 "manager"라는 이름으로 객체 바인딩
+                        request.setAttribute("manager", targetManager);
+                        log.info("수정 대상 조회 성공: {}", targetManager.getManagerName());
+                    } else {
+                        log.warn("ID가 {}인 관리자를 찾을 수 없음", targetId);
+                        request.setAttribute("error", "존재하지 않는 관리자입니다.");
+                    }
+                } catch (Exception e) {
+                    log.error("관리자 조회 중 DB 오류", e);
+                    request.setAttribute("error", "데이터 조회 중 오류 발생");
+                }
+
+                // 4. 작성하신 일반 관리자 수정 전용 JSP로 포워딩
+                request.getRequestDispatcher("/WEB-INF/views/mgr_modify_normal.jsp").forward(request, response);
+                break;
+
             /* 정의되지 않은 경로는 404 에러 */
             default:
                 log.warn("알 수 없는 경로: {}", pathInfo);
@@ -205,6 +268,9 @@ public class ManagerController extends HttpServlet {
         } else if ("/modify".equals(pathInfo)) {
             log.info("관리자 수정 처리 시작");
             modifyManager(request, response);
+        } else if ("/modify_normal".equals(pathInfo)) { // <--- 이 부분 추가
+            log.info("일반 관리자 수정 처리 시작");
+            modifyManagerNormal(request, response);
         } else if ("/toggleActive".equals(pathInfo)) {
             log.info("관리자 활성화 토글 처리 시작");
             toggleManagerActive(request, response);
@@ -352,6 +418,75 @@ public class ManagerController extends HttpServlet {
             }
 
             request.getRequestDispatcher("/WEB-INF/views/mgr_modify.jsp").forward(request, response);
+        }
+    }
+
+    /* 일반 관리자 정보 수정 처리 (ADMIN이 타 관리자 수정 시) */
+    private void modifyManagerNormal(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // 1. 폼 데이터 수신 (JSP의 name 속성과 일치해야 함)
+        String managerId = request.getParameter("managerId"); // hidden 필드에서 온 ID (기존 ID)
+        String managerName = request.getParameter("name");
+        String password = request.getParameter("pw");        // JSP의 name="pw"
+        String email = request.getParameter("email");
+
+        log.info("수정 요청 수신 - ID: {}, Name: {}, PW입력여부: {}, Email: {}",
+                managerId, managerName, (password != null && !password.isEmpty()), email);
+
+        try {
+            ManagerVO existing = managerDAO.selectOne(managerId);
+            if (existing == null) {
+                request.setAttribute("error", "존재하지 않는 관리자입니다.");
+                request.getRequestDispatcher("/WEB-INF/views/mgr_modify_normal.jsp").forward(request, response);
+                return;
+            }
+
+            // ★ 추가: POST 위조 요청으로 ADMIN 계정 수정 시도 차단
+            if ("ADMIN".equals(existing.getRole())) {
+                log.warn("최고관리자 계정({}) POST 수정 시도 차단", managerId);
+                HttpSession sess = request.getSession(false);
+                if (sess != null) {
+                    sess.setAttribute("error",
+                            "최고 관리자 계정은 '최고 관리자 정보 수정' 메뉴를 이용해 주세요.");
+                }
+                response.sendRedirect(request.getContextPath() + "/mgr/list");
+                return;
+            }
+            // ★ 추가 끝
+
+            // 2. 빌더로 업데이트 객체 생성
+            ManagerVO.ManagerVOBuilder builder = ManagerVO.builder()
+                    .managerNo(existing.getManagerNo())
+                    .managerId(existing.getManagerId())
+                    .managerName(managerName)
+                    .email(email)
+                    .active(existing.isActive())
+                    .role(existing.getRole());
+
+            // 3. 비밀번호 처리 (매우 중요)
+            if (password != null && !password.trim().isEmpty()) {
+                // 사용자가 비밀번호를 입력했을 때만 암호화해서 교체
+                log.info("비밀번호 변경을 수행합니다.");
+                builder.password(managerDAO.passEncode(password));
+            } else {
+                // 입력하지 않았다면 DB에 있던 기존 암호화된 비밀번호 유지
+                log.info("기존 비밀번호를 유지합니다.");
+                builder.password(existing.getPassword());
+            }
+
+            // 4. DB 업데이트 실행
+            managerDAO.updateManager(builder.build());
+
+            log.info("관리자 수정 완료 - ID: {}", managerId);
+
+            request.getSession().setAttribute("successMessage", "정보가 성공적으로 수정되었습니다.");
+            response.sendRedirect(request.getContextPath() + "/mgr/list");
+
+        } catch (Exception e) {
+            log.error("수정 중 오류 발생", e);
+            request.setAttribute("error", "오류가 발생했습니다: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/mgr_modify_normal.jsp").forward(request, response);
         }
     }
 
