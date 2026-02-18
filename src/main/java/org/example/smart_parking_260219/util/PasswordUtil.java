@@ -3,44 +3,17 @@ package org.example.smart_parking_260219.util;
 import org.mindrot.jbcrypt.BCrypt;
 import lombok.extern.log4j.Log4j2;
 
-/**
- * BCrypt를 사용한 안전한 비밀번호 암호화 유틸리티
- *
- * BCrypt 특징:
- * - 자동 솔트(salt) 생성 및 관리
- * - 레인보우 테이블 공격 방어
- * - 해싱 강도(work factor) 조절 가능
- * - 업계 표준 암호화 방식
- */
 @Log4j2
 public class PasswordUtil {
 
-    /**
-     * BCrypt 해싱 강도 (로그 라운드)
-     * 기본값: 12
-     *
-     * 값이 클수록 보안은 강화되지만 처리 시간이 증가
-     * - 10: 빠르지만 보안 약함 (개발/테스트용)
-     * - 12: 권장값 (프로덕션)
-     * - 14: 매우 강력 (고보안 환경)
-     */
+    /* BCrypt 해싱 강도 (로그 라운드) : 기본값 = 12 */
     private static final int WORK_FACTOR = 12;
 
-    /**
-     * 비밀번호를 BCrypt로 해싱
-     *
-     * @param plainPassword 평문 비밀번호
-     * @return BCrypt 해시 문자열 (솔트 포함, 60자)
-     *
-     * 예시:
-     * Input: "admin1234"
-     * Output: "$2a$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW"
-     */
+    /* 비밀번호를 BCrypt로 해싱 : 평문 -> BCrypt */
     public static String hashPassword(String plainPassword) {
         if (plainPassword == null || plainPassword.trim().isEmpty()) {
             throw new IllegalArgumentException("비밀번호는 null이거나 빈 문자열일 수 없습니다.");
         }
-
         try {
             String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(WORK_FACTOR));
             log.debug("비밀번호 해싱 완료 (원본 길이: {}자)", plainPassword.length());
@@ -52,16 +25,10 @@ public class PasswordUtil {
         }
     }
 
-    /**
-     * 입력된 평문 비밀번호와 저장된 해시를 비교하여 검증
-     *
-     * @param plainPassword 사용자가 입력한 평문 비밀번호
-     * @param hashedPassword DB에 저장된 BCrypt 해시
-     * @return 일치하면 true, 아니면 false
-     *
-     * 예시:
-     * checkPassword("admin1234", "$2a$12$R9h/...") → true
-     * checkPassword("wrong123", "$2a$12$R9h/...") → false
+    /* 입력된 평문 비밀번호와 저장된 해시를 비교하여 검증 (일치하면 true, 아니면 false)
+      예시:
+      - checkPassword("admin1234", "$2a$12$R9h/...") → true
+      - checkPassword("wrong123", "$2a$12$R9h/...") → false
      */
     public static boolean checkPassword(String plainPassword, String hashedPassword) {
         if (plainPassword == null || plainPassword.trim().isEmpty()) {
@@ -85,12 +52,7 @@ public class PasswordUtil {
         }
     }
 
-    /**
-     * 해시의 강도(work factor)를 확인
-     *
-     * @param hashedPassword BCrypt 해시
-     * @return work factor 값 (10, 12, 14 등)
-     */
+    /* 해시의 강도(work factor)를 확인 */
     public static int getWorkFactor(String hashedPassword) {
         if (hashedPassword == null || hashedPassword.length() < 7) {
             return -1;
@@ -108,9 +70,7 @@ public class PasswordUtil {
         return -1;
     }
 
-    /**
-     * 테스트용 메인 메서드
-     */
+    /* 테스트용 메인 메서드 */
     public static void main(String[] args) {
         // 테스트 1: 비밀번호 해싱
         System.out.println("=== BCrypt 비밀번호 암호화 테스트 ===\n");

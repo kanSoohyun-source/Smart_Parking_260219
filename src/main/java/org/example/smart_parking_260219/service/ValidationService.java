@@ -12,29 +12,17 @@ public class ValidationService {
     private final ValidationDAO validationDAO = new ValidationDAO();
     private final MailService mailService = new MailService();
 
-    // =========================================================================
-    // 발송 목적(Purpose) 열거형
-    // - 호출부에서 문자열 오타 없이 목적을 명시할 수 있고,
-    //   향후 목적이 추가될 때 이 enum 에만 값을 추가하면 됩니다.
-    // =========================================================================
     public enum Purpose {
         ADD_MANAGER,  // 일반 관리자 신규 추가 시 이메일 인증
         MODIFY_MANAGER,  // 관리자 본인 정보 수정 시 이메일 인증
         FORGOT_PASSWORD  // 비밀번호 찾기 시 이메일 인증
     }
 
-    // =========================================================================
-    // 기존 메서드 유지 (하위 호환)
-    // - 목적을 지정하지 않고 호출하던 기존 코드가 그대로 동작합니다.
-    // - 내부적으로 ADD_MANAGER 템플릿을 사용합니다.
-    // =========================================================================
     public String sendAuthCode(String email) throws Exception {
         return sendAuthCode(email, Purpose.ADD_MANAGER);
     }
 
-    // =========================================================================
-    // 목적별 이메일 발송 (핵심 메서드)
-    // =========================================================================
+    /* 목적별 이메일 발송 */
     public String sendAuthCode(String email, Purpose purpose) throws Exception {
 
         // 0. 기존 인증 정보 삭제 (재발송 시)
@@ -59,9 +47,7 @@ public class ValidationService {
         return authCode; // 테스트용 반환값 유지
     }
 
-    // =========================================================================
-    // 인증코드 검증 (변경 없음)
-    // =========================================================================
+    /* 인증코드 검증 */
     public boolean verifyAuthCode(String email, String inputCode) {
         log.info("인증코드 검증 시작 - Email: {}, Input: {}", email, inputCode);
         ValidationVO validationVO = validationDAO.select(email);
@@ -87,10 +73,6 @@ public class ValidationService {
 
         return isValid;
     }
-
-    // =========================================================================
-    // Private 헬퍼 메서드
-    // =========================================================================
 
     /* 목적별 이메일 제목 반환 */
     private String buildTitle(Purpose purpose) {

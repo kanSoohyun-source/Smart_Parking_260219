@@ -36,35 +36,16 @@
     %>
 
     <ul id="navMenu">
-        <%--        <div style="color: yellow; background: black; font-size: 10px;">--%>
-        <%--            현재 인식된 권한: [<%= mRole %>]--%>
-        <%--        </div>--%>
-
-        <%--        <div style="background: yellow; color: black; padding: 10px;">--%>
-        <%--            디버깅 정보:<br>--%>
-        <%--            1. loginManager 존재 여부: <%= session.getAttribute("loginManager") != null %><br>--%>
-        <%--            2. managerName 값: <%= session.getAttribute("managerName") %><br>--%>
-        <%--            3. managerRole 값: <%= session.getAttribute("managerRole") %><br>--%>
-        <%--            4. loginManager 객체의 타입: <%= session.getAttribute("loginManager") != null ? session.getAttribute("loginManager").getClass().getName() : "null" %>--%>
-        <%--        </div>--%>
-
-        <%--        <li class="dropdown">--%>
-        <%--            <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>--%>
-        <%--            <div id="adminSubMenu" class="dropdown-content">--%>
-        <%--                <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>--%>
-        <%--                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>--%>
-        <%--                &lt;%&ndash;                <a href="${pageContext.request.contextPath}/mgr/view">관리자 수정</a>&ndash;%&gt;--%>
-        <%--            </div>--%>
-        <%--        </li>--%>
 
         <%-- 권한이 ADMIN일 때만 '관리자 메뉴' 출력 --%>
         <% if ("ADMIN".equals(mRole)) { %>
         <li class="dropdown">
             <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
             <div id="adminSubMenu" class="dropdown-content">
-                <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">관리자 추가</a>
-                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록</a>
-                <a href="${pageContext.request.contextPath}/mgr/modify">관리자 정보 수정</a>
+                <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">일반 관리자 추가</a>
+                <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록 & 수정</a>
+                <a href="${pageContext.request.contextPath}/mgr/modify">최고 관리자 정보 수정</a>
+                <%--                <a href="${pageContext.request.contextPath}/mgr/modify_normal">일반 관리자 정보 수정</a>--%>
             </div>
         </li>
         <% } %>
@@ -83,39 +64,31 @@
 
 <script>
     <%-- 실시간 시계 --%>
-
     function updateClock() {
         const now = new Date();
-
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
-
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
-
         const timeString = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-
         const clockElement = document.getElementById("liveClock");
         if (clockElement) {
             clockElement.innerText = timeString;
         }
     }
-
     setInterval(updateClock, 1000); // 1초마다 updateClock 함수 실행
     window.onload = updateClock;  // 페이지 로드 시 즉시 실행 (1초 대기 방지)
-</script>
 
-<script>
-    // 관리자 추가 함수
+    <%-- 관리자 추가 함수 --%>
     function confirmAddManager() {
         // confirm() 확인을 누르면 true -> href 경로로 이동
         // confirm() 취소를 누르면 false -> 이동 취소 (현재 화면 유지)
         return confirm("관리자 추가 페이지로 이동하시겠습니까?");
     }
 
-    // 로그아웃 함수
+    <%-- 로그아웃 함수 --%>
     function confirmLogout() {
         if (confirm("로그아웃을 하시겠습니까?")) {  // confirm()은 확인을 누르면 true, 취소를 누르면 false를 반환
             ${pageContext.request.contextPath}  // '확인' 클릭 시: true가 반환되어 href 주소(/logout)로 이동
@@ -125,16 +98,15 @@
             return false;
         }
     }
-</script>
 
-<script>
+    <%-- 토글 --%>
     function toggleDropdown() {
         const dropdown = document.getElementById("adminSubMenu");
         // 'show' 클래스가 있으면 제거하고, 없으면 추가함
         dropdown.classList.toggle("show");
     }
 
-    // 메뉴 외부 클릭 시 드롭다운 닫기
+    <%-- 메뉴 외부 클릭 시 드롭다운 닫기 --%>
     window.onclick = function(event) {
         if (!event.target.matches('.dropbtn')) {
             const dropdowns = document.getElementsByClassName("dropdown-content");
