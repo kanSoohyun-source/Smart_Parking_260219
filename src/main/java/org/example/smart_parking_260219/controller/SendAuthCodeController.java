@@ -11,9 +11,10 @@ import org.example.smart_parking_260219.service.ValidationService;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/auth/sendCode")
+@WebServlet(name = "sendAuthCodeController", value = {"/auth/sendCode"})
 @Log4j2
 public class SendAuthCodeController extends HttpServlet {
+
     private final ValidationService validationService = new ValidationService();
 
     @Override
@@ -21,10 +22,20 @@ public class SendAuthCodeController extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");  // 한글 깨짐 방지
 
-        String email = req.getParameter("email");  // email 파라미터 값 추출
+        String email = req.getParameter("email");   // email 파라미터 추출
+        String purposeParam = req.getParameter("purpose");  // ✅ purpose 파라미터 추출
+
+        // ✅ purpose 문자열 → enum 변환 (값이 없거나 잘못된 경우 ADD_MANAGER 기본값)
+        ValidationService.Purpose purpose;
+        try {
+            purpose = ValidationService.Purpose.valueOf(purposeParam);
+        } catch (Exception e) {
+            log.warn("purpose 파라미터 없음 또는 잘못된 값: '{}' → ADD_MANAGER 기본값 사용", purposeParam);
+            purpose = ValidationService.Purpose.ADD_MANAGER;
+        }
 
         try {
-            validationService.sendAuthCode(email);  // validationService에 이메일 발송 요청
+            validationService.sendAuthCode(email, purpose);  // ✅ purpose 전달
 
             // 성공 응답 설정, HTTP 헤더에 JSON 형식이며 UTF-8임을 명시
             // 응답 인코딩 설정 (반드시 getWriter() 전에 호출)

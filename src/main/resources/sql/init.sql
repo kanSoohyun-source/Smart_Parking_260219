@@ -35,8 +35,9 @@ INSERT INTO `manager` (`manager_id`, `manager_name`, `password`, `email`, `activ
 VALUES ('admin',
         '최고관리자',
 #         SHA2('admin1234', 256), -- 초기 비밀번호 설정
-        password('admin1234'), -- 초기 비밀번호 설정
-        'admin@example.com',
+#         password('admin1234'), -- 초기 비밀번호 설정
+    '$2a$12$ZCQ/eJfwieyh19zSm8g15Os9hbtPS4.W6wgtWg2kycba/5x8o6JVS',
+        'wndus6110@naver.com',
         TRUE,
         'ADMIN')
 ON DUPLICATE KEY UPDATE `role` = 'ADMIN'; -- 이미 존재할 경우 권한만 ADMIN으로 보장

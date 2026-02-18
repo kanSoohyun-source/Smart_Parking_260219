@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Log4j2
-@WebServlet("/auth/verify")
+@WebServlet(name = "verifyAuthCodeController", value = {"/auth/verify"})
 public class VerifyAuthCodeController extends HttpServlet {
     private final ValidationService validationService = new ValidationService();
 

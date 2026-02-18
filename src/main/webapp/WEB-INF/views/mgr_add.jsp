@@ -169,6 +169,19 @@
             background: #28a745;
             width: 100%;
         }
+        /* ✅ 타이머 스타일 */
+        .auth-timer {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+        .auth-timer.expiring {
+            animation: blink 0.8s step-start infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
     </style>
 </head>
 <body>
@@ -252,6 +265,10 @@
                                 style="width: 100px; padding: 0; font-size: 14px; height: 45px;">확인</button>
                     </div>
                     <div class="field-hint" id="authHint">이메일로 발송된 번호를 입력해주세요.</div>
+                    <%-- ✅ 타이머 UI --%>
+                    <div id="authTimer" class="auth-timer" style="display: none;">
+                        ⏱ 남은 시간: <span id="authTimeLeft">05:00</span>
+                    </div>
                 </div>
             </div>
 
@@ -277,6 +294,52 @@
     const submitBtn = document.getElementById('submitBtn');
     // ✅ 이메일 인증 상태 추적 변수 추가
     let isEmailVerified = false;
+
+    // ✅ 타이머 관련 변수
+    let authTimerInterval = null;
+    const authTimerDiv  = document.getElementById('authTimer');
+    const authTimeLeft  = document.getElementById('authTimeLeft');
+
+    /* 타이머 시작 (5분 = 300초) */
+    function startAuthTimer() {
+        if (authTimerInterval) clearInterval(authTimerInterval);
+
+        let timeLeft = 300;
+        authTimerDiv.style.display = 'block';
+        authTimerDiv.classList.remove('expiring');
+        authTimeLeft.textContent = '05:00';
+
+        authTimerInterval = setInterval(function () {
+            timeLeft--;
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            authTimeLeft.textContent =
+                String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+            // 1분 이하: 깜빡임 강조
+            if (timeLeft <= 60) authTimerDiv.classList.add('expiring');
+
+            if (timeLeft <= 0) {
+                clearInterval(authTimerInterval);
+                authTimerDiv.style.display = 'none';
+                document.getElementById('emailAuthGroup').style.display = 'none';
+                document.getElementById('authCode').value = '';
+                document.getElementById('sendEmailBtn').disabled = false;
+                document.getElementById('sendEmailBtn').textContent = '인증요청';
+                alert('인증 시간이 만료되었습니다. 다시 인증번호를 요청해주세요.');
+            }
+        }, 1000);
+    }
+
+    /* 타이머 정지 */
+    function stopAuthTimer() {
+        if (authTimerInterval) {
+            clearInterval(authTimerInterval);
+            authTimerInterval = null;
+        }
+        authTimerDiv.style.display = 'none';
+    }
 
     // 에러 메시지 표시 함수
     function showError(inputId, message) {
@@ -457,7 +520,7 @@
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'email=' + encodeURIComponent(email)
+            body: 'email=' + encodeURIComponent(email) + '&purpose=ADD_MANAGER'  // ✅ purpose 추가
         })
             .then(response => response.json())
             .then(data => {
@@ -465,6 +528,9 @@
                     alert(email + '로 인증번호를 발송했습니다.');
                     // 인증번호 입력창 보이기
                     document.getElementById('emailAuthGroup').style.display = 'block';
+                    document.getElementById('authCode').focus();
+                    // ✅ 타이머 시작
+                    startAuthTimer();
                 } else {
                     alert('인증번호 발송 실패: ' + data.message);
                 }
@@ -513,6 +579,8 @@
                     verifyBtn.disabled = true; // 확인 버튼 비활성화
                     verifyBtn.textContent = '인증완료';
                     document.getElementById('sendEmailBtn').disabled = true;
+                    // ✅ 인증 완료 시 타이머 정지
+                    stopAuthTimer();
                 } else {
                     alert('인증 실패: ' + data.message);
                     verifyBtn.disabled = false;
@@ -574,6 +642,8 @@
             return false;
         }
 
+        // ✅ 폼 제출 시 타이머 정지
+        stopAuthTimer();
         // 제출 중 버튼 비활성화
         submitBtn.disabled = true;
         submitBtn.textContent = '추가 중...';
@@ -587,6 +657,8 @@
             document.getElementById('sendEmailBtn').disabled = false;
             document.getElementById('emailAuthGroup').style.display = 'none';
             document.getElementById('authCode').value = '';
+            // ✅ 이메일 변경 시 타이머도 초기화
+            stopAuthTimer();
         }
         hideError(this.id);
     });

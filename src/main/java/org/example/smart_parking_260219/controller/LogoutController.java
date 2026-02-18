@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.IOException;
 
 @Log4j2
-@WebServlet("/logout")
+@WebServlet(name = "logoutController", value = {"/logout"})
 public class LogoutController extends HttpServlet {
 
     @Override

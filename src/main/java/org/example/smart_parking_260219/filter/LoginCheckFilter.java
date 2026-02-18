@@ -22,7 +22,8 @@ public class LoginCheckFilter implements Filter {
             "/logout",
             "/resources",
             "/CSS",
-            "/JS"
+            "/JS",
+            "/forgot-password"  // 비밀번호 찾기
     );
 
     @Override

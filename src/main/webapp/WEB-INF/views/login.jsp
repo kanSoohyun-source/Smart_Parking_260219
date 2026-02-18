@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>로그인 - 주차장 관리 시스템</title>
     <link rel="stylesheet" href="/CSS/style.css">
-<%--    <link rel="stylesheet" href="/CSS/login_style.css">--%>
+    <%--    <link rel="stylesheet" href="/CSS/login_style.css">--%>
     <style>
         * {
             margin: 0;
@@ -94,11 +94,46 @@
             margin-right: 8px;
             cursor: pointer;
         }
+        .btn-forgot {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn-forgot:hover {
+            background: #667eea;
+            color: white;
+        }
+        .logout-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #bee5eb;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 <div class="login-container">
     <h2>관리자 로그인</h2>
+
+    <%-- 로그아웃/재로그인 안내 메시지 --%>
+    <% String logoutMessage = (String) session.getAttribute("logoutMessage");
+        if (logoutMessage != null) {
+            session.removeAttribute("logoutMessage"); %>
+    <div class="logout-message">
+        <%= logoutMessage %>
+    </div>
+    <% } %>
 
     <%-- 에러 메시지 표시 --%>
     <% String error = (String) request.getAttribute("error");
@@ -119,15 +154,19 @@
             <input type="password" id="pw" name="pw" required>
         </div>
 
-<%--        <div class="checkbox-group">--%>
-<%--            <label>--%>
-<%--                <input type="checkbox" name="rememberMe">--%>
-<%--                로그인 상태 유지--%>
-<%--            </label>--%>
-<%--        </div>--%>
+        <%--        <div class="checkbox-group">--%>
+        <%--            <label>--%>
+        <%--                <input type="checkbox" name="rememberMe">--%>
+        <%--                로그인 상태 유지--%>
+        <%--            </label>--%>
+        <%--        </div>--%>
 
         <button type="submit" class="btn-login">로그인</button>
     </form>
+    <button type="button" class="btn-forgot"
+            onclick="location.href='${pageContext.request.contextPath}/forgot-password'">
+        🔑 비밀번호 찾기
+    </button>
 </div>
 </body>
 </html>

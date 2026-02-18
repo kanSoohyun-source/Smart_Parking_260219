@@ -17,7 +17,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
         }
         .auth-container {
             background: white;
@@ -167,16 +167,11 @@
             font-size: 12px;
             margin-left: 8px;
         }
-        .debug-info {
-            background: #e7f3ff;
-            border: 1px solid #b3d9ff;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-family: monospace;
-            max-height: 150px;
-            overflow-y: auto;
+        .timer {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -205,7 +200,7 @@
                 <input type="email" id="email" name="email" placeholder="example@email.com" required>
                 <button type="button" id="sendOtpBtn" class="btn btn-secondary">인증요청</button>
             </div>
-            <div class="field-hint">등록된 이메일 주소를 입력하세요</div>
+            <div class="field-hint">데이터베이스에 등록된 이메일 주소를 입력하세요</div>
             <div class="field-error" id="emailError"></div>
         </div>
 
@@ -214,7 +209,8 @@
             <div class="form-group">
                 <label for="otp">인증번호</label>
                 <input type="text" id="otp" name="otp" maxlength="6" placeholder="6자리 인증번호" autocomplete="off">
-                <div class="field-hint">콘솔에 출력된 6자리 OTP를 입력하세요 (테스트용)</div>
+                <div class="field-hint">이메일로 전송된 6자리 인증번호를 입력하세요</div>
+                <div class="timer" id="timer" style="display: none;">남은 시간: <span id="timeLeft">05:00</span></div>
                 <div class="field-error" id="otpError"></div>
             </div>
 
@@ -223,12 +219,6 @@
 
         <button type="button" class="btn btn-secondary" id="cancelBtn">취소</button>
     </form>
-
-    <!-- 디버깅 정보 표시 영역 -->
-    <div class="debug-info" id="debugInfo" style="display: none;">
-        <strong>디버깅 로그:</strong><br>
-        <div id="debugLog"></div>
-    </div>
 </div>
 
 <script>
@@ -239,28 +229,43 @@
     const submitBtn = document.getElementById('submitBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const otpForm = document.getElementById('otpForm');
-    const debugInfo = document.getElementById('debugInfo');
-    const debugLog = document.getElementById('debugLog');
+    const timerDiv = document.getElementById('timer');
+    const timeLeftSpan = document.getElementById('timeLeft');
 
     let isEmailVerified = false;
+    let timerInterval = null;
 
-    // 디버그 로그 함수
-    function addDebugLog(message) {
-        console.log(message);
-        debugInfo.style.display = 'block';
-        const logEntry = document.createElement('div');
-        logEntry.textContent = new Date().toLocaleTimeString() + ': ' + message;
-        debugLog.appendChild(logEntry);
-        debugLog.scrollTop = debugLog.scrollHeight;
+    // 타이머 시작 (5분)
+    function startTimer() {
+        let timeLeft = 300; // 5분 = 300초
+        timerDiv.style.display = 'block';
+        
+        timerInterval = setInterval(function() {
+            timeLeft--;
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeLeftSpan.textContent = 
+                String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert('인증 시간이 만료되었습니다. 다시 인증번호를 요청해주세요.');
+                resetForm();
+            }
+        }, 1000);
     }
 
-    // 페이지 로드 시 디버깅 정보
-    window.addEventListener('load', function() {
-        addDebugLog('페이지 로드 완료');
-        addDebugLog('Context Path: ${pageContext.request.contextPath}');
-        addDebugLog('Form Action: ' + otpForm.action);
-        addDebugLog('OTP 요청 URL: ${pageContext.request.contextPath}/login/sendLoginOtp');
-    });
+    // 폼 초기화
+    function resetForm() {
+        clearInterval(timerInterval);
+        timerDiv.style.display = 'none';
+        otpGroup.style.display = 'none';
+        emailInput.readOnly = false;
+        otpInput.value = '';
+        isEmailVerified = false;
+        sendOtpBtn.textContent = '인증요청';
+    }
 
     // 이메일 유효성 검사
     emailInput.addEventListener('blur', function() {
@@ -287,13 +292,8 @@
 
     // 인증번호 발송 버튼
     sendOtpBtn.addEventListener('click', function() {
-        addDebugLog('========================================');
-        addDebugLog('인증요청 버튼 클릭');
-
         const email = emailInput.value.trim();
         const emailPattern = /^[A-Za-z0-9+_.-]+@(.+)$/;
-
-        addDebugLog('입력된 이메일: ' + email);
 
         if (!email) {
             alert('이메일을 입력해주세요.');
@@ -313,10 +313,6 @@
         const url = '${pageContext.request.contextPath}/login/sendLoginOtp';
         const body = 'email=' + encodeURIComponent(email);
 
-        addDebugLog('요청 URL: ' + url);
-        addDebugLog('요청 Body: ' + body);
-        addDebugLog('Fetch 시작...');
-
         // OTP 발송 요청
         fetch(url, {
             method: 'POST',
@@ -326,68 +322,45 @@
             body: body
         })
             .then(response => {
-                addDebugLog('응답 수신 완료');
-                addDebugLog('응답 상태: ' + response.status + ' ' + response.statusText);
-                addDebugLog('응답 헤더 Content-Type: ' + response.headers.get('Content-Type'));
-
                 if (!response.ok) {
                     throw new Error('HTTP error! status: ' + response.status);
                 }
-
-                return response.text(); // 먼저 text로 받아서 확인
+                return response.json();
             })
-            .then(text => {
-                addDebugLog('응답 본문(Text): ' + text);
-
-                try {
-                    const data = JSON.parse(text);
-                    addDebugLog('JSON 파싱 성공');
-                    addDebugLog('success: ' + data.success);
-                    addDebugLog('message: ' + data.message);
-
-                    if (data.success) {
-                        // 성공 메시지 표시
-                        const errorMessage = document.getElementById('errorMessage');
-                        if (errorMessage) {
-                            errorMessage.className = 'success-message';
-                            errorMessage.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
-                        } else {
-                            const successDiv = document.createElement('div');
-                            successDiv.className = 'success-message';
-                            successDiv.textContent = email + '로 인증번호를 발송했습니다. (콘솔 확인)';
-                            otpForm.insertBefore(successDiv, otpForm.firstChild);
-                        }
-
-                        emailInput.readOnly = true;
-                        otpGroup.style.display = 'block';
-                        otpInput.focus();
-                        isEmailVerified = true;
-
-                        addDebugLog('✅ OTP 발송 성공!');
-                        addDebugLog('IntelliJ 콘솔에서 OTP를 확인하세요!');
-                        alert('✅ OTP가 발송되었습니다!\n\n📋 IntelliJ 콘솔 창에서\n"테스트용 OTP: ######" 를 확인하고\n해당 번호를 입력하세요.');
+            .then(data => {
+                if (data.success) {
+                    // 성공 메시지 표시
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage) {
+                        errorMessage.className = 'success-message';
+                        errorMessage.textContent = email + '로 인증번호를 발송했습니다. 이메일을 확인해주세요.';
                     } else {
-                        addDebugLog('❌ 발송 실패: ' + data.message);
-                        alert('인증번호 발송 실패: ' + (data.message || '알 수 없는 오류'));
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'success-message';
+                        successDiv.textContent = email + '로 인증번호를 발송했습니다. 이메일을 확인해주세요.';
+                        otpForm.insertBefore(successDiv, otpForm.firstChild);
                     }
-                } catch (parseError) {
-                    addDebugLog('❌ JSON 파싱 실패: ' + parseError.message);
-                    addDebugLog('응답이 JSON이 아닙니다. HTML이거나 다른 형식일 수 있습니다.');
-                    alert('서버 응답 오류: JSON 파싱 실패\n콘솔을 확인하세요.');
+
+                    emailInput.readOnly = true;
+                    otpGroup.style.display = 'block';
+                    otpInput.focus();
+                    isEmailVerified = true;
+                    
+                    // 타이머 시작
+                    startTimer();
+
+                    alert('✅ 이메일로 인증번호가 발송되었습니다!\n\n' + email + '\n\n이메일함을 확인하고 6자리 인증번호를 입력해주세요.\n(스팸함도 확인해주세요)');
+                } else {
+                    alert('인증번호 발송 실패: ' + (data.message || '알 수 없는 오류'));
                 }
             })
             .catch(error => {
-                addDebugLog('❌ Fetch 오류 발생');
-                addDebugLog('오류 메시지: ' + error.message);
-                addDebugLog('오류 타입: ' + error.name);
-                console.error('전체 오류:', error);
-                alert('인증번호 발송 중 오류가 발생했습니다.\n\n오류: ' + error.message + '\n\n콘솔과 디버그 로그를 확인하세요.');
+                console.error('오류:', error);
+                alert('인증번호 발송 중 오류가 발생했습니다.\n\n오류: ' + error.message);
             })
             .finally(() => {
                 sendOtpBtn.disabled = false;
                 sendOtpBtn.textContent = isEmailVerified ? '재발송' : '인증요청';
-                addDebugLog('요청 완료');
-                addDebugLog('========================================');
             });
     });
 
@@ -398,13 +371,8 @@
 
     // 폼 제출
     otpForm.addEventListener('submit', function(e) {
-        addDebugLog('OTP 폼 제출 시작');
-
         const email = emailInput.value.trim();
         const otp = otpInput.value.trim();
-
-        addDebugLog('제출 - 이메일: ' + email);
-        addDebugLog('제출 - OTP: ' + otp);
 
         if (!email) {
             e.preventDefault();
@@ -429,14 +397,14 @@
         submitBtn.disabled = true;
         submitBtn.textContent = '로그인 중...';
 
-        addDebugLog('폼 제출 진행');
+        clearInterval(timerInterval);
         return true;
     });
 
     // 취소 버튼
     cancelBtn.addEventListener('click', function() {
-        addDebugLog('취소 버튼 클릭');
         if (confirm('로그인을 취소하시겠습니까?')) {
+            clearInterval(timerInterval);
             window.location.href = '${pageContext.request.contextPath}/login';
         }
     });

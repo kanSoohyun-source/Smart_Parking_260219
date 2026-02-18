@@ -160,6 +160,19 @@
             background: #28a745;
             width: 100%;
         }
+        /* ✅ 타이머 스타일 (login_email_otp.jsp 이식) */
+        .auth-timer {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+        .auth-timer.expiring {
+            animation: blink 0.8s step-start infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
     </style>
 </head>
 <body>
@@ -220,7 +233,7 @@
                 <label for="pw">새 비밀번호</label>
                 <input type="password" id="pw" name="pw">
                 <div class="password-strength" id="passwordStrength"></div>
-                <div class="field-hint">변경하지 않으려면 비워두세요 (최소 4자 이상)</div>
+                <div class="field-hint">변경하지 않으려면 비워두세요 (변경 시 최소 4자 이상 입력)</div>
                 <div class="field-error" id="pwError"></div>
             </div>
 
@@ -246,11 +259,15 @@
 
                 <!-- 이메일 인증번호 입력 -->
                 <div id="emailAuthGroup" style="margin-top: 12px; display: none;">
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px; align-items: center;">
                         <input type="text" id="authCode" placeholder="인증번호 6자리"
                                maxlength="6" style="flex: 1; margin-bottom: 0;">
                         <button type="button" id="verifyBtn" class="btn btn-primary"
-                                style="width: 80px; padding: 0; font-size: 14px; height: 45px;">확인</button>
+                                style="width: 80px; padding: 0; font-size: 14px; height: 45px; flex-shrink: 0;">확인</button>
+                    </div>
+                    <%-- ✅ 타이머 UI (login_email_otp.jsp 이식) --%>
+                    <div id="authTimer" class="auth-timer" style="display: none;">
+                        ⏱ 남은 시간: <span id="authTimeLeft">05:00</span>
                     </div>
                 </div>
             </div>
@@ -291,6 +308,56 @@
     const passwordConfirmInput = document.getElementById('passwordConfirm');
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submitBtn');
+
+    // ✅ 타이머 관련 변수 (login_email_otp.jsp 이식)
+    let authTimerInterval = null;
+    const authTimerDiv   = document.getElementById('authTimer');
+    const authTimeLeft   = document.getElementById('authTimeLeft');
+
+    /* 타이머 시작 (5분 = 300초) */
+    function startAuthTimer() {
+        // 기존 타이머가 있으면 먼저 정리
+        if (authTimerInterval) clearInterval(authTimerInterval);
+
+        let timeLeft = 300;
+        authTimerDiv.style.display = 'block';
+        authTimerDiv.classList.remove('expiring');
+        authTimeLeft.textContent = '05:00';
+
+        authTimerInterval = setInterval(function () {
+            timeLeft--;
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            authTimeLeft.textContent =
+                String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+            // 1분 이하: 깜빡임 강조
+            if (timeLeft <= 60) {
+                authTimerDiv.classList.add('expiring');
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(authTimerInterval);
+                authTimerDiv.style.display = 'none';
+                // 인증번호 입력 영역 닫기 & 상태 초기화
+                document.getElementById('emailAuthGroup').style.display = 'none';
+                document.getElementById('authCode').value = '';
+                document.getElementById('sendEmailBtn').disabled = false;
+                document.getElementById('sendEmailBtn').textContent = '인증요청';
+                alert('인증 시간이 만료되었습니다. 다시 인증번호를 요청해주세요.');
+            }
+        }, 1000);
+    }
+
+    /* 타이머 정지 */
+    function stopAuthTimer() {
+        if (authTimerInterval) {
+            clearInterval(authTimerInterval);
+            authTimerInterval = null;
+        }
+        authTimerDiv.style.display = 'none';
+    }
 
     // 에러 메시지 표시 함수
     function showError(fieldId, message) {
@@ -420,7 +487,7 @@
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'email=' + encodeURIComponent(email)
+            body: 'email=' + encodeURIComponent(email) + '&purpose=MODIFY_MANAGER'  // ✅ purpose 추가
         })
             .then(response => response.json())
             .then(data => {
@@ -428,6 +495,9 @@
                     alert(email + '로 인증번호를 발송했습니다.');
                     // 인증번호 입력창 보이기
                     document.getElementById('emailAuthGroup').style.display = 'block';
+                    document.getElementById('authCode').focus();
+                    // ✅ 타이머 시작 (login_email_otp.jsp 이식)
+                    startAuthTimer();
                 } else {
                     alert('인증번호 발송 실패: ' + data.message);
                 }
@@ -476,6 +546,8 @@
                     verifyBtn.disabled = true; // 확인 버튼 비활성화
                     verifyBtn.textContent = '인증완료';
                     document.getElementById('sendEmailBtn').disabled = true;
+                    // ✅ 인증 완료 시 타이머 정지 (login_email_otp.jsp 이식)
+                    stopAuthTimer();
                 } else {
                     alert('인증 실패: ' + data.message);
                     verifyBtn.disabled = false;
@@ -502,6 +574,8 @@
                 document.getElementById('sendEmailBtn').disabled = false;
                 document.getElementById('emailAuthGroup').style.display = 'none';
                 document.getElementById('authCode').value = '';
+                // ✅ 이메일 변경 시 타이머도 초기화 (login_email_otp.jsp 이식)
+                stopAuthTimer();
             }
         } else {
             // 원래 이메일로 돌아가면 인증 불필요
@@ -562,6 +636,8 @@
             return false;
         }
 
+        // ✅ 폼 제출 시 타이머 정지 (login_email_otp.jsp 이식)
+        stopAuthTimer();
         // 제출 중 버튼 비활성화
         submitBtn.disabled = true;
         submitBtn.textContent = '적용 중...';

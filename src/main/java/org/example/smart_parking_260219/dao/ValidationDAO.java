@@ -11,15 +11,18 @@ import java.time.LocalDateTime;
 
 @Log4j2
 public class ValidationDAO {
+
     /* 추가 */
     public void insert(ValidationVO validationVO) {
         String sql = "INSERT INTO validation (string_otp, email, expiry_time) VALUES (?, ?, ?)";
-        final int EXP = 10;
+        final int EXP = 5;
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, validationVO.getStringOTP());
             preparedStatement.setString(2, validationVO.getEmail());
+            // 만료 시간 설정 : 현재 시간(LocalDateTime.now()) + 5분(plusMinutes(EXP))
+            // DB의 TIMESTAMP 타입과 맞추기 위해 Timestamp.valueOf()로 형변환
             preparedStatement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now().plusMinutes(EXP)));
             preparedStatement.executeUpdate();  //INSERT 실행
 
@@ -41,7 +44,7 @@ public class ValidationDAO {
             preparedStatement.setString(1, email);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                // ✅ Timestamp를 LocalDateTime으로 안전하게 변환
+                // Timestamp를 LocalDateTime으로 형변환
                 Timestamp timestamp = resultSet.getTimestamp("expiry_time");
                 LocalDateTime expiryTime = timestamp.toLocalDateTime();
 
@@ -68,9 +71,11 @@ public class ValidationDAO {
         String sql = "DELETE FROM validation WHERE email = ?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
-            @Cleanup PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, email);
-            int deleted = ps.executeUpdate();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+
+            // 실행 결과를 deleted 변수에 저장
+            int deleted = preparedStatement.executeUpdate();
 
             log.info("기존 인증 정보 삭제: " + email + " (" + deleted + "건)");
         } catch (SQLException e) {

@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.IOException;
 
 @Log4j2
-@WebServlet("/dashboard")
+@WebServlet(name = "dashboardController", value = {"/dashboard"})
 public class DashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
