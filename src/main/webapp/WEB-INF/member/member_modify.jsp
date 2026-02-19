@@ -2,9 +2,9 @@
 <%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
 <%@ page import="java.time.LocalDate" %>
 <%
-    MemberDTO member   = (MemberDTO) request.getAttribute("member");
+    MemberDTO member = (MemberDTO) request.getAttribute("member");
     LocalDate newStart = (LocalDate) request.getAttribute("newStart");
-    LocalDate newEnd   = (LocalDate) request.getAttribute("newEnd");
+    LocalDate newEnd = (LocalDate) request.getAttribute("newEnd");
 
     if (member == null) {
         response.sendRedirect("/member/member_list");

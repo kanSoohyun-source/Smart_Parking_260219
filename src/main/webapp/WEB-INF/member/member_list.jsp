@@ -1,9 +1,18 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
 <%@ page import="java.time.LocalDate" %>
+<%@ page import="org.example.smart_parking_260219.service.MemberService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
+    // 구독중 회원과 만료회원 구분
+    MemberService memberService = MemberService.INSTANCE;
+    List<MemberDTO> allMembers = memberService.getAllMember();
+    long totalSubscribed = allMembers.stream()
+            .filter(MemberDTO::isSubscribed)
+            .count();
+    long totalExpired = allMembers.size() - totalSubscribed;
+    // 페이징처리
     List<MemberDTO> dtoList = (List<MemberDTO>) request.getAttribute("dtoList");
     Integer currentPage = (Integer) request.getAttribute("currentPage");
     Integer totalPages = (Integer) request.getAttribute("totalPages");
@@ -20,13 +29,6 @@
     String success   = request.getParameter("success");
     String error     = request.getParameter("error");
 
-    // 통계 계산
-    long subscribedCount = dtoList.stream()
-            .filter(MemberDTO::isSubscribed)
-            .count();
-    long expiredCount = dtoList.stream()
-            .filter(m -> !m.isSubscribed())
-            .count();
 %>
 <html>
 <head>
@@ -80,11 +82,11 @@
         <hr class="mt-2 mb-2">
         <div class="text-right mb-3">
             <span class="badge badge-custom badge-secondary">
-                <i class="fas fa-users"></i>전체 <%= totalItems %>명</span>
+                <i class="fas fa-users"></i>전체 <%=totalItems%>명</span>
             <span class="badge badge-custom badge-success">
-                <i class="fas fa-check-circle"></i>구독중 <%= subscribedCount %>명</span>
+                <i class="fas fa-check-circle"></i>구독중 <%=totalSubscribed%>명</span>
             <span class="badge badge-custom badge-warning text-white">
-                <i class="fas fa-exclamation-circle"></i>만료 <%= expiredCount %>명</span>
+                <i class="fas fa-exclamation-circle"></i>만료 <%=totalExpired%>명</span>
         </div>
 
         <div class="table-container">
