@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class ValidationDAO {
 
     /* 추가 */
+    // 이메일과 인증 번호를 현재 시각 기준 5분의 유효 기간을 설정하여 DB에 저장
     public void insert(ValidationVO validationVO) {
         String sql = "INSERT INTO validation (string_otp, email, expiry_time) VALUES (?, ?, ?)";
         final int EXP = 5;
@@ -34,6 +35,7 @@ public class ValidationDAO {
     }
 
     /* 조회 */
+    // DB에서 특정 이메일에 매핑된 인증 번호와 만료 시간을 가져옴
     public ValidationVO select(String email) {
         ValidationVO valiVO = null;
 

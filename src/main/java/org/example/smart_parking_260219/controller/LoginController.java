@@ -246,7 +246,7 @@ public class LoginController extends HttpServlet {
         session.setAttribute("fullyAuthenticated", true);
 
         // 세션 타임아웃 설정 (30분)
-        // session.setMaxInactiveInterval(30 * 60);
+        session.setMaxInactiveInterval(30 * 60);
 
         // 로그인 완료 - 대시보드로 리다이렉트
         /** 최종 merge 진행 시 경로 재설정 */

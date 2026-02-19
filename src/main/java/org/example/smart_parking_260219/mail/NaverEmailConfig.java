@@ -13,12 +13,16 @@ public class NaverEmailConfig {
     // 비밀번호 (2차인증의 경우 애플리케이션 비밀번호)
     private static final String password = "1EV12JZMHMGR";
 
+    // 내부 서버 연결 시 사용자 이름과 비밀번호를 전달하여 인증을 수행
     public static class SimpleAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
+            // 서버에 인증 정보를 담은 객체를 반환
             return new PasswordAuthentication(username, password);
         }
     }
+
+    // SMTP 연결에필요한 세부 프로토콜 및 보안 설정을 Properties 객체에 담아 반환
     public static Properties getProperties() {
         Properties props = new Properties();
         props.put("mail.username", username);

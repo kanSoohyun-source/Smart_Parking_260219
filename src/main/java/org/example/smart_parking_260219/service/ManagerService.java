@@ -41,16 +41,6 @@ public enum ManagerService {
         return false;
     }
 
-    /* 특정 관리자 조회 */
-    public ManagerDTO getManager(String managerId) {
-        ManagerVO memberVo = managerDAO.selectOne(managerId);
-        if (memberVo == null) return null;
-
-        ManagerDTO managerDTO = modelMapper.map(memberVo, ManagerDTO.class);
-        log.info("조회된 관리자 DTO: {}", managerDTO);
-        return managerDTO;
-    }
-
     /* 관리자 전체 목록 조회 */
     public List<ManagerDTO> getAllManagers() {
         log.info("getAllManagers... 호출");
@@ -66,11 +56,5 @@ public enum ManagerService {
         log.info("추가할 관리자 DTO: {}", managerDTO);
         ManagerVO memberVo = modelMapper.map(managerDTO, ManagerVO.class);
         managerDAO.insertManager(memberVo);
-    }
-
-    /* 계정 활성화/비활성화 상태 변경 */
-    public void updateActiveStatus(String id, boolean active) {
-        log.info("서비스: 상태 변경 시도 - ID: {}, Target: {}", id, active);
-        managerDAO.updateActive(active, id);
     }
 }
