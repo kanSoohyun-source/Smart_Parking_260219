@@ -100,13 +100,6 @@
         List<StatisticsDTO> dSales = (List<StatisticsDTO>) request.getAttribute("dailySales");
         List<StatisticsDTO> cStats = (List<StatisticsDTO>) request.getAttribute("carTypeStats");
     %>
-    /*
-            req.setAttribute("targetDate", targetDate);
-            req.setAttribute("hourlySales", hourlySales);
-            req.setAttribute("hourlyCounts", hourlyCounts);
-            req.setAttribute("dailySales", dailySales);
-            req.setAttribute("carTypeStats", carTypeStats);
-     */
 
     // 시간대별 데이터 - 0시~23시까지의 매출 및 입차 대수
     const hourlyLabels = [

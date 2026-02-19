@@ -71,6 +71,13 @@
                     </tbody>
                 </table>
             </div>
+            <div class="section-card control-section">
+                <form action="${pageContext.request.contextPath}/statistics/statistics" method="get" class="control-bar" id="dateForm">
+                    <div class="selector-box">
+                        <button type="submit" class="btn-search">뒤로가기</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
