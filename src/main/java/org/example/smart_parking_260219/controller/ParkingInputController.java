@@ -16,7 +16,7 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "parkingInputController", urlPatterns = "/parking/input")
+@WebServlet("/input")
 @Log4j2
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
@@ -81,8 +81,7 @@ public class ParkingInputController extends HttpServlet {
 
             req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp?fail=false").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/view/entry/dashboard.jsp?fail=false").forward(req, resp);
         }
-
     }
 }

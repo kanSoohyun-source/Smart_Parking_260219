@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>비회원 등록</title>
-    <link rel="stylesheet" href="../../../CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/payment_style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -15,7 +16,7 @@
 <div class="main-content">
     <!-- Content -->
     <div id="exit" class="page">
-        <form action="../parking/nonMember" method="post" class="form-horizontal">
+        <form action="../nonMember" method="post" class="form-horizontal">
             <input type="hidden" id="id" name="id" value="<%=space%>">
             <input type="hidden" id="carNum" name="carNum" value="<%=carNum%>">
             <h2>비회원 입차 출력</h2>
@@ -25,10 +26,10 @@
             </div>
             <div class="form-group">
                 <label>차량 타입</label>
-                <label><input type="radio" name="finish" value="1">일반</label>
-                <label><input type="radio" name="finish" value="2">월정액</label>
-                <label><input type="radio" name="finish" value="3">경차</label>
-                <label><input type="radio" name="finish" value="4">장애인</label>
+                <label class="radio-item"><input type="radio" name="finish" value="1">일반</label>
+                <label class="radio-item"><input type="radio" name="finish" value="2">월정액</label>
+                <label class="radio-item"><input type="radio" name="finish" value="3">경차</label>
+                <label class="radio-item"><input type="radio" name="finish" value="4">장애인</label>
             </div>
             <button>입차 등록</button>
         </form>

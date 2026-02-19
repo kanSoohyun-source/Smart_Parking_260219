@@ -74,7 +74,16 @@ public class MemberModifyController extends HttpServlet {
             // 월정액 처리
             log.info("월정액 액션: {}", subscribeAction);
 
-            resp.sendRedirect("/member/member_list?success=modify");
+            if ("add".equals(subscribeAction) || "extend".equals(subscribeAction)) {
+
+                String startDateStr = req.getParameter("startDate");
+                String endDateStr = req.getParameter("endDate");
+
+                LocalDate startDate = LocalDate.parse(startDateStr);
+                LocalDate endDate = LocalDate.parse(endDateStr);
+
+                resp.sendRedirect("/member/member_list?success=modify");
+            }
 
         } catch (Exception e) {
             log.error("회원 수정 중 오류 발생", e);

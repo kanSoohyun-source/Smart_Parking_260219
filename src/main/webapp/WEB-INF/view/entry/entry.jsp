@@ -23,7 +23,7 @@
   <!-- Content -->
     <div id="entry" class="page">
         <h2>입차</h2>
-        <form action="../parking/input" method="post" class="form-horizontal">
+        <form action="../input" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 자리</label>
                 <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=(space != null) ? space : ""%>">

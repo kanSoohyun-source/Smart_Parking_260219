@@ -14,7 +14,7 @@
 <head>
     <title>주차 현황</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/tlqkf.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/dashboard.css">
 </head>
 <body>
 <%@ include file="/main/menu.jsp" %>
@@ -66,7 +66,7 @@
 </div>
 <script src="${pageContext.request.contextPath}/JS/tlqkf.js"></script>
 <script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
-<script>
+<script>const contextPath = "${pageContext.request.contextPath}";</script>
 
 </script>
 </body>

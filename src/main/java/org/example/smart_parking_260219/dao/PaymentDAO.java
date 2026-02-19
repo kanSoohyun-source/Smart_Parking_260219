@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,5 +114,42 @@ public class PaymentDAO {
             throw new RuntimeException();
         }
         return null;
+    }
+
+    // 단건 날짜 조회
+    public List<PaymentVO> selectPaymentByDate(String targetDate) {
+        String sql = "SELECT pay.*, park.car_type, park.car_num, park.total_time " +
+                "FROM payment pay " +
+                "JOIN parking park ON pay.parking_id = park.parking_id " +
+                "WHERE DATE(pay.payment_date) = ?";
+        List<PaymentVO> paymentVOList = new ArrayList<>();
+
+        LocalDate date = LocalDate.parse(targetDate);
+        log.info(date);
+
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, date);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                PaymentVO paymentVO = PaymentVO.builder()
+                        .paymentId(resultSet.getInt("payment_id"))
+                        .parkingId(resultSet.getInt("parking_id"))
+                        .policyId(resultSet.getInt("policy_id"))
+                        .carNum(resultSet.getString("car_num"))
+                        .carType(resultSet.getInt("car_type"))
+                        .totalTime(resultSet.getInt("total_time"))
+                        .paymentType(resultSet.getInt("payment_type"))
+                        .calculatedFee(resultSet.getInt("calculated_fee"))
+                        .discountAmount(resultSet.getInt("discount_amount"))
+                        .finalFee(resultSet.getInt("final_fee"))
+                        .paymentDate(resultSet.getTimestamp("payment_date").toLocalDateTime()).build();
+                paymentVOList.add(paymentVO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return paymentVOList;
     }
 }

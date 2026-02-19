@@ -71,7 +71,6 @@ h2 {
     margin-bottom: 20px;
     color: #334155;
     font-size: 24px;
-    border-left: 5px solid var(--primary-blue);
     padding-left: 15px;
 }
 
@@ -138,3 +137,20 @@ h2 {
     margin: 0;
 }
 
+/* 조회 버튼 스타일 */
+.btn-search {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background 0.2s;
+}
+
+.btn-search:hover {
+    background: #1d4ed8;
+}

@@ -34,6 +34,7 @@ public class PaymentController extends HttpServlet {
         log.info("/payment post...");
 
         String carNum = req.getParameter("carNum");
+        log.info("carNum: [" + carNum + "]");
         int paymentType = Integer.parseInt(req.getParameter("paymentType"));
         int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
         int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));

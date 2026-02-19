@@ -22,15 +22,14 @@
         space = (String) request.getAttribute("id");
     }
     String carNum = request.getParameter("carNum");
-    System.out.println(carNum);
+    System.out.println("exit_serch_list: " + carNum);
     ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
-    long totalTime = Duration.between(parkingDTO.getEntryTime(), LocalDateTime.now()).toMinutes();
 %>
 <div class="main-content">
   <!-- Content -->
     <div id="register" class="page">
         <h2>출차</h2>
-        <form action = "../parking/get" method="post" class="form-horizontal">
+        <form action = "../payment/payment" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 구역</label>
                 <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=parkingDTO.getSpaceId()%>">
@@ -58,7 +57,7 @@
             </div>
             <div class="form-group">
                 <label>입차 시간</label>
-                <input type="text" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
+                <input type="text" class="time" id="entryTime" placeholder="입차 시간" name="entryTime" value="<%=parkingDTO.getEntryTime()%>">
             </div>
             <button onclick="registerMember()">정산</button>
         </form>
@@ -66,5 +65,17 @@
 </div>
     <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
     <script src="${pageContext.request.contextPath}/JS/function.js"></script>
+    <script>
+        function formatDateTime(dtStr) {
+            if(!dtStr || dtStr === "null" || dtStr === "") return "-";
+            return dtStr.replace('T', ' ').substring(0, 16);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".time").forEach(el => {
+                el.value = formatDateTime(el.value);
+            });
+        });
+    </script>
 </body>
 </html>
