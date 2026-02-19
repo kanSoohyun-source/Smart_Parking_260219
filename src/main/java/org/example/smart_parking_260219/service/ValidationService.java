@@ -145,7 +145,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='footer'>" +
                 "    <p>본 메일은 발신 전용입니다.</p>" +
-                "    <p>© 2025 Smart Parking System. All rights reserved.</p>" +
+                "    <p>© 2026 Smart Parking System. All rights reserved.</p>" +
                 "  </div>" +
                 "</div>" +
                 "</body></html>";
@@ -195,7 +195,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='footer'>" +
                 "    <p>본 메일은 발신 전용입니다.</p>" +
-                "    <p>© 2025 Smart Parking System. All rights reserved.</p>" +
+                "    <p>© 2026 Smart Parking System. All rights reserved.</p>" +
                 "  </div>" +
                 "</div>" +
                 "</body></html>";
@@ -246,7 +246,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='footer'>" +
                 "    <p>본 메일은 발신 전용입니다.</p>" +
-                "    <p>© 2025 Smart Parking System. All rights reserved.</p>" +
+                "    <p>© 2026 Smart Parking System. All rights reserved.</p>" +
                 "  </div>" +
                 "</div>" +
                 "</body></html>";
@@ -293,7 +293,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='footer'>" +
                 "    <p>본 메일은 발신 전용입니다.</p>" +
-                "    <p>© 2025 Smart Parking System. All rights reserved.</p>" +
+                "    <p>© 2026 Smart Parking System. All rights reserved.</p>" +
                 "  </div>" +
                 "</div>" +
                 "</body></html>";

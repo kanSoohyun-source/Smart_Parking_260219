@@ -303,6 +303,9 @@ public class ManagerController extends HttpServlet {
                 managerName == null || managerName.trim().isEmpty() ||
                 email == null || email.trim().isEmpty()) {
 
+//            log.info("1, {}", managerId);
+//            log.info("2, {}",managerName);
+//            log.info("3, {}",email);
             log.warn("필수 입력값 누락");
             request.setAttribute("error", "ID, 이름, 이메일은 필수 입력값입니다.");
 

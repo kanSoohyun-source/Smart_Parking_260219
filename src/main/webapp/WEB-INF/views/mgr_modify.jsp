@@ -211,18 +211,10 @@
             if (manager != null) {
         %>
         <form id="modifyForm" action="${pageContext.request.contextPath}/mgr/modify" method="post">
-            <!-- 아이디 (가능) -->
-<%--            <div class="form-group">--%>
-<%--                <label for="id">아이디 <span class="required">*</span></label>--%>
-<%--                <input type="text" id="id" name="id" value="<%= manager.getManagerId() %>">--%>
-<%--                <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">--%>
-<%--&lt;%&ndash;                <div class="field-hint">변경할 아이디를 입력해주세요</div>&ndash;%&gt;--%>
-<%--            </div>--%>
-
             <!-- 아이디 (수정 불가) -->
             <div class="form-group">
                 <label for="id">아이디 <span class="required">*</span></label>
-                <input type="text" id="id" name="managerId" value="<%= manager.getManagerId() %>" disabled>
+                <input type="text" id="id" name="id" value="<%= manager.getManagerId() %>" readonly>
                 <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">
                 <div class="field-hint">최고 관리자 아이디는 변경할 수 없습니다</div>
             </div>

@@ -483,7 +483,7 @@ public class LoginController extends HttpServlet {
                 "        </div>" +
                 "        <div class='footer'>" +
                 "            <p>본 메일은 발신 전용입니다. 문의사항은 관리자에게 연락해주세요.</p>" +
-                "            <p style='margin-top: 5px;'>© 2025 Smart Parking System. All rights reserved.</p>" +
+                "            <p style='margin-top: 5px;'>© 2026 Smart Parking System. All rights reserved.</p>" +
                 "        </div>" +
                 "    </div>" +
                 "</body>" +
