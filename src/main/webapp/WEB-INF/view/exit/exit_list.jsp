@@ -67,7 +67,7 @@
                 </tr>
                 <%
                     for (ParkingSpotDTO parkingSpotDTO : dtoList) {
-                        if (parkingSpotDTO.getEmpty()) {
+                        if (!parkingSpotDTO.getEmpty()) {
                 %>
                 <tr class="click-row" data-url="${pageContext.request.contextPath}/get?id=<%=parkingSpotDTO.getSpaceId()%>&carNum=<%=parkingSpotDTO.getCarNum()%>">
                     <td>

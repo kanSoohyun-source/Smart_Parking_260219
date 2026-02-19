@@ -24,7 +24,7 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
 
     @Override
     public void insertParkingSpot(ParkingSpotVO parkingSpotVO) {
-        String sql = "INSERT INTO smart_parking_team2.parking_spot (space_id, `empty`, last_update) VALUES (?, false,now())";
+        String sql = "INSERT INTO smart_parking_team2.parking_spot (space_id, `empty`, last_update) VALUES (?, true ,now())";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -64,7 +64,7 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
     // 주차 공간 입차 갱신
     @Override
     public void updateInputParkingSpot(ParkingSpotVO parkingSpotVO) {
-        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = true, car_num =?, last_update = now() WHERE space_id = ?";
+        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = false, car_num =?, last_update = now() WHERE space_id = ?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
