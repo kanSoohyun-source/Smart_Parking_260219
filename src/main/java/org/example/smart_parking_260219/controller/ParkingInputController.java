@@ -16,7 +16,7 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/input")
+@WebServlet(name = "parkingInputController", value = "/parking/input")
 @Log4j2
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;

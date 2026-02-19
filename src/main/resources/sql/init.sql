@@ -7,16 +7,16 @@ USE `smart_parking_team2`;
 # member : 회원, 차량 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `member`
 (
-    `member_id`      INT AUTO_INCREMENT PRIMARY KEY COMMENT '회원 고유 식별자',
-    `car_num`        VARCHAR(20) NOT NULL UNIQUE COMMENT '차량번호(중복불가, 공백제거)',
-    `car_type`       TINYINT     NOT NULL COMMENT '차량유형 (1:일반, 2:월정액대상, 3:경차, 4:장애인)',
-    `name`           VARCHAR(20) NOT NULL COMMENT '운전자 이름',
-    `phone`          VARCHAR(20) NOT NULL COMMENT '연락처',
-    `start_date`     DATE        NOT NULL COMMENT '월정액 시작일',
-    `end_date`       DATE        NOT NULL COMMENT '월정액 종료일',
-    `subscribed`     BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '현재 월정액 구독 중인지 여부',
-    `subscribed_fee` INT         NOT NULL DEFAULT 100000 COMMENT '월정액 가격 - 100,000원',
-    `create_date`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일'
+    `member_id`   INT AUTO_INCREMENT PRIMARY KEY COMMENT '회원 고유 식별자',
+    `car_num`     VARCHAR(20) NOT NULL UNIQUE COMMENT '차량번호(중복불가, 공백제거)',
+    `car_type`    TINYINT     NOT NULL COMMENT '차량유형 (1:일반, 2:월정액대상, 3:경차, 4:장애인)',
+    `name`        VARCHAR(20) NOT NULL COMMENT '운전자 이름',
+    `phone`       VARCHAR(20) NOT NULL COMMENT '연락처',
+    `start_date` DATE NOT NULL COMMENT '월정액 시작일',
+    `end_date` DATE NOT NULL COMMENT '월정액 종료일',
+    `subscribed`  BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '현재 월정액 구독 중인지 여부',
+    `subscribed_fee`    INT     NOT NULL DEFAULT 100000 COMMENT '월정액 가격 - 100,000원',
+    `create_date` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일'
 );
 
 # manager : 관리자 정보 테이블 [완료]
@@ -140,6 +140,3 @@ CREATE USER `admin`@`localhost` IDENTIFIED BY '0219';
 
 -- 사용자에게 DB 권한 부여
 GRANT ALL PRIVILEGES ON `smart_parking_team2`.* TO `admin`@`localhost`;
-
-ALTER TABLE parking
-    ADD phone VARCHAR(10) null;

@@ -202,19 +202,6 @@ public class ManagerController extends HttpServlet {
                     // 3. DAO를 통해 수정할 관리자의 상세 정보를 가져옴
                     ManagerVO targetManager = managerDAO.selectOne(targetId);
 
-                    // ★ 추가: ADMIN 계정은 이 경로로 수정 불가
-                    if (targetManager != null && "ADMIN".equals(targetManager.getRole())) {
-                        log.warn("최고관리자 계정({}) modify_normal 접근 차단", targetId);
-                        HttpSession sess = request.getSession(false);
-                        if (sess != null) {
-                            sess.setAttribute("error",
-                                    "최고 관리자 계정은 '최고 관리자 정보 수정' 메뉴를 이용해 주세요.");
-                        }
-                        response.sendRedirect(request.getContextPath() + "/mgr/list");
-                        return;
-                    }
-                    // ★ 추가 끝
-
                     if (targetManager != null) {
                         // JSP에서 사용할 수 있도록 "manager"라는 이름으로 객체 바인딩
                         request.setAttribute("manager", targetManager);
@@ -231,6 +218,7 @@ public class ManagerController extends HttpServlet {
                 // 4. 작성하신 일반 관리자 수정 전용 JSP로 포워딩
                 request.getRequestDispatcher("/WEB-INF/views/mgr_modify_normal.jsp").forward(request, response);
                 break;
+
 
             /* 정의되지 않은 경로는 404 에러 */
             default:
@@ -264,7 +252,7 @@ public class ManagerController extends HttpServlet {
         // 경로(URL)에 따른 분기 로직
         if ("/add".equals(pathInfo)) {
             log.info("관리자 추가 처리 시작");
-            addManager(request, response);
+            addManager(request, response);  //관리자 등록
         } else if ("/modify".equals(pathInfo)) {
             log.info("관리자 수정 처리 시작");
             modifyManager(request, response);

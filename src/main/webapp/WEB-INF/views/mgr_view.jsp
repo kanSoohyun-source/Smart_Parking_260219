@@ -17,8 +17,8 @@
             background: #f5f5f5;
             margin: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* 가로 중앙 */
+            align-items: center;     /* 세로 중앙 */
             min-height: 100vh;
         }
         .main-content {

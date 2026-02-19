@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>관리자 정보 수정</title>
+    <title>일반 관리자 정보 수정</title>
     <link rel="stylesheet" href="/CSS/style.css">
 
     <style>
@@ -427,6 +427,7 @@
         const password = pwInput.value;
         const confirmPassword = this.value;
 
+        // 비밀번호 입력이 있을 때만 확인 검사
         if (password.length > 0) {
             if (confirmPassword.length === 0) {
                 showError('passwordConfirm', '비밀번호 확인을 입력해주세요.');
@@ -469,9 +470,11 @@
             return;
         }
 
+        // 버튼 비활성화 (중복 클릭 방지)
         sendBtn.disabled = true;
         sendBtn.textContent = '발송 중...';
 
+        // 서버에 이메일 발송 요청
         fetch('${pageContext.request.contextPath}/auth/sendCode', {
             method: 'POST',
             headers: {
@@ -483,6 +486,7 @@
             .then(data => {
                 if(data.success) {
                     alert(email + '로 인증번호를 발송했습니다.');
+                    // 인증번호 입력창 보이기
                     document.getElementById('emailAuthGroup').style.display = 'block';
                     document.getElementById('authCode').focus();
                     startAuthTimer();
@@ -495,6 +499,7 @@
                 alert('인증번호 발송 중 오류가 발생했습니다.');
             })
             .finally(() => {
+                // 버튼 다시 활성화
                 sendBtn.disabled = false;
                 sendBtn.textContent = '인증요청';
             });
@@ -511,9 +516,11 @@
             return;
         }
 
+        // 버튼 비활성화
         verifyBtn.disabled = true;
         verifyBtn.textContent = '확인 중...';
 
+        // 서버에 인증번호 검증 요청
         fetch('${pageContext.request.contextPath}/auth/verify', {
             method: 'POST',
             headers: {
@@ -526,8 +533,8 @@
                 if(data.success) {
                     alert('인증이 완료되었습니다.');
                     isEmailVerified = true;
-                    document.getElementById('email').readOnly = true;
-                    verifyBtn.disabled = true;
+                    document.getElementById('email').readOnly = true; // 이메일 수정 불가
+                    verifyBtn.disabled = true; // 확인 버튼 비활성화
                     verifyBtn.textContent = '인증완료';
                     document.getElementById('sendEmailBtn').disabled = true;
                     stopAuthTimer();
@@ -548,7 +555,8 @@
     // 이메일 입력 필드 변경 시 인증 상태 초기화
     emailInput.addEventListener('input', function() {
         const currentEmail = this.value.trim();
-
+        
+        // 이메일이 변경되면 인증 상태 초기화
         if (currentEmail !== originalEmail) {
             if (isEmailVerified) {
                 isEmailVerified = false;
@@ -559,6 +567,7 @@
                 stopAuthTimer();
             }
         } else {
+            // 원래 이메일로 돌아가면 인증 불필요
             isEmailVerified = true;
         }
 
@@ -583,6 +592,7 @@
                 isValid = false;
             }
 
+            // 비밀번호 확인 검사
             if (password !== passwordConfirmInput.value) {
                 showError('passwordConfirm', '비밀번호가 일치하지 않습니다.');
                 isValid = false;

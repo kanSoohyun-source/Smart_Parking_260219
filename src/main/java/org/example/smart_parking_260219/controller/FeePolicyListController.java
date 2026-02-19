@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/policy/list")
+@WebServlet(name = "FeePolicyListController", value = "/view/policy/list")
 public class FeePolicyListController extends HttpServlet {
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
 
