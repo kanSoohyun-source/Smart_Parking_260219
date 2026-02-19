@@ -83,16 +83,7 @@ public enum PaymentService {
                 .map(vo -> modelMapper.map(vo, PaymentDTO.class))
                 .collect(Collectors.toList());
     }
-
-
-    // 결제 상세 조회
-    // 특정 결제 건에 대한 상세 정보
-    public PaymentDTO getPayment(int parkingId) {
-        log.info("Service: getPayment - ID: " + parkingId);
-
-        return modelMapper.map(paymentDAO.selectOnePayment(parkingId), PaymentDTO.class);
-    }
-
+    
     // 요금 계산
     // 주차 시간과 요금 정책을 기반으로 '할인 전 총 요금(calculatedFee)'을 계산
     /*

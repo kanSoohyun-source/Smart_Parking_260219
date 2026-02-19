@@ -36,7 +36,7 @@ public enum StatisticsService {
     }
 
     /*
-     * [시간대별 입차량] 0시~23시까지 빈 곳을 0으로 채워 리턴
+     * 시간대별 입차량 - 0시~23시까지 빈 곳을 0으로 채워 리턴
      */
     public List<StatisticsDTO> getHourlyCount(String targetDate) {
         List<StatisticsDTO> rawData = statisticsDAO.selectHourlyCountByDay(targetDate);
@@ -54,7 +54,7 @@ public enum StatisticsService {
     }
 
     /*
-     * [월간 일별 매출] 1일부터 해당 월의 마지막 날까지 빈 곳을 0으로 채움
+     * 월간 일별 매출 - 1일부터 해당 월의 마지막 날까지 빈 곳을 0으로 채움
      */
     public List<StatisticsDTO> getDailySales(int year, int month) {
         List<StatisticsDTO> rawData = statisticsDAO.selectMonthlySalesByYearMonth(year, month);
@@ -76,11 +76,8 @@ public enum StatisticsService {
         return filledData;
     }
 
-    /*
-     * [차종별 비율] 데이터가 없는 차종은 0으로 나오거나 리스트에서 제외됨 (Doughnut 차트용)
-     */
+     // 차종별 비율 - 데이터가 없는 차종은 0으로 나오거나 리스트에서 제외됨
     public List<StatisticsDTO> getCarTypeStats(int year, int month) {
-        // 비율 통계는 없는 항목을 굳이 0으로 채울 필요가 적으므로(차트 조각이 안 보임) 바로 리턴
         return statisticsDAO.selectCarTypeStatsByPeriod(year, month);
     }
 

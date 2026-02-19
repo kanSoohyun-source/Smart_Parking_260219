@@ -29,7 +29,7 @@
   <!-- Content -->
     <div id="register" class="page">
         <h2>출차</h2>
-        <form action = "../payment/payment" method="post" class="form-horizontal">
+        <form action = "../get" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 구역</label>
                 <input type="text" id="spaceId" placeholder="주차 구역" name="spaceId" value="<%=parkingDTO.getSpaceId()%>">
