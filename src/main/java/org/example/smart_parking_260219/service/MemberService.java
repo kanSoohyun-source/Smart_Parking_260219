@@ -29,43 +29,6 @@ public enum MemberService {
         modelMapper = MapperUtil.INSTANCE.getInstance();
     }
 
-    /* 월정액 매출 적용 서비스
-     * 월별 일자별 월정액 매출 (해당 월 1일~말일)
-     * param targetDate 조회 기준일
-     * return 일자별 매출 Map (날짜, 매출액)
-     */
-    public Map<String, Long> getMonthlySubscriptionRevenue(LocalDate targetDate) throws SQLException {
-        List<MemberVO> allMembers = memberDAO.selectAllMember();
-
-        LocalDate firstDay = targetDate.withDayOfMonth(1);
-        LocalDate lastDay = targetDate.withDayOfMonth(targetDate.lengthOfMonth());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        // 일자별 신규 가입자 수 집계
-        Map<String, Long> dailyCount = new HashMap<>();
-
-        // creatDate가 이번달인 월정액 회원 조회(회원등록은 무조건 월정액 가입자)
-        for (MemberVO member : allMembers) {
-            if (member.getCreateDate() != null) {
-                LocalDate createDate = member.getCreateDate().toLocalDate();
-                if (!createDate.isBefore(firstDay) && !createDate.isAfter(lastDay)) {
-                    String dateKey = createDate.format(formatter);
-                    dailyCount.put(dateKey, dailyCount.getOrDefault(dateKey, 0L) + 1);
-                }
-            }
-        }
-
-        // 신규 가입자 수 × 100,000원 = 일별 매출
-        Map<String, Long> dailyRevenue = new HashMap<>();
-        for (LocalDate date = firstDay; !date.isAfter(lastDay); date = date.plusDays(1)) {
-            String dateKey = date.format(formatter);
-            long count = dailyCount.getOrDefault(dateKey, 0L);
-            dailyRevenue.put(dateKey, count * SUBSCRIBED_FEE);
-        }
-
-        return dailyRevenue;
-    }
-
     // 회원 등록
     public void addMember(MemberDTO memberDTO) throws SQLException {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);

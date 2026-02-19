@@ -24,10 +24,10 @@ public class MemberAddController extends HttpServlet {
 
     /*
      * GET 분기
-     *  - carNum 없음                → STEP1: 차량번호 조회 폼
-     *  - carNum 있음, 결과 0건       → STEP2: 신규 회원 등록 폼 (바로 이동)
-     *  - carNum 있음, 결과 1건 이상  → STEP3: 중복 목록 선택 (member_search와 동일)
-     *  - step=renew + carNum        → STEP4: 선택된 차량 갱신 폼
+     *  - carNum 없음 → STEP1: 차량번호 조회 폼
+     *  - carNum 있음, 결과 0건 → STEP2: 신규 회원 등록 폼 (바로 이동)
+     *  - carNum 있음, 결과 1건 이상 → STEP3: 중복 목록 선택 (member_search와 동일)
+     *  - step=renew + carNum → STEP4: 선택된 차량 갱신 폼
      */
     @SneakyThrows
     @Override
@@ -97,8 +97,8 @@ public class MemberAddController extends HttpServlet {
 
     /*
      * POST 분기
-     *  - action=register → 신규 회원 등록
-     *  - action=renew    → 기존 회원 월정액 1개월 갱신
+     *  - action= register → 신규 회원 등록
+     *  - action= renew → 기존 회원 월정액 1개월 갱신
      */
     @SneakyThrows
     @Override

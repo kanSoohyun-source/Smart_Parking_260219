@@ -184,4 +184,17 @@ public class MemberDAO {
         preparedStatement.setString(1, carNum);
         preparedStatement.executeUpdate();
     }
+
+    public int countSubscribedMembers() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM member WHERE subscribed = true";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            return resultSet.getInt(1);
+        }
+        return 0;
+    }
 }
