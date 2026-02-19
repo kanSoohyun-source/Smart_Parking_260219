@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;
-import org.example.smart_parking_260219.service.ParkingService;
+import org.example.smart_parking_260219.service.MemberService;
 import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 @WebServlet("/list")
 public class ParkingOutputListController extends HttpServlet {
     ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
+    MemberService memberService = MemberService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,6 +47,16 @@ public class ParkingOutputListController extends HttpServlet {
 
         if ("time".equals(sort)) {
             comparator = Comparator.comparing(ParkingSpotDTO::getLastUpdate);
+        } else if ("subscribe".equals(sort)){
+            comparator = Comparator.comparing(dto -> {
+                MemberDTO memberDTO;
+                try {
+                    memberDTO = memberService.getOneMember(dto.getCarNum());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                return memberDTO != null && memberDTO.isSubscribed();
+            });
         } else {
             comparator= Comparator.comparing((ParkingSpotDTO dto) ->
                             dto.getSpaceId().replaceAll("\\d", ""))

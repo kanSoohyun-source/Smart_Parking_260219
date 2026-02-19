@@ -3,6 +3,7 @@
 <%@ page import="org.example.smart_parking_260219.service.ParkingSpotService" %>
 <%@ page import="org.example.smart_parking_260219.service.MemberService" %>
 <%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
+<%@ page import="java.sql.SQLException" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<ParkingSpotDTO> dtoList = (List<ParkingSpotDTO>) request.getAttribute("dtoList");
@@ -53,14 +54,21 @@
                             ▼
                         </a>
                     </th>
-                    <th>구독 여부</th>
+                    <th>
+                        구독 여부
+                        <a href="${pageContext.request.contextPath}/list?sort=subscribe&order=asc">
+                            ▲
+                        </a>
+                        <a href="${pageContext.request.contextPath}/list?sort=subscribe&order=desc">
+                            ▼
+                        </a>
+                    </th>
                 </tr>
                 <%
                     for (ParkingSpotDTO parkingSpotDTO : dtoList) {
                         if (parkingSpotDTO.getEmpty()) {
                 %>
-                <tr class="click-row"
-                data-url="${pageContext.request.contextPath}/get?id=<%=parkingSpotDTO.getSpaceId()%>&carNum=<%=parkingSpotDTO.getCarNum()%>">
+                <tr class="click-row" data-url="${pageContext.request.contextPath}/get?id=<%=parkingSpotDTO.getSpaceId()%>&carNum=<%=parkingSpotDTO.getCarNum()%>">
                     <td>
                         <%=parkingSpotDTO.getSpaceId()%>
                     </td>
@@ -70,10 +78,15 @@
                     <td class="time">
                         <%=parkingSpotDTO.getLastUpdate()%>
                     </td>
-                    <td>
+                    <td class="subscribe">
                         <%
                             String carNum = parkingSpotDTO.getCarNum();
-                            MemberDTO memberDTO = memberService.getOneMember(carNum);
+                            MemberDTO memberDTO;
+                            try {
+                                memberDTO = memberService.getOneMember(carNum);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
                         %>
                         <%=
                         (memberDTO != null && memberDTO.isSubscribed()) ? "구독중" : "미구독"
