@@ -17,14 +17,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
 
-/**
- * 비밀번호 찾기 컨트롤러
- *
- * 엔드포인트 구성:
- *  GET  /forgot-password           → 비밀번호 찾기 페이지 (find_password.jsp)
- *  POST /forgot-password/checkId   → STEP1: 아이디 존재 여부 확인 (JSON)
- *  POST /forgot-password/sendOtp   → STEP2: DB 이메일 일치 확인 + OTP 발송 (JSON)
- *  POST /forgot-password/verify    → STEP2: OTP 검증 + 임시 비밀번호 발급 (JSON)
+/* 비밀번호 찾기 컨트롤러
+  - GET  /forgot-password           → 비밀번호 찾기 페이지 (find_password.jsp)
+  - POST /forgot-password/checkId   → #1. 아이디 존재 여부 확인 (JSON)
+  - POST /forgot-password/sendOtp   → #2. DB 이메일 일치 확인 + OTP 발송 (JSON)
+  - POST /forgot-password/verify    → #3. OTP 검증 + 임시 비밀번호 발급 (JSON)
  */
 @Log4j2
 @WebServlet(name = "forgotPasswordController",
@@ -34,13 +31,11 @@ import java.security.SecureRandom;
                 "/forgot-password/verify"})
 public class ForgotPasswordController extends HttpServlet {
 
-    private final ManagerDAO        managerDAO        = ManagerDAO.getInstance();
+    private final ManagerDAO managerDAO = ManagerDAO.getInstance();
     private final ValidationService validationService = new ValidationService();
-    private final MailService       mailService       = new MailService();
+    private final MailService mailService = new MailService();
 
-    // =========================================================================
-    // GET: 비밀번호 찾기 페이지 진입
-    // =========================================================================
+    /* GET: 비밀번호 찾기 페이지 진입 */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -57,9 +52,7 @@ public class ForgotPasswordController extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/find_password.jsp").forward(req, resp);
     }
 
-    // =========================================================================
-    // POST: 경로별 분기
-    // =========================================================================
+    /* POST: 경로별 분기 */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -72,13 +65,13 @@ public class ForgotPasswordController extends HttpServlet {
                 (req.getPathInfo() != null ? req.getPathInfo() : "");
 
         switch (path) {
-            case "/forgot-password/checkId":
+            case "/forgot-password/checkId":  // 아이디 존재 여부 확인 (JSON)
                 checkId(req, resp);
                 break;
-            case "/forgot-password/sendOtp":
+            case "/forgot-password/sendOtp":  // DB 이메일 일치 확인 + OTP 발송 (JSON)
                 sendOtp(req, resp);
                 break;
-            case "/forgot-password/verify":
+            case "/forgot-password/verify":  // OTP 검증 + 임시 비밀번호 발급 (JSON)
                 verifyAndIssue(req, resp);
                 break;
             default:
@@ -86,9 +79,7 @@ public class ForgotPasswordController extends HttpServlet {
         }
     }
 
-    // =========================================================================
-    // STEP 1: 아이디 존재 여부 확인
-    // =========================================================================
+    /* #1. 아이디 존재 여부 확인 */
     private void checkId(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
@@ -118,9 +109,7 @@ public class ForgotPasswordController extends HttpServlet {
         sendJson(resp, true, "아이디가 확인되었습니다.");
     }
 
-    // =========================================================================
-    // STEP 2: DB 이메일 일치 확인 후 OTP 발송
-    // =========================================================================
+    /* #2. DB 이메일 일치 확인 후 OTP 발송 */
     private void sendOtp(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
@@ -146,7 +135,7 @@ public class ForgotPasswordController extends HttpServlet {
             return;
         }
 
-        // ✅ 핵심: DB에 저장된 이메일과 입력된 이메일 대조
+        // DB에 저장된 이메일과 입력된 이메일 대조
         String registeredEmail = manager.getEmail();
         if (registeredEmail == null || registeredEmail.trim().isEmpty()) {
             log.error("비밀번호 찾기 - 등록된 이메일 없음 - ID: {}", managerId);
@@ -161,7 +150,7 @@ public class ForgotPasswordController extends HttpServlet {
             return;
         }
 
-        // ✅ OTP 생성 및 발송 (FORGOT_PASSWORD 템플릿)
+        // OTP 생성 및 발송 (FORGOT_PASSWORD 템플릿)
         try {
             validationService.sendAuthCode(registeredEmail.trim(), ValidationService.Purpose.FORGOT_PASSWORD);
             log.info("비밀번호 찾기 - OTP 발송 완료 - ID: {}", managerId);
@@ -172,27 +161,25 @@ public class ForgotPasswordController extends HttpServlet {
         }
     }
 
-    // =========================================================================
-    // STEP 3: OTP 검증 → 임시 비밀번호 발급 및 DB 저장
-    // =========================================================================
+    /* #3. OTP 검증 → 임시 비밀번호 발급 및 DB 저장 */
     private void verifyAndIssue(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        String managerId  = req.getParameter("managerId");
+        String managerId = req.getParameter("managerId");
         String inputEmail = req.getParameter("email");
-        String inputOtp   = req.getParameter("otp");
+        String inputOtp = req.getParameter("otp");
 
         log.info("비밀번호 찾기 - OTP 검증 요청 - ID: {}", managerId);
 
         // 입력값 검증
         if (managerId == null || managerId.trim().isEmpty() ||
                 inputEmail == null || inputEmail.trim().isEmpty() ||
-                inputOtp   == null || inputOtp.trim().isEmpty()) {
+                inputOtp == null || inputOtp.trim().isEmpty()) {
             sendJson(resp, false, "필수 정보가 누락되었습니다.");
             return;
         }
 
-        // ✅ OTP 검증 (ValidationService - DB 비교 + 만료 시간 체크)
+        // OTP 검증 (ValidationService - DB 비교 + 만료 시간 체크)
         boolean otpValid = validationService.verifyAuthCode(inputEmail.trim(), inputOtp.trim());
         if (!otpValid) {
             log.warn("비밀번호 찾기 - OTP 불일치 또는 만료 - ID: {}", managerId);
@@ -200,11 +187,11 @@ public class ForgotPasswordController extends HttpServlet {
             return;
         }
 
-        // ✅ 임시 비밀번호 생성
+        // 임시 비밀번호 생성
         String tempPassword = generateTempPassword();
         log.info("비밀번호 찾기 - 임시 비밀번호 생성 완료 - ID: {}", managerId);
 
-        // ✅ 임시 비밀번호 DB 저장 (BCrypt 해싱은 DAO 내부에서 처리)
+        // 임시 비밀번호 DB 저장 (BCrypt 해싱은 DAO 내부에서 처리)
         try {
             managerDAO.updatePassword(managerId.trim(), tempPassword);
             log.info("비밀번호 찾기 - 임시 비밀번호 DB 저장 완료 - ID: {}", managerId);
@@ -214,10 +201,10 @@ public class ForgotPasswordController extends HttpServlet {
             return;
         }
 
-        // ✅ 임시 비밀번호 이메일 발송
+        // 임시 비밀번호 이메일 발송
         try {
             String title = "[Smart Parking] 임시 비밀번호가 발급되었습니다.";
-            String body  = validationService.buildTempPasswordBody(tempPassword);
+            String body = validationService.buildTempPasswordBody(tempPassword);
             mailService.sendMailWithHtml(title, body, inputEmail.trim());
             log.info("비밀번호 찾기 - 임시 비밀번호 이메일 발송 완료 - ID: {}", managerId);
         } catch (Exception e) {
@@ -228,10 +215,8 @@ public class ForgotPasswordController extends HttpServlet {
         sendJson(resp, true, "임시 비밀번호가 이메일로 발송되었습니다.");
     }
 
-    // =========================================================================
-    // 임시 비밀번호 생성
+    /* 임시 비밀번호 생성 */
     // 영문 대소문자 + 숫자 조합, 10자리
-    // =========================================================================
     private String generateTempPassword() {
         final String CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
         // 혼동 문자(0, O, 1, I, l) 제외
@@ -243,9 +228,7 @@ public class ForgotPasswordController extends HttpServlet {
         return sb.toString();
     }
 
-    // =========================================================================
-    // JSON 응답 헬퍼
-    // =========================================================================
+    /* JSON 응답 헬퍼 */
     private void sendJson(HttpServletResponse resp, boolean success, String message)
             throws IOException {
         PrintWriter out = resp.getWriter();
