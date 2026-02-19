@@ -31,10 +31,13 @@ public class ParkingOutputController extends HttpServlet {
         log.info("/parking/output post...");
         String CarNum = req.getParameter("carNum");
         String spaceId = (String) req.getAttribute("id");
+
+        // 주차장 현황 조회
         List<ParkingSpotDTO> parkingSpotDTOList = parkingSpotService.getAllParkingSpot();
         req.setAttribute("dtoList", parkingSpotDTOList);
-
         log.info(CarNum);
+
+        // 출차할 차 번호가 존재한다면
         if (parkingService.getParkingByCarNum(CarNum) != null) {
             req.setAttribute("id", spaceId);
             req.setAttribute("carNum", CarNum);

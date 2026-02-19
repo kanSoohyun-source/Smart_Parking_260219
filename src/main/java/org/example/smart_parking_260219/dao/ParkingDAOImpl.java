@@ -126,6 +126,7 @@ public class ParkingDAOImpl implements ParkingDAO {
         }
     }
 
+    // 주차 기록 기준 차량 조회
     @Override
     public ParkingVO selectParkingByParkingId(int parkingId) {
         String sql = "SELECT * FROM smart_parking_team2.parking WHERE parking_id = ?";
@@ -154,6 +155,7 @@ public class ParkingDAOImpl implements ParkingDAO {
         return null;
     }
 
+    // 전체 주차 차량 조회
     @Override
     public List<ParkingVO> selectAllParking() {
         String sql = "SELECT * FROM smart_parking_team2.parking ORDER BY entry_time DESC";
@@ -181,33 +183,5 @@ public class ParkingDAOImpl implements ParkingDAO {
             throw new RuntimeException(e);
         }
         return ParkingVOList;
-    }
-
-    @Override
-    public ParkingVO selectALLParkingByCarNum(String carNum) {
-        String sql = "SELECT * FROM smart_parking_team2.parking WHERE car_num = ?";
-        try {
-            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
-            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, carNum);
-            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                ParkingVO parkingVO = ParkingVO.builder()
-                        .parkingId(resultSet.getInt("parking_id"))
-                        .carNum(resultSet.getString("car_num"))
-                        .memberId(resultSet.getInt("member_id"))
-                        .spaceId(resultSet.getString("space_id"))
-                        .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
-                        .carType(resultSet.getInt("car_type"))
-                        .paid(resultSet.getBoolean("paid"))
-                        .phone(resultSet.getString("phone"))
-                        .build();
-                log.info("parkingVO : {}", parkingVO);
-                return parkingVO;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
     }
 }

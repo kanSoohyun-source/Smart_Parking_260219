@@ -31,23 +31,26 @@ public class ParkingOutputListController extends HttpServlet {
         String order = req.getParameter("order");
 
         List<ParkingSpotDTO> dtoList = getParkingSpotDTOS(sort, order);
-
         req.setAttribute("dtoList", dtoList);
+
+        req.setAttribute("carNum", CarNum);
         req.setAttribute("sort", sort);
         req.setAttribute("order", order);
 
-        req.setAttribute("carNum", CarNum);
         req.getRequestDispatcher("/WEB-INF/view/exit/exit_list.jsp").forward(req, resp);
     }
 
+    // 정렬 기능 (오름차순 기본)
     private List<ParkingSpotDTO> getParkingSpotDTOS(String sort, String order) {
         List<ParkingSpotDTO> dtoList = new ArrayList<>(parkingSpotService.getAllParkingSpot());
 
         Comparator<ParkingSpotDTO> comparator;
 
+        // 입차시간 기준 정렬
         if ("time".equals(sort)) {
             comparator = Comparator.comparing(ParkingSpotDTO::getLastUpdate);
         } else if ("subscribe".equals(sort)){
+            // 구독 여부 기준 정렬
             comparator = Comparator.comparing(dto -> {
                 MemberDTO memberDTO;
                 try {
@@ -58,6 +61,7 @@ public class ParkingOutputListController extends HttpServlet {
                 return memberDTO != null && memberDTO.isSubscribed();
             });
         } else {
+            // 주차 구역 기준 정렬
             comparator= Comparator.comparing((ParkingSpotDTO dto) ->
                             dto.getSpaceId().replaceAll("\\d", ""))
                     .thenComparingInt(dto ->
@@ -65,6 +69,7 @@ public class ParkingOutputListController extends HttpServlet {
                     );
         }
 
+        // 내림차순 정렬
         if ("desc".equals(order)) {
             dtoList.sort(comparator.reversed());
         } else {

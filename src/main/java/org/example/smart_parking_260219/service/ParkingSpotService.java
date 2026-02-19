@@ -50,6 +50,7 @@ public enum ParkingSpotService {
                 .map(parkingSpotVO -> modelMapper.map(parkingSpotVO, ParkingSpotDTO.class)).toList();
     }
 
+    // 주차 구역 기준 조회
     public ParkingSpotDTO getParkingSpotBySpaceId(String spaceId) {
         if (spaceId == null) return null;
         ParkingSpotVO parkingSpotVO = parkingSpotDAO.selectParkingSpotBySpaceId(spaceId);

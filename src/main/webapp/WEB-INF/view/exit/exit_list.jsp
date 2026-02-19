@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<ParkingSpotDTO> dtoList = (List<ParkingSpotDTO>) request.getAttribute("dtoList");
+    // 전체 입차 차량 수
     int no = ParkingSpotService.INSTANCE.getAllParkingSpot().size() - ParkingSpotService.INSTANCE.getEmptyParkingSpot().size();
     MemberService memberService = MemberService.INSTANCE;
 %>
@@ -106,6 +107,7 @@
     <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
     <script src="${pageContext.request.contextPath}/JS/function.js"></script>
     <script>
+        // 행 전체를 클릭하면 해당 차량의 출차 메뉴로 이동
         document.addEventListener("click", function (e) {
             const row = e.target.closest(".click-row");
             if (!row) return;
@@ -115,11 +117,12 @@
                 location.href = url;
             }
         });
+
+        // 입차 시간 출력 형식
         function formatDateTime(dtStr) {
             if(!dtStr || dtStr === "null" || dtStr === "") return "-";
             return dtStr.replace('T', ' ').substring(0, 16);
         }
-
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".time").forEach(td => {
                 td.textContent = formatDateTime(td.textContent.trim());

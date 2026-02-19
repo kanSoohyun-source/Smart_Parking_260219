@@ -53,8 +53,4 @@ public enum ParkingService {
         if (parkingVO == null) return null;
         return modelMapper.map(parkingDAO.selectParkingByCarNum(carNum), ParkingDTO.class);
     }
-
-    public ParkingDTO getAllParkingByCarNum(String carNum) {
-        return modelMapper.map(parkingDAO.selectALLParkingByCarNum(carNum), ParkingDTO.class);
-    }
 }

@@ -11,10 +11,6 @@
 <!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
-    String space = request.getParameter("id");
-    if (space == null) {
-        space = (String) request.getAttribute("id");
-    }
     String carNum = request.getParameter("carNum");
     System.out.println("exit_serch_list: " + carNum);
     ParkingDTO parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum);
@@ -66,11 +62,11 @@
     <script src="${pageContext.request.contextPath}/JS/menu.js"></script>
     <script src="${pageContext.request.contextPath}/JS/function.js"></script>
     <script>
+        // 입차 시간 출력 형식
         function formatDateTime(dtStr) {
             if(!dtStr || dtStr === "null" || dtStr === "") return "-";
             return dtStr.replace('T', ' ').substring(0, 16);
         }
-
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".time").forEach(el => {
                 el.value = formatDateTime(el.value);

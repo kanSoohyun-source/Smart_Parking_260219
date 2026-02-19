@@ -36,6 +36,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
 
         log.info(spaceId);
 
+        // 주차장 현황 갱신
         ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
                 .carNum(carNum)
                 .spaceId(spaceId)
@@ -43,6 +44,7 @@ public class ParkingNonMemberInputController extends HttpServlet {
         log.info("parkingSpotDTO: {}", parkingSpotDTO);
         parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
 
+        // 주차 기록 추가
         ParkingDTO parkingDTO = ParkingDTO.builder()
                 .memberId(0)
                 .carNum(carNum)
@@ -52,6 +54,8 @@ public class ParkingNonMemberInputController extends HttpServlet {
                 .build();
         log.info("parkingDTO: {}", parkingDTO);
         parkingService.addParking(parkingDTO);
+
+        // 비회원 입차 정상 처리
         req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
     }
 }

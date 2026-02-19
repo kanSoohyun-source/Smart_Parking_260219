@@ -159,6 +159,7 @@ h2 {
     }
 }
 
+/* 검색 창 길이 조절 */
 .form-group input.search-input {
     width: 30% !important;
 }

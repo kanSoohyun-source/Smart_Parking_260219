@@ -23,11 +23,13 @@
         <h2>주차 현황</h2>
         <div class="parking-grid">
             <%
+                // A1 ~ A20까지 전체 주차 공간 출력
                 for (int i = 1; i <= 20; i++) {
                     String id = "A" + i;
                     String carNum = null, entryTime = null;
                     Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
 
+                    // 입차된 차량이라면 차 번호와 입차 시간도 같이 출력
                     for (ParkingDTO dto : parkingDTOList) {
                         if (id.equals(dto.getSpaceId())) {
                             carNum = dto.getCarNum();
@@ -36,6 +38,7 @@
                         }
                     };
             %>
+            <%-- 입차 여부에 따라 주차 공간 출력 --%>
             <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
                  data-id="<%= id %>"
                  data-empty="<%= (!result) %>"
@@ -52,6 +55,7 @@
             </div>
             <% } %>
         </div>
+        <%-- 주차 차량 조회 --%>
         <div align="center">
             <form id="searchForm">
                 <div class="form-group">
@@ -62,12 +66,9 @@
             </form>
         </div>
     </div>
-
 </div>
 <script src="${pageContext.request.contextPath}/JS/tlqkf.js"></script>
 <script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
 <script>const contextPath = "${pageContext.request.contextPath}";</script>
-
-</script>
 </body>
 </html>
