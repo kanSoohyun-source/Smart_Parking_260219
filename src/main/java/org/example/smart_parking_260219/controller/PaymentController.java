@@ -31,32 +31,45 @@ public class PaymentController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("/payment post...");
+        log.info("/payment post start...");
 
-        String carNum = req.getParameter("carNum");
-        log.info("carNum: [" + carNum + "]");
-        int paymentType = Integer.parseInt(req.getParameter("paymentType"));
-        int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
-        int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
-        int finalFee = Integer.parseInt(req.getParameter("finalFee"));
-
-        PaymentDTO paymentDTO = PaymentDTO.builder()
-                .carNum(carNum)
-                .parkingId(parkingService.getParkingByCarNum(carNum).getParkingId())
-                .policyId(feePolicyService.getPolicy().getPolicyId())
-                .paymentType(paymentType)
-                .calculatedFee(calculatedFee)
-                .discountAmount(discountAmount)
-                .finalFee(finalFee).build();
-        log.info("/payment post paymentDTO: " + paymentDTO);
         try {
-            parkingService.modifyParking(carNum);
+            String carNum = req.getParameter("carNum");
+            int paymentType = Integer.parseInt(req.getParameter("paymentType"));
+            int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
+            int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
+            int finalFee = Integer.parseInt(req.getParameter("finalFee"));
+
+            // [중요] 상태 변경 전에 미리 ID를 확보해야 합니다.
+            var parkingDTO = parkingService.getParkingByCarNum(carNum);
+            if (parkingDTO == null) {
+                log.error("해당 차량의 주차 기록을 찾을 수 없습니다: " + carNum);
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+                return;
+            }
+
+            PaymentDTO paymentDTO = PaymentDTO.builder()
+                    .carNum(carNum)
+                    .parkingId(parkingDTO.getParkingId())
+                    .policyId(feePolicyService.getPolicy().getPolicyId())
+                    .paymentType(paymentType)
+                    .calculatedFee(calculatedFee)
+                    .discountAmount(discountAmount)
+                    .finalFee(finalFee)
+                    .build();
+
+            // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
             paymentService.addPayment(paymentDTO);
-            log.info("/payment success...");
+            parkingService.modifyParking(carNum);
+
+            log.info("Payment and Parking update success!");
+
+            // 이동할 때 ContextPath를 포함한 올바른 URL로 이동
+            resp.sendRedirect(req.getContextPath() + "/dashboard"); // 대시보드 URL로 수정
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("결제 처리 중 에러 발생: " + e.getMessage());
+            throw new ServletException(e);
         }
-        log.info("/payment post starting...");
-        resp.sendRedirect("/dashboard/dashboard.jsp");
     }
 }

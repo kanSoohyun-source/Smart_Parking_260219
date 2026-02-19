@@ -49,6 +49,9 @@ public class StatisticsController extends HttpServlet {
             long monthTotal = dailySales.stream().mapToLong(StatisticsDTO::getValue).sum();
             log.info("monthTotal: " + monthTotal);
 
+            int monthSubscribedFee = statisticsService.getMonthlySales();
+            log.info("monthSubscribedFee: " + monthSubscribedFee);
+
             // 4. JSP 화면으로 전달하기 위해 request에 setAttribute
             req.setAttribute("targetDate", targetDate);
             req.setAttribute("hourlySales", hourlySales);
@@ -57,6 +60,7 @@ public class StatisticsController extends HttpServlet {
             req.setAttribute("carTypeStats", carTypeStats);
             req.setAttribute("dayTotal", dayTotal);
             req.setAttribute("monthTotal", monthTotal);
+            req.setAttribute("monthSubscribedFee", monthSubscribedFee);
 
             // 5. 결과를 보여줄 JSP로 포워딩
             log.info(req.getRequestURI());
