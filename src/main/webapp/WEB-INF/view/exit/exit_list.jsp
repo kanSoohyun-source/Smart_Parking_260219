@@ -55,7 +55,7 @@
                 data-url="${pageContext.request.contextPath}/get?id=<%=parkingSpotDTO.getSpaceId()%>&carNum=<%=parkingSpotDTO.getCarNum()%>">
                     <td>
                         <%=parkingSpotDTO.getSpaceId()%>
-                    </td>
+                    </td>o
                     <td>
                         <%=parkingSpotDTO.getCarNum()%>
                     </td>

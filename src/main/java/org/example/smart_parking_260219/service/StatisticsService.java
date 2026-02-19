@@ -1,8 +1,11 @@
 package org.example.smart_parking_260219.service;
 
+import org.example.smart_parking_260219.dao.FeePolicyDAO;
+import org.example.smart_parking_260219.dao.MemberDAO;
 import org.example.smart_parking_260219.dao.StatisticsDAO;
 import org.example.smart_parking_260219.dto.StatisticsDTO;
 
+import java.sql.SQLException;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,19 @@ public enum StatisticsService {
      // 차종별 비율 - 데이터가 없는 차종은 0으로 나오거나 리스트에서 제외됨
     public List<StatisticsDTO> getCarTypeStats(int year, int month) {
         return statisticsDAO.selectCarTypeStatsByPeriod(year, month);
+    }
+
+    // 월정액 회원 월별 합계
+    public int getMonthlySales() throws SQLException {
+        try {
+            int count = MemberDAO.getInstance().countSubscribedMembers();
+            int fee = FeePolicyService.getInstance().getPolicy().getSubscribedFee();
+            return count * fee;
+        } catch (Exception e) {
+            // 로그를 찍어서 에러 원인을 파악해야 합니다.
+            System.out.println("Service Error: " + e.getMessage());
+            return 0;
+        }
     }
 
 }

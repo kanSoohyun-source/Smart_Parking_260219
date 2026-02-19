@@ -8,6 +8,7 @@
     // 2. 데이터 가져오기 (Null 방어 포함)
     List<StatisticsDTO> hSalesList = (List<StatisticsDTO>) request.getAttribute("hourlySales");
     List<StatisticsDTO> dSalesList = (List<StatisticsDTO>) request.getAttribute("dailySales");
+    int monthSubscribedFee = (int) request.getAttribute("monthSubscribedFee");
 
     // 3. 일 총 매출 직접 계산 (hSalesList 순회)
     long daySum = 0;
@@ -25,7 +26,10 @@
             monthSum += dto.getValue();
         }
     }
-    String formattedMonthTotal = df.format(monthSum);
+    String formattedMonthParking = df.format(monthSum);
+
+    long MonthTotal = monthSum + monthSubscribedFee;
+    String formattedMonthTotal = df.format(MonthTotal);
 %>
 <html>
 <head>
@@ -43,10 +47,10 @@
         <h2>매출 및 이용 통계</h2>
 
         <div class="section-card control-section">
-            <form action="${pageContext.request.contextPath}/payment/payment_list" method="get" class="control-bar">
+            <form action="${pageContext.request.contextPath}/payment/payment_list" method="get" class="control-bar" id="dateForm">
                 <div class="selector-box">
                     <div class="btn-label">조회 기준일</div>
-                    <input type="date" name="targetDate" value="${targetDate}">
+                    <input type="date" name="targetDate" value="${targetDate}" onchange="changeStatisticsDate(this)">
                     <button type="submit" class="btn-search">조회</button>
                 </div>
             </form>
@@ -66,6 +70,8 @@
             <div class="section-card">
                 <div class="control-bar">
                     <div class="btn-label">월별 매출 현황</div>
+                    <div class="total-price-tag">월 구독료 총 매출: <%= monthSubscribedFee %>원</div>
+                    <div class="total-price-tag">월 주차비 총 매출: <%= formattedMonthParking %>원</div>
                     <div class="total-price-tag">월 총 매출: <%= formattedMonthTotal %>원</div>
                 </div>
                 <div class="chart-area">
@@ -221,6 +227,16 @@
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
+    }
+</script>
+
+<script>
+    // 캘린더에서 날짜 선택 시 날짜 변경
+    function changeStatisticsDate(input) {
+        const form = input.form;
+        // 날짜를 바꿀 때만 잠시 목적지를 '통계'로 변경해서 전송
+        form.action = "${pageContext.request.contextPath}/statistics/statistics";
+        form.submit();
     }
 </script>
 </body>

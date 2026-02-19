@@ -78,7 +78,6 @@ public class ParkingInputController extends HttpServlet {
                     .build();
             log.info("parkingDTO: {}", parkingDTO);
             parkingService.addParking(parkingDTO);
-
             req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
         } else {
             req.getRequestDispatcher("/WEB-INF/view/entry/dashboard.jsp?fail=false").forward(req, resp);

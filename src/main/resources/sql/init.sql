@@ -50,25 +50,10 @@ CREATE TABLE IF NOT EXISTS `validation`
     `expiry_time` datetime not null comment '만료시간'
 );
 
-# subscribe : 월정액 회원 정보 테이블 [완료]
-CREATE TABLE IF NOT EXISTS `subscribe`
-(
-    `subscription_id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '월정액 이력 고유 ID',
-    `car_num`         VARCHAR(20) NOT NULL COMMENT '차량 번호 (FK)',
-    `start_date`      DATE        NOT NULL COMMENT '월정액 시작일',
-    `end_date`        DATE        NOT NULL COMMENT '월정액 종료일',
-    `status`          BOOLEAN     NOT NULL DEFAULT TRUE COMMENT '월정액 유효 여부',
-    `payment_amount`  INT         NOT NULL COMMENT '결제 금액',
-    `last_update`     DATETIME             DEFAULT CURRENT_TIMESTAMP COMMENT '결제일',
-
-    CONSTRAINT `fk_subscribe_member` FOREIGN KEY (`car_num`)
-        REFERENCES `member` (`car_num`) ON DELETE CASCADE
-);
-
 # parking_spot : 주차 공간 상태 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `parking_spot`
 (
-    `space_id`    VARCHAR(5) PRIMARY KEY COMMENT '주차 공간 번호(A1, B2...)',
+    `space_id`    VARCHAR(5) PRIMARY KEY COMMENT '주차 공간 번호(A1, A2...)',
     `empty`       BOOLEAN NOT NULL DEFAULT TRUE COMMENT '빈 공간 여부(True:비어있음, False:주차중)',
     `car_num`     VARCHAR(10)      DEFAULT NULL COMMENT '현재 주차된 차량 번호(없으면 NULL)',
     `last_update` DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '상태 변경일'

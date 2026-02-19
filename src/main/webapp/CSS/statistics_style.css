@@ -154,3 +154,30 @@ h2 {
 .btn-search:hover {
     background: #1d4ed8;
 }
+
+/* 기존 .control-bar는 유지하되, 태그들의 정렬을 위해 수정 */
+.control-bar {
+    display: flex;
+    justify-content: flex-start; /* space-between 대신 flex-start로 변경 */
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px; /* 태그들 사이의 일정한 간격 */
+}
+
+/* [핵심] 제목(btn-label) 바로 다음에 오는 첫 번째 태그를 오른쪽 끝으로 밀기 */
+.btn-label + .total-price-tag {
+    margin-left: auto;
+}
+
+/* 태그 디자인 미세 조정 (글자가 겹치지 않게) */
+.total-price-tag {
+    background: var(--primary-blue);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 13px; /* 폰트를 살짝 줄여서 한 줄에 다 들어가게 함 */
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    white-space: nowrap; /* 중요: 금액이 길어져도 줄바꿈 방지 */
+    display: inline-block;
+}
