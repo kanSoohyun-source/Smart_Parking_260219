@@ -117,5 +117,4 @@ public class MemberModifyController extends HttpServlet {
             resp.sendRedirect("/member/member_list?error=modifyFail&page=" + page);
         }
     }
-
 }
