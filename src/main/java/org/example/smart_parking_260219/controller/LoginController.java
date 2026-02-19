@@ -334,9 +334,7 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    /**
-     * 이메일 + OTP 인증 처리 (최고 관리자)
-     */
+    /* 이메일 + OTP 인증 처리 (최고 관리자) */
     private void verifyEmailOtp(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
