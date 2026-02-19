@@ -25,6 +25,7 @@ public class MemberDAO {
         return instance;
     }
 
+    // 회원 등록
     public void insertMember(MemberVO memberVO) throws SQLException {
         String sql = "INSERT INTO member (" +
                 "car_num, car_type, name, phone, subscribed, start_date, end_date,subscribed_fee, create_date) " +
@@ -44,8 +45,9 @@ public class MemberDAO {
         preparedStatement.executeUpdate();
     }
 
+    // 회원 목록 출력
     public List<MemberVO> selectAllMember() throws SQLException {
-        String sql ="SELECT * FROM member ORDER BY member_id DESC ";
+        String sql ="SELECT * FROM member ORDER BY subscribed, member_id DESC ";
 
         List<MemberVO> memberVOList = new ArrayList<>();
 
@@ -71,6 +73,7 @@ public class MemberDAO {
         return memberVOList;
     }
 
+    // 차량번호로 회원 조회
     public MemberVO selectOneMember(String carNum) throws SQLException {
         String sql = "SELECT * FROM member WHERE car_num = ?";
 
@@ -97,8 +100,9 @@ public class MemberDAO {
         return null;
     }
 
+    // 차량번호 4자리로 회원검색
     public List<MemberVO> selectCar4Num(String car4Num) throws SQLException {
-        // ✅ 뒤 4자리로 LIKE 검색
+        // 뒤 4자리로 LIKE 검색
         String sql = "SELECT * FROM member WHERE car_num LIKE ?";
 
         List<MemberVO> memberVOList = new ArrayList<>();
@@ -126,6 +130,7 @@ public class MemberDAO {
         return memberVOList;
     }
 
+    // 회원 정보 수정
     public void updateMember(MemberVO memberVO) throws SQLException {
         String sql = "UPDATE member SET " +
                 "car_type = ?, name = ?, phone = ?, subscribed = ?, start_date = ?, end_date = ? " +
@@ -145,7 +150,7 @@ public class MemberDAO {
         preparedStatement.executeUpdate();
     }
 
-    // ✅ 만료된 회원 subscribed → false 일괄 업데이트
+    // 월정액 만료시 월정액 여부 false로 변경
     public void updateExpiredSubscriptions() throws SQLException {
         String sql = "UPDATE member SET subscribed = false " +
                 "WHERE subscribed = true AND end_date < ?";
@@ -156,7 +161,7 @@ public class MemberDAO {
         preparedStatement.executeUpdate();
     }
 
-    // ✅ 월정액 갱신 (start_date, end_date, subscribed 업데이트)
+    // 월정액 갱신 (start_date, end_date, subscribed 업데이트)
     public void updateSubscription(MemberVO memberVO) throws SQLException {
         String sql = "UPDATE member SET subscribed = ?, start_date = ?, end_date = ? " +
                 "WHERE car_num = ?";
@@ -170,6 +175,7 @@ public class MemberDAO {
         preparedStatement.executeUpdate();
     }
 
+    // 회원 삭제
     public void deleteMember (String carNum) throws SQLException {
         String sql = "DELETE FROM member WHERE car_num = ?";
 

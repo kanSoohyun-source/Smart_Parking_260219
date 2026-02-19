@@ -25,12 +25,14 @@ public enum MemberService {
         modelMapper = MapperUtil.INSTANCE.getInstance();
     }
 
+    // 회원 등록
     public void addMember(MemberDTO memberDTO) throws SQLException {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         log.info(memberVO);
         memberDAO.insertMember(memberVO);
     }
 
+    // 목록 조회
     public List<MemberDTO> getAllMember() throws SQLException {
         List<MemberVO> memberVOList = memberDAO.selectAllMember();
 
@@ -39,6 +41,7 @@ public enum MemberService {
         return memberDTOS;
     }
 
+    // 차량번호로 조회(8자리)
     public MemberDTO getOneMember(String carNum) throws SQLException {
         MemberVO memberVO = memberDAO.selectOneMember(carNum);
 
@@ -50,6 +53,7 @@ public enum MemberService {
         return modelMapper.map(memberVO, MemberDTO.class);
     }
 
+    // 차량 번호로 조회(뒷 4자리)
     public List<MemberDTO> getCarNum(String car4Num) throws Exception {
         List<MemberVO> memberVOList = memberDAO.selectCar4Num(car4Num);
         return memberVOList.stream()
@@ -57,18 +61,19 @@ public enum MemberService {
                 .toList();
     }
 
+    // 회원 정보 수정
     public void modifyMember(MemberDTO memberDTO) throws SQLException {
         MemberVO memberVO = modelMapper.map(memberDTO, MemberVO.class);
         memberDAO.updateMember(memberVO);
     }
 
-    // ✅ 만료된 회원 subscribed → false 처리
+    // 월정액 만료 고객 월정액 여부 false로 변경
     public void expireSubscriptions() throws SQLException {
         memberDAO.updateExpiredSubscriptions();
         log.info("만료된 월정액 회원 처리 완료");
     }
 
-    // ✅ 월정액 갱신 (현재 endDate 다음날부터 1개월)
+    // 월정액 갱신 (현재 endDate 다음날부터 1개월)
     public void renewSubscription(String carNum) throws SQLException {
         MemberVO memberVO = memberDAO.selectOneMember(carNum);
         if (memberVO == null) throw new SQLException("회원 없음: " + carNum);
@@ -82,7 +87,7 @@ public enum MemberService {
 
         LocalDate newEnd = newStart.plusMonths(1);
 
-        MemberVO updated = MemberVO.builder()
+        MemberVO memberVO1 = MemberVO.builder()
                 .carNum(carNum)
                 .memberId(memberVO.getMemberId())
                 .carType(memberVO.getCarType())
@@ -95,11 +100,11 @@ public enum MemberService {
                 .createDate(memberVO.getCreateDate())
                 .build();
 
-        memberDAO.updateSubscription(updated);
+        memberDAO.updateSubscription(memberVO1);
         log.info("월정액 갱신 완료: {} ({} ~ {})", carNum, newStart, newEnd);
     }
 
-
+    // 회원 삭제
     public void removeMember(String carNum) throws SQLException {
         memberDAO.deleteMember(carNum);
     }

@@ -20,7 +20,7 @@ import java.util.List;
 public class MemberAddController extends HttpServlet {
 
     private final MemberService memberService = MemberService.INSTANCE;
-    private static final int DEFAULT_SUBSCRIBED_FEE = 100000; // 구독 비용 고정값
+    private static final int DEFAULT_SUBSCRIBED_FEE = 100000; // 구독 비용 고정값 (코드로만 수정 가능)
 
     /*
      * GET 분기
