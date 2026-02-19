@@ -47,7 +47,7 @@ public class MemberDAO {
 
     // 회원 목록 출력
     public List<MemberVO> selectAllMember() throws SQLException {
-        String sql ="SELECT * FROM member ORDER BY subscribed, member_id DESC ";
+        String sql ="SELECT * FROM member ORDER BY create_date DESC ";
 
         List<MemberVO> memberVOList = new ArrayList<>();
 

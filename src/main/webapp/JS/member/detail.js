@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     window.deleteMember = function (carNum) {
         document.getElementById('deleteCarNum').textContent = '차량번호: ' + carNum;
         document.getElementById('confirmDeleteBtn').onclick = function () {
@@ -7,5 +6,4 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         $('#deleteModal').modal('show');
     };
-
 });

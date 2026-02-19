@@ -17,7 +17,7 @@ import java.util.List;
 public class MemberSearchController extends HttpServlet {
     private final MemberService memberService = MemberService.INSTANCE;
 
-    // ✅ GET: 검색 폼 표시
+    // GET: 검색 폼 표시
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("member_search GET");

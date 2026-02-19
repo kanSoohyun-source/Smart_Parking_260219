@@ -20,11 +20,12 @@ public class MemberSubscribeController extends HttpServlet {
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        /* 회원 등록시 기존 가입자 확인 controller */
         log.info("member_subscribe GET");
 
         String carNum = req.getParameter("carNum");
 
-        // ✅ carNum 없으면 조회 폼 표시
+        // carNum 없으면 조회 폼 표시
         if (carNum == null || carNum.trim().isEmpty()) {
             req.getRequestDispatcher("/WEB-INF/member/member_subscribe.jsp").forward(req, resp);
             return;
@@ -36,13 +37,13 @@ public class MemberSubscribeController extends HttpServlet {
             MemberDTO member = memberService.getOneMember(carNum);
 
             if (member == null) {
-                // ✅ 차량번호 없음 → 회원등록 페이지로 이동
+                // 차량번호 없음 → 회원등록 페이지로 이동
                 log.info("차량번호 없음 → 회원등록: {}", carNum);
                 resp.sendRedirect("/member/member_add?carNum=" + carNum + "&newMember=true");
                 return;
             }
 
-            // ✅ 차량번호 있음 → 월정액 등록 폼 표시
+            // 차량번호 있음 → 월정액 등록 폼 표시
             log.info("차량번호 있음 → 월정액 등록: {}", carNum);
             req.setAttribute("member", member);
             req.getRequestDispatcher("/WEB-INF/member/member_subscribe.jsp").forward(req, resp);
@@ -61,7 +62,7 @@ public class MemberSubscribeController extends HttpServlet {
         String carNum = req.getParameter("carNum");
 
         try {
-            // ✅ 1개월 갱신: endDate 다음날부터
+            // 1개월 갱신: endDate 다음날부터 시작
             memberService.renewSubscription(carNum);
             log.info("월정액 등록 완료: {}", carNum);
             resp.sendRedirect("/member/member_detail?carNum=" + carNum + "&success=subscribe");

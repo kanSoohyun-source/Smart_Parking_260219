@@ -43,7 +43,6 @@ public class MemberDetailController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/member/member_detail.jsp").forward(req, resp);
 
         } catch (Exception e) {
-            // 디버그: 예외 클래스명과 메시지를 URL에 노출
             log.error("회원 조회 오류: {}", e.getMessage(), e);
             String msg = java.net.URLEncoder.encode(
                     e.getClass().getSimpleName() + ": " + e.getMessage(), "UTF-8");

@@ -11,6 +11,7 @@
   }
 %>
 <html>
+<%-- 회원 조회시 차량번호 뒷 4자리 동일시 선택 화면--%>
 <head>
   <title>회원 선택</title>
   <link rel="stylesheet" href="../CSS/style.css">
