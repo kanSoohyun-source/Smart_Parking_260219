@@ -3,10 +3,12 @@ package org.example.smart_parking_260219.dao;
 import lombok.Cleanup;
 import org.example.smart_parking_260219.connection.DBConnection;
 import org.example.smart_parking_260219.vo.MemberVO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +25,11 @@ public class MemberDAO {
         return instance;
     }
 
+    // 회원 등록
     public void insertMember(MemberVO memberVO) throws SQLException {
-        String sql = "INSERT INTO member (car_num, car_type, name, phone, create_date ,subscribed) " +
-                "VALUES (?, ?, ?, ?, NOW(), ?)";
+        String sql = "INSERT INTO member (" +
+                "car_num, car_type, name, phone, subscribed, start_date, end_date,subscribed_fee, create_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,  NOW())";
 
         @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -34,12 +38,16 @@ public class MemberDAO {
         preparedStatement.setString(3, memberVO.getName());
         preparedStatement.setString(4, memberVO.getPhone());
         preparedStatement.setBoolean(5, (memberVO.isSubscribed()));
+        preparedStatement.setObject(6, memberVO.getStartDate());
+        preparedStatement.setObject(7, memberVO.getEndDate());
+        preparedStatement.setInt(8, memberVO.getSubscribedFee());
 
         preparedStatement.executeUpdate();
     }
 
+    // 회원 목록 출력
     public List<MemberVO> selectAllMember() throws SQLException {
-        String sql ="SELECT * FROM member";
+        String sql ="SELECT * FROM member ORDER BY create_date DESC ";
 
         List<MemberVO> memberVOList = new ArrayList<>();
 
@@ -54,14 +62,18 @@ public class MemberDAO {
                     .carType(resultSet.getInt("car_type"))
                     .name(resultSet.getString("name"))
                     .phone(resultSet.getString("phone"))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .subscribed(resultSet.getBoolean("subscribed"))
+                    .startDate(resultSet.getObject("start_date", java.time.LocalDate.class))
+                    .endDate(resultSet.getObject("end_date", java.time.LocalDate.class))
+                    .subscribedFee(resultSet.getInt("subscribed_fee"))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .build();
             memberVOList.add(memberVO);
         }
         return memberVOList;
     }
 
+    // 차량번호로 회원 조회
     public MemberVO selectOneMember(String carNum) throws SQLException {
         String sql = "SELECT * FROM member WHERE car_num = ?";
 
@@ -77,31 +89,93 @@ public class MemberDAO {
                     .carType(resultSet.getInt("car_type"))
                     .name(resultSet.getString("name"))
                     .phone(resultSet.getString("phone"))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .subscribed(resultSet.getBoolean("subscribed"))
+                    .startDate(resultSet.getObject("start_date", java.time.LocalDate.class))
+                    .endDate(resultSet.getObject("end_date", java.time.LocalDate.class))
+                    .subscribedFee(resultSet.getInt("subscribed_fee"))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
                     .build();
             return memberVO;
         }
         return null;
     }
 
+    // 차량번호 4자리로 회원검색
+    public List<MemberVO> selectCar4Num(String car4Num) throws SQLException {
+        // 뒤 4자리로 LIKE 검색
+        String sql = "SELECT * FROM member WHERE car_num LIKE ?";
+
+        List<MemberVO> memberVOList = new ArrayList<>();
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, "%" + car4Num);
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            MemberVO memberVO = MemberVO.builder()
+                    .memberId(resultSet.getInt("member_id"))
+                    .carNum(resultSet.getString("car_num"))
+                    .carType(resultSet.getInt("car_type"))
+                    .name(resultSet.getString("name"))
+                    .phone(resultSet.getString("phone"))
+                    .subscribed(resultSet.getBoolean("subscribed"))
+                    .startDate(resultSet.getObject("start_date", LocalDate.class))
+                    .endDate(resultSet.getObject("end_date", LocalDate.class))
+                    .subscribedFee(resultSet.getInt("subscribed_fee"))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .build();
+            memberVOList.add(memberVO);
+        }
+        return memberVOList;
+    }
+
+    // 회원 정보 수정
     public void updateMember(MemberVO memberVO) throws SQLException {
         String sql = "UPDATE member SET " +
-                "car_type = ?, name = ?, phone = ?, subscribed = ? " +
+                "car_type = ?, name = ?, phone = ?, subscribed = ?, start_date = ?, end_date = ? " +
                 "WHERE car_num = ?";
 
         @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-        preparedStatement.setString(1, String.valueOf(memberVO.getCarType()));
+        preparedStatement.setInt(1, memberVO.getCarType());
         preparedStatement.setString(2, memberVO.getName());
         preparedStatement.setString(3, memberVO.getPhone());
         preparedStatement.setBoolean(4, (memberVO.isSubscribed()));
-        preparedStatement.setString(5, memberVO.getCarNum());
+        preparedStatement.setObject(5, memberVO.getStartDate());
+        preparedStatement.setObject(6, memberVO.getEndDate());
+        preparedStatement.setString(7, memberVO.getCarNum());
 
         preparedStatement.executeUpdate();
     }
 
+    // 월정액 만료시 월정액 여부 false로 변경
+    public void updateExpiredSubscriptions() throws SQLException {
+        String sql = "UPDATE member SET subscribed = false " +
+                "WHERE subscribed = true AND end_date < ?";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setObject(1, LocalDate.now());
+        preparedStatement.executeUpdate();
+    }
+
+    // 월정액 갱신 (start_date, end_date, subscribed 업데이트)
+    public void updateSubscription(MemberVO memberVO) throws SQLException {
+        String sql = "UPDATE member SET subscribed = ?, start_date = ?, end_date = ? " +
+                "WHERE car_num = ?";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1, memberVO.isSubscribed());
+        preparedStatement.setObject(2, memberVO.getStartDate());
+        preparedStatement.setObject(3, memberVO.getEndDate());
+        preparedStatement.setString(4, memberVO.getCarNum());
+        preparedStatement.executeUpdate();
+    }
+
+    // 회원 삭제
     public void deleteMember (String carNum) throws SQLException {
         String sql = "DELETE FROM member WHERE car_num = ?";
 
@@ -109,5 +183,18 @@ public class MemberDAO {
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, carNum);
         preparedStatement.executeUpdate();
+    }
+
+    public int countSubscribedMembers() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM member WHERE subscribed = true";
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            return resultSet.getInt(1);
+        }
+        return 0;
     }
 }

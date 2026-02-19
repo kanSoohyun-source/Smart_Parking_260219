@@ -1,37 +1,35 @@
-/* 비활성화된 버튼 스타일 */
-button:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-    color: #999;
+.badge-custom {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+.badge-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.badge-custom i {
+    margin-right: 0.4rem;
 }
 
-button:disabled:hover {
-    background-color: #ddd;
+thead th {
+    background-color: #37474f !important;
+    color: white !important;
+    border-color: #455a64 !important;
 }
-
-/* 조회 버튼 스타일 */
-.btn-detail {
-    padding: 10px 20px;
-    font-size: 14px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+thead th a {
+    color: white !important;
+    text-decoration: none;
+    display: block;
 }
-
-.btn-detail:hover {
-    background-color: #2980b9;
+thead th a:hover {
+    background-color: #455a64;
 }
-
-/* 비활성화된 버튼 스타일 */
-button:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-    color: #999;
+.sort-icon {
+    color: #64b5f6;
+    font-size: 0.85em;
 }
-
-button:disabled:hover {
-    background-color: #ddd;
+tbody tr:hover {
+    background-color: #f5f5f5 !important;
 }

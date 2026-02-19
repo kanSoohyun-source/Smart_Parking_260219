@@ -1,57 +1,62 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.smart_parking_260219.dto.MemberDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%
   List<MemberDTO> matchedMembers = (List<MemberDTO>) request.getAttribute("matchedMembers");
+  String searchCarNum            = (String) request.getAttribute("searchCarNum");
+
   if (matchedMembers == null || matchedMembers.isEmpty()) {
-    response.sendRedirect("/member/member_search.jsp");
+    response.sendRedirect("/member/member_search");
     return;
   }
 %>
 <html>
+<%-- 회원 조회시 차량번호 뒷 4자리 동일시 선택 화면--%>
 <head>
   <title>회원 선택</title>
   <link rel="stylesheet" href="../CSS/style.css">
-  <link rel="stylesheet"  href="../CSS/member/select.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <div class="main-content">
-  <div id="memberSelect" class="page">
-    <h2>회원 조회</h2>
+  <div class="container mt-4" style="max-width: 600px;">
+    <h2 class="mb-4">회원 선택</h2>
 
-    <div class="select-container">
-      <div class="notice-box">
-        <p>차량 번호 4자리가 동일한 차량이 있는 경우,</p>
-        <p>다른 회원 정보와 함께 사용자가 선택 할수 있게 함</p>
-      </div>
+    <div class="alert alert-info">
+      '<%= searchCarNum %>'로 검색된 회원이 <%= matchedMembers.size() %>건 있습니다. 선택해주세요.
+    </div>
 
-      <div class="member-select-list">
-        <%
-          for (MemberDTO member : matchedMembers) {
-        %>
-        <div class="member-select-item" onclick="selectMember('<%= member.getCarNum() %>')">
-          <div class="select-info">
-            <span class="car-num">차량 번호</span>
-            <span class="phone-num">회원 전화번호</span>
+    <div class="list-group">
+      <% for (MemberDTO m : matchedMembers) { %>
+      <a href="/member/member_detail?carNum=<%= m.getCarNum() %>"
+         class="list-group-item list-group-item-action">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-1 font-weight-bold"><%= m.getCarNum() %></h6>
+            <small class="text-muted"><%= m.getName() %> · <%= m.getPhone() %></small>
           </div>
-          <div class="select-value">
-            <span class="car-num-value"><%= member.getCarNum() %></span>
-            <span class="phone-num-value"><%= member.getPhone() %></span>
+          <div class="text-right">
+            <span class="badge badge-primary"><%= m.CarTypeText() %></span>
+            <% if (m.isSubscribed()) { %>
+            <span class="badge badge-success">구독중</span>
+            <% } else { %>
+            <span class="badge badge-secondary">만료</span>
+            <% } %>
           </div>
         </div>
-        <%
-          }
-        %>
-      </div>
+      </a>
+      <% } %>
+    </div>
+
+    <div class="mt-3">
+      <a href="/member/member_search" class="btn btn-secondary btn-block">다시 검색</a>
     </div>
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="../JS/menu.js"></script>
-<script src="../JS/member/select.js"></script>
 </body>
 </html>
