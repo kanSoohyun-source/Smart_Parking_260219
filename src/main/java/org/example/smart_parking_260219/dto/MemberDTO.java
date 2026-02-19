@@ -24,6 +24,7 @@ public class MemberDTO {
     private LocalDateTime createDate;  // 가입일
     private int subscribedFee; // 기본값 10만원
 
+    // 차량 타입 정의 메서드 사용
     public String CarTypeText() {
         switch (this.carType) {
             case 1: return "일반";
