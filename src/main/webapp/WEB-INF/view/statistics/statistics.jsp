@@ -182,7 +182,7 @@
                         beginAtZero: true,
                         suggestedMin: 0,
                         suggestedMax: 10        // 데이터가 없어도 y축이 최소 10대까지는 보이도록 설정
-                        }
+                    }
                 }
             }
         });

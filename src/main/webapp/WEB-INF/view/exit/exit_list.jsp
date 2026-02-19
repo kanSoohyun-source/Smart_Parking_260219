@@ -8,7 +8,7 @@
 <%
     List<ParkingSpotDTO> dtoList = (List<ParkingSpotDTO>) request.getAttribute("dtoList");
     // 전체 입차 차량 수
-    int no = ParkingSpotService.INSTANCE.getAllParkingSpot().size() - ParkingSpotService.INSTANCE.getEmptyParkingSpot().size();
+//    int no = ParkingSpotService.INSTANCE.getAllParkingSpot().size() - ParkingSpotService.INSTANCE.getEmptyParkingSpot().size();
     MemberService memberService = MemberService.INSTANCE;
 %>
 <html>
@@ -31,7 +31,7 @@
    <!-- 내용 -->
     <div class="form-group">
         <div class="text-right">
-            <span class="badge badge-success">전체 <%=no%>건</span>
+<%--            <span class="badge badge-success">전체 <%=no%>건</span>--%>
         </div>
         <div>
             <table>
@@ -72,7 +72,7 @@
                 <tr class="click-row" data-url="${pageContext.request.contextPath}/get?id=<%=parkingSpotDTO.getSpaceId()%>&carNum=<%=parkingSpotDTO.getCarNum()%>">
                     <td>
                         <%=parkingSpotDTO.getSpaceId()%>
-                    </td>o
+                    </td>
                     <td>
                         <%=parkingSpotDTO.getCarNum()%>
                     </td>

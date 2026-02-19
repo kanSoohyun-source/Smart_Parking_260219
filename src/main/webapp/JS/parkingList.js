@@ -8,7 +8,7 @@ function selectCarNum() {
     if (keyword === "") {
         slot.forEach(slot => {
             if (slot.classList.contains("occupied")) {
-                slot.style.display = "block";
+                slot.style.display = "";
             } else {
                 slot.style.display = "none";
             }
@@ -32,7 +32,7 @@ function selectCarNum() {
 
         // 차량 번호 내에 검색 항목이 포함되어 있다면 출력, 아니라면 숨기기
         if (carNum.includes(keyword)) {
-            slot.style.display = "block";
+            slot.style.display = "";
         } else {
             slot.style.display = "none";
         }
@@ -43,6 +43,6 @@ function selectCarNum() {
 function cancelCarNum() {
     keywordInput.value = "";
     slots.forEach(slot => {
-        slot.style.display = "block";
+        slot.style.display = "";
     });
 }
