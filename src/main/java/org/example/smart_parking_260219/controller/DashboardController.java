@@ -42,6 +42,7 @@ public class DashboardController extends HttpServlet {
 
         // TODO: 주차장 현황, 통계 등 대시보드에 필요한 데이터를 DAO에서 조회하여 request에 담기
         // request.setAttribute("parkingStatus", parkingService.getStatus());
+//        response.sendRedirect(request.getContextPath() + "/dashboard");
 
         request.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(request, response);
     }

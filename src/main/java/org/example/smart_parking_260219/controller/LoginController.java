@@ -164,7 +164,7 @@ public class LoginController extends HttpServlet {
                 log.info("일반관리자 2차 인증(이메일) 단계로 이동");
                 request.getRequestDispatcher("/WEB-INF/views/login_email.jsp").forward(request, response);
             }
-            // 세션 타임아웃 설정 (30분) - 테스트 해봐야함.
+            // 세션 타임아웃 설정 (30분)
             session.setMaxInactiveInterval(30 * 60);
 
         } catch (Exception e) {

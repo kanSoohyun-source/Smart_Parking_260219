@@ -89,6 +89,7 @@ public class ParkingInputController extends HttpServlet {
             parkingService.addParking(parkingDTO);
 
             // 입차 정상 처리
+            log.info("parking 대시보드 이동확인 --- ");
             req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
         } else {
             // 해당 주차 공간의 주차가 불가능할 때

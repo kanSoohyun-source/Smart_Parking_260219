@@ -26,7 +26,8 @@
                 // A1 ~ A20까지 전체 주차 공간 출력
                 for (int i = 1; i <= 20; i++) {
                     String id = "A" + i;
-                    String carNum = null, entryTime = null;
+                    String carNum = null;
+                    String entryTime = null;
                     Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
 
                     // 입차된 차량이라면 차 번호와 입차 시간도 같이 출력
@@ -39,14 +40,14 @@
                     };
             %>
             <%-- 입차 여부에 따라 주차 공간 출력 --%>
-            <div class="slot-item <%= (!result) ? "empty" : "occupied" %>"
+            <div class="slot-item <%= (result) ? "empty" : "occupied" %>"
                  data-id="<%= id %>"
-                 data-empty="<%= (!result) %>"
+                 data-empty="<%= (result) %>"
                  data-carnum="<%= carNum %>">
 
                 <div class="slot-title"><%= id %></div>
 
-                <% if (!result) { %>
+                <% if (result) { %>
                 <div class="slot-status">공차</div>
                 <% } else { %>
                 <div class="slot-status"><%= carNum %></div>

@@ -26,7 +26,7 @@
         <form action="../input" method="post" class="form-horizontal">
             <div class="form-group">
                 <label>주차 자리</label>
-                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" value="<%=(space != null) ? space + " readonly": ""%>">
+                <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId" readonly value="<%=(space != null) ? space : ""%>">
                 <label>차량 번호</label>
                 <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
             </div>

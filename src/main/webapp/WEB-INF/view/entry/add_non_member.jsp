@@ -26,9 +26,9 @@
             </div>
             <div class="form-group">
                 <label>차량 타입</label>
-                <label><input type="radio" name="finish" value="1" checked>일반</label>
-                <label><input type="radio" name="finish" value="3">경차</label>
-                <label><input type="radio" name="finish" value="4">장애인</label>
+                <label class="radio-item"><input type="radio" name="finish" value="1" checked>일반</label>
+                <label class="radio-item"><input type="radio" name="finish" value="3">경차</label>
+                <label class="radio-item"><input type="radio" name="finish" value="4">장애인</label>
             </div>
             <button>입차 등록</button>
         </form>
