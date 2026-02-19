@@ -34,7 +34,7 @@ public class MemberAddController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("member_add doGet");
 
-        String step   = req.getParameter("step");
+        String step = req.getParameter("step");
         String carNum = req.getParameter("carNum");
 
         // STEP4: 선택된 차량 갱신 폼
@@ -45,16 +45,16 @@ public class MemberAddController extends HttpServlet {
                     resp.sendRedirect("/member/member_add");
                     return;
                 }
-                LocalDate today    = LocalDate.now();
+                LocalDate today = LocalDate.now();
                 LocalDate baseDate = member.getEndDate();
                 LocalDate newStart = (baseDate == null || baseDate.isBefore(today))
                         ? today.plusDays(1) : baseDate.plusDays(1);
-                LocalDate newEnd   = newStart.plusMonths(1);
+                LocalDate newEnd = newStart.plusMonths(1);
 
-                req.setAttribute("member",   member);
+                req.setAttribute("member", member);
                 req.setAttribute("newStart", newStart);
-                req.setAttribute("newEnd",   newEnd);
-                req.setAttribute("step",     "renew");
+                req.setAttribute("newEnd", newEnd);
+                req.setAttribute("step", "renew");
                 req.getRequestDispatcher("/WEB-INF/member/member_add.jsp").forward(req, resp);
             } catch (Exception e) {
                 log.error("member_add renew GET 오류", e);
@@ -113,11 +113,11 @@ public class MemberAddController extends HttpServlet {
 
         try {
             if ("register".equals(action)) {
-                int       carType   = Integer.parseInt(req.getParameter("carType"));
-                String    name      = req.getParameter("name");
-                String    phone     = req.getParameter("phone");
+                int carType = Integer.parseInt(req.getParameter("carType"));
+                String name = req.getParameter("name");
+                String phone = req.getParameter("phone");
                 LocalDate startDate = LocalDate.parse(req.getParameter("startDate"));
-                LocalDate endDate   = LocalDate.parse(req.getParameter("endDate"));
+                LocalDate endDate = LocalDate.parse(req.getParameter("endDate"));
 
                 MemberDTO memberDTO = MemberDTO.builder()
                         .carNum(carNum)
@@ -152,7 +152,13 @@ public class MemberAddController extends HttpServlet {
             }
 
         } catch (Exception e) {
-            log.error("member_add POST 오류", e);
+            log.error("member_add POST 오류 상세", e);
+            // 2. 모든 파라미터를 다 찍어봅니다.
+            log.info("파라미터 상세 -> carType: {}, name: {}, startDate: {}, endDate: {}",
+                    req.getParameter("carType"),
+                    req.getParameter("name"),
+                    req.getParameter("startDate"),
+                    req.getParameter("endDate"));
             out.println("<script>");
             out.println("alert('처리에 실패했습니다: " + e.getMessage() + "');");
             out.println("history.back();");

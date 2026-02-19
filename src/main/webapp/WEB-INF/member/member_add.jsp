@@ -17,7 +17,7 @@
 <html>
 <head>
     <title>회원 등록</title>
-    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
@@ -228,7 +228,7 @@
             </div>
         </div>
 
-        <form action="/member/member_add" method="post">
+        <form action="${pageContext.request.contextPath}/member/member_add" method="post">
             <input type="hidden" name="action" value="renew">
             <input type="hidden" name="carNum" value="<%= member.getCarNum() %>">
             <div class="d-flex">
@@ -236,7 +236,7 @@
                         onclick="return confirm('월정액 1개월을 갱신하시겠습니까?')">
                     갱신
                 </button>
-                <a href="/member/member_add" class="btn btn-secondary flex-fill">다시 조회</a>
+                <a href="${pageContext.request.contextPath}/member/member_add" class="btn btn-secondary flex-fill">다시 조회</a>
             </div>
         </form>
 
@@ -246,7 +246,7 @@
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="../JS/menu.js"></script>
-<script src="../JS/member/add.js"></script>
+<script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+<script src="${pageContext.request.contextPath}/JS/member/add.js"></script>
 </body>
 </html>
