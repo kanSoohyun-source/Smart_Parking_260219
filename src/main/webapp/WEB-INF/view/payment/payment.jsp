@@ -5,8 +5,6 @@
 <%@ page import="org.example.smart_parking_260219.service.FeePolicyService" %>
 <%@ page import="org.example.smart_parking_260219.vo.FeePolicyVO" %>
 <%@ page import="org.example.smart_parking_260219.dto.PaymentDTO" %>
-<%@ page import="org.apache.logging.log4j.Logger" %>
-<%@ page import="org.apache.logging.log4j.LogManager" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String carNum = request.getParameter("carNum");
