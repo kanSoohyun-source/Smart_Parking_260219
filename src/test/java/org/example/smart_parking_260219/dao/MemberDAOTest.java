@@ -35,7 +35,7 @@ class MemberDAOTest {
     public void memberDummy() throws SQLException {
         for (int i = 0; i < 5; i++) {
             MemberVO memberVO = MemberVO.builder()
-                    .carNum(i + "2221234")
+                    .carNum(i + "22가1234")
                     .carType(2)
                     .name("test")
                     .phone("010-1111-2222")
