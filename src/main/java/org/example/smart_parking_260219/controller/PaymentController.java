@@ -48,6 +48,8 @@ public class PaymentController extends HttpServlet {
                 return;
             }
 
+            log.info("parkingDTO, " + parkingDTO);
+
             PaymentDTO paymentDTO = PaymentDTO.builder()
                     .carNum(carNum)
                     .parkingId(parkingDTO.getParkingId())
@@ -57,6 +59,8 @@ public class PaymentController extends HttpServlet {
                     .discountAmount(discountAmount)
                     .finalFee(finalFee)
                     .build();
+
+            log.info("paymentDTO, " + paymentDTO);
 
             // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
             paymentService.addPayment(paymentDTO);
