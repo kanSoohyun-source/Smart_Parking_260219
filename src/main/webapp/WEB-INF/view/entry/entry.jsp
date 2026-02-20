@@ -19,6 +19,9 @@
     if ("over".equals(failInput)) {
         out.println("<script>alert('잘못된 형식의 차량 번호입니다.'); history.back();</script>");
     }
+    if ("already".equals(failInput)) {
+        out.println("<script>alert('이미 입차된 차량입니다.'); history.back();</script>");
+    }
 %>
 <div class="main-content">
     <div id="entry" class="page">

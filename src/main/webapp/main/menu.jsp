@@ -52,7 +52,7 @@
 
         <li><a href="${pageContext.request.contextPath}/dashboard">주차 현황</a></li>
         <li><a href="${pageContext.request.contextPath}/input">입차</a></li>
-        <li><a href="${pageContext.request.contextPath}/output">출차</a></li>
+        <li><a href="${pageContext.request.contextPath}/list">출차</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_add">회원 등록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_list">회원 목록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_search">회원 조회</a></li>
