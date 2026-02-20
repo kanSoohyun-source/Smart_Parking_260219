@@ -77,12 +77,13 @@
 
                     <div class="form-group">
                         <label>차량 종류 <span class="text-danger">*</span></label>
-                        <select class="form-control" name="carType" required>
-                            <option value="1">일반</option>
+                        <select class="form-control" name="carType" disabled>
+                            <option value="1" >일반</option>
                             <option value="2" selected>월정액</option>
                             <option value="3">경차</option>
                             <option value="4">장애인</option>
                         </select>
+                        <input type="hidden" name="carType" value="2">
                     </div>
 
                     <div class="form-group">
