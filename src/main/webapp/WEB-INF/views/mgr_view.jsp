@@ -156,7 +156,7 @@
 </head>
 <body>
 <!-- Navigation -->
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../main/menu.jsp" %>
 
 <%
     /* ✅ 세션에서 로그인한 관리자 정보를 꺼냄

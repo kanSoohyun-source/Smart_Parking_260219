@@ -191,7 +191,7 @@
     </style>
 </head>
 <body>
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../main/menu.jsp" %>
 
 <%-- ── 최고관리자 접근 차단 안내 모달 ── --%>
 <div id="adminModal" class="modal-backdrop">

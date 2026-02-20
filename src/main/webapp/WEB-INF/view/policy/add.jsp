@@ -81,7 +81,7 @@
 </head>
 <body>
 <!-- Navigation -->
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../../main/menu.jsp" %>
 <div class="main-content">
     <div class="row">
         <div class="col-lg-9 mx-auto">

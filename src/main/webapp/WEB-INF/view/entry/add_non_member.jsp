@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/payment_style.css">
 </head>
 <body>
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../../main/menu.jsp" %>
 <%
     String space = (String) request.getAttribute("id");
     String carNum = (String) request.getAttribute("carNum");

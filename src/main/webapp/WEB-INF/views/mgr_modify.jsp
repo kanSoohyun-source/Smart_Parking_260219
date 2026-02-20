@@ -177,7 +177,7 @@
 </head>
 <body>
 <!-- Navigation -->
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../main/menu.jsp" %>
 
 <div class="main-content">
     <div class="container">

@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.payment;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.service.FeePolicyService;
 import org.example.smart_parking_260219.service.ParkingService;
+import org.example.smart_parking_260219.service.ParkingSpotService;
 import org.example.smart_parking_260219.service.PaymentService;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ public class PaymentController extends HttpServlet {
     private final PaymentService paymentService = PaymentService.INSTANCE;
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
+    private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -50,6 +53,7 @@ public class PaymentController extends HttpServlet {
 
             log.info("parkingDTO, " + parkingDTO);
 
+            // 결제 정보 저장
             PaymentDTO paymentDTO = PaymentDTO.builder()
                     .carNum(carNum)
                     .parkingId(parkingDTO.getParkingId())
@@ -62,11 +66,17 @@ public class PaymentController extends HttpServlet {
 
             log.info("paymentDTO, " + paymentDTO);
 
-            // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
+            ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
+                    .carNum(carNum).build();
+
+            log.info("parkingSpotDTO, " + parkingSpotDTO);
+
+            // 순서 주의: 결제 내역을 먼저, 주차 상태 변경.
             paymentService.addPayment(paymentDTO);
             parkingService.modifyParking(carNum);
+            parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
-            log.info("Payment and Parking update success!");
+            log.info("Payment and Parking, ParkingSpot update success!");
 
             // 이동할 때 ContextPath를 포함한 올바른 URL로 이동
             resp.sendRedirect(req.getContextPath() + "/dashboard"); // 대시보드 URL로 수정

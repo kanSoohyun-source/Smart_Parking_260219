@@ -70,7 +70,7 @@
 </div>
 <body>
 <!-- Navigation -->
-<%@ include file="/main/menu.jsp" %>
+<%@ include file="../../main/menu.jsp" %>
 <div class="main-content">
     <!-- Content -->
     <div id="register" class="page">
@@ -106,7 +106,13 @@
                 <label>총 주차 요금</label>
                 <input type="text" name="finalFee" id="finalFee" placeholder="총 주차 요금" value="<%=finalFee%>">
             </div>
-            <button type="button" class="btn btn-primary" onclick="showReceipt()">확인</button>
+            <div>
+                <input type="checkbox" name="receipt" id="receipt"><label>영수증 출력</label>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="showReceipt()">확인</button>
+            </div>
+
         </form>
     </div>
     <!-- 영수증 -->

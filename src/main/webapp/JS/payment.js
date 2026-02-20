@@ -5,49 +5,64 @@ function formatDateTime(dtStr) {
 }
 
 function showReceipt() {
-    // 1. 입력 필드에서 데이터 가져오기
+    // 체크박스 상태 확인
+    const receiptCheckbox = document.getElementById("receipt");
+    const form = document.forms['payment'];
+
+    // 필수 데이터 확인 (차량 번호 등)
     const carNum = document.getElementById("carNum").value;
-    const totalTime = document.getElementById("totalParkingTime").value;
-    const calculatedFee = document.getElementById("calculatedFee").value;
-    const discountAmount = document.getElementById("discountAmount").value;
-    const finalFee = document.getElementById("finalFee").value;
+    if (!carNum || carNum === "null") {
+        alert("차량 정보가 없습니다.");
+        return;
+    }
 
-    // 2. 숨겨진 printArea(파란 영수증 디자인)에 데이터 채우기
-    document.getElementById("p-carNum").innerText = carNum;
-    document.getElementById("p-totalTime").innerText = totalTime;
-    document.getElementById("p-calcFee").innerText = Number(calculatedFee).toLocaleString();
-    document.getElementById("p-discount").innerText = Number(discountAmount).toLocaleString();
-    document.getElementById("p-finalFee").innerText = Number(finalFee).toLocaleString() + "원";
-    document.getElementById("p-finalFee-total").innerText = Number(finalFee).toLocaleString() + "원";
+    // 영수증 출력 체크박스가 선택된 경우
+    if (receiptCheckbox && receiptCheckbox.checked) {
+        // 데이터 채우기 (기존 로직 유지)
+        const totalTime = document.getElementById("totalParkingTime").value;
+        const calculatedFee = document.getElementById("calculatedFee").value;
+        const discountAmount = document.getElementById("discountAmount").value;
+        const finalFee = document.getElementById("finalFee").value;
 
-    // 3. 모달 바디에 텍스트가 아닌 '디자인된 HTML'을 삽입
-    const receiptDesign = document.getElementById("printArea").innerHTML;
-    document.getElementById("modalBody").innerHTML = receiptDesign; // innerText 아님!
+        document.getElementById("p-carNum").innerText = carNum;
+        document.getElementById("p-totalTime").innerText = totalTime;
+        document.getElementById("p-calcFee").innerText = Number(calculatedFee).toLocaleString();
+        document.getElementById("p-discount").innerText = Number(discountAmount).toLocaleString();
+        document.getElementById("p-finalFee").innerText = Number(finalFee).toLocaleString() + "원";
+        document.getElementById("p-finalFee-total").innerText = Number(finalFee).toLocaleString() + "원";
 
-    // 4. 모달 보이기
-    document.getElementById("customModal").style.display = "flex";
+        // 모달 표시
+        const receiptDesign = document.getElementById("printArea").innerHTML;
+        document.getElementById("modalBody").innerHTML = receiptDesign;
+        document.getElementById("customModal").style.display = "flex";
+    }
+    // 체크박스가 선택되지 않은 경우 바로 결제(제출)
+    else {
+        if (confirm("영수증 없이 정산을 진행하시겠습니까?")) {
+            alert("정산이 완료되었습니다. 대시보드로 이동합니다.");
+            form.submit();
+        }
+    }
+}
+
+// 모달 내 '확인' 버튼 클릭 시 (영수증 출력 후 제출)
+function handleConfirm() {
+    if (confirm("영수증을 인쇄하시겠습니까?")) {
+        printReceipt();
+    }
+
+    setTimeout(function() {
+        alert("정산이 완료되었습니다. 대시보드로 이동합니다.");
+        const form = document.forms['payment'];
+        if (form) {
+            form.submit();
+        }
+    }, 500);
 }
 
 function closeModal() {
     document.getElementById("customModal").style.display = "none";
 }
-
-function handleConfirm() {
-    // 1. 인쇄 여부 확인
-    if (confirm("영수증을 인쇄하시겠습니까?")) {
-        printReceipt();
-    }
-
-    // 2. 약간의 지연을 주어 브라우저가 submit을 정상적으로 인식하게 함
-    setTimeout(function() {
-        alert("정산이 완료되었습니다. 대시보드로 이동합니다.");
-        const form = document.forms['payment'];
-        if (form) {
-            form.submit(); // 이제 컨트롤러의 doPost로 데이터가 날아감
-        }
-    }, 500);
-}
-
 // 인쇄 실행 함수
 function printReceipt() {
     const printWindow = window.open('', '_blank', 'width=450,height=700');
