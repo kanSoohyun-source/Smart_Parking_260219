@@ -24,6 +24,8 @@ class MemberDAOTest {
                     .subscribed(true)
                     .startDate(LocalDate.now())
                     .endDate(LocalDate.now().plusMonths(1))
+                    .subscribedFee(100000)
+                    .createDate(LocalDateTime.now())
                     .build();
             memberDAO.insertMember(memberVO);
         } catch (SQLException e) {
@@ -31,11 +33,12 @@ class MemberDAOTest {
         }
     }
 
+    // 더미 데이터용. 페이징 테스트를 위해 최소 3번은 돌려 봐야함
     @Test
     public void memberDummy() throws SQLException {
-        for (int i = 1; i < 30; i++) {
+        for (int i = 0; i < 9; i++) {
             MemberVO memberVO = MemberVO.builder()
-                    .carNum(i + "2221234")
+                    .carNum((i+1) + "33다1234")
                     .carType(2)
                     .name("test")
                     .phone("010-1111-2222")

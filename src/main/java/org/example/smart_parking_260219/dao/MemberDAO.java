@@ -47,7 +47,9 @@ public class MemberDAO {
 
     // 회원 목록 출력
     public List<MemberVO> selectAllMember() throws SQLException {
-        String sql ="SELECT * FROM member ORDER BY create_date DESC ";
+        String sql ="SELECT * FROM member m WHERE member_id = " +
+                "(SELECT MAX(member_id) FROM member WHERE car_num = m.car_num) " +
+                "ORDER BY member_id DESC";
 
         List<MemberVO> memberVOList = new ArrayList<>();
 
@@ -75,7 +77,7 @@ public class MemberDAO {
 
     // 차량번호로 회원 조회
     public MemberVO selectOneMember(String carNum) throws SQLException {
-        String sql = "SELECT * FROM member WHERE car_num = ?";
+        String sql = "SELECT * FROM member WHERE car_num = ? ORDER BY create_date DESC LIMIT 1";
 
         @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -162,17 +164,48 @@ public class MemberDAO {
     }
 
     // 월정액 갱신 (start_date, end_date, subscribed 업데이트)
-    public void updateSubscription(MemberVO memberVO) throws SQLException {
-        String sql = "UPDATE member SET subscribed = ?, start_date = ?, end_date = ? " +
-                "WHERE car_num = ?";
+    public void insertSubscription(MemberVO memberVO) throws SQLException {
+        // UPDATE가 아닌 INSERT 문을 사용합니다.
+        String sql = "INSERT INTO member (" +
+                "car_num, car_type, name, phone, subscribed, start_date, end_date, subscribed_fee, create_date) " +
+                "VALUES (?, ?, ?, ?, true, ?, ?, ?, NOW())";
 
         @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
         @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setBoolean(1, memberVO.isSubscribed());
-        preparedStatement.setObject(2, memberVO.getStartDate());
-        preparedStatement.setObject(3, memberVO.getEndDate());
-        preparedStatement.setString(4, memberVO.getCarNum());
+
+        preparedStatement.setString(1, memberVO.getCarNum());
+        preparedStatement.setInt(2, memberVO.getCarType());
+        preparedStatement.setString(3, memberVO.getName());
+        preparedStatement.setString(4, memberVO.getPhone());
+        preparedStatement.setObject(5, memberVO.getStartDate());
+        preparedStatement.setObject(6, memberVO.getEndDate());
+        preparedStatement.setInt(7, memberVO.getSubscribedFee());
+
         preparedStatement.executeUpdate();
+    }
+
+    // 회원별 월정액 갱신 데이터를 모아 주는 메서드
+    public List<MemberVO> selectMemberHistory(String carNum) throws SQLException {
+        // 최신순으로 모든 이력을 조회
+        String sql = "SELECT * FROM member WHERE car_num = ? ORDER BY create_date DESC";
+        List<MemberVO> historyList = new ArrayList<>();
+
+        @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, carNum);
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            historyList.add(MemberVO.builder()
+                    .memberId(resultSet.getInt("member_id"))
+                    .carNum(resultSet.getString("car_num"))
+                    .subscribedFee(resultSet.getInt("subscribed_fee"))
+                    .startDate(resultSet.getObject("start_date", LocalDate.class))
+                    .endDate(resultSet.getObject("end_date", LocalDate.class))
+                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .build());
+        }
+        return historyList;
     }
 
     // 회원 삭제
