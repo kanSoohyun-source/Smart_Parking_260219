@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.parking;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

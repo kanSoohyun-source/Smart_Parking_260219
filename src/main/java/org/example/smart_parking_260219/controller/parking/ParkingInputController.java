@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.parking;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,19 +49,6 @@ public class ParkingInputController extends HttpServlet {
         }
 
         String spaceId = req.getParameter("spaceId");
-        MemberDTO memberDTO;
-        try {
-            memberDTO = memberService.getOneMember(carNum);
-        } catch (SQLException e) {
-            memberDTO = null;
-        }
-
-        if (memberDTO == null) {
-            req.setAttribute("carNum", carNum);
-            req.setAttribute("id", spaceId);
-            req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
-            return;
-        }
 
         ParkingSpotDTO spotDTO = parkingSpotService.getParkingSpotBySpaceId(spaceId);
         log.info("spaceId: {}, empty: {}", spaceId, spotDTO.getEmpty());
@@ -76,8 +63,21 @@ public class ParkingInputController extends HttpServlet {
         ParkingDTO existingParking = parkingService.getParkingByCarNum(carNum);
         if (existingParking != null && !existingParking.isPaid()) {
             req.setAttribute("id", spaceId);
-            req.setAttribute("fail", "false");
-            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
+            // req.setAttribute("fail", "already");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp?fail=already").forward(req, resp);
+            return;
+        }
+        MemberDTO memberDTO;
+        try {
+            memberDTO = memberService.getOneMember(carNum);
+        } catch (SQLException e) {
+            memberDTO = null;
+        }
+
+        if (memberDTO == null) {
+            req.setAttribute("carNum", carNum);
+            req.setAttribute("id", spaceId);
+            req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
             return;
         }
 
