@@ -23,6 +23,7 @@ public class ParkingListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("GET /get - 출차 차량 조회");
         String carNum = req.getParameter("carNum");
+        String spaceId = req.getParameter("id");
 
         if (carNum == null || carNum.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/output");
@@ -33,6 +34,11 @@ public class ParkingListController extends HttpServlet {
 
         if (parkingDTO == null) {
             resp.sendRedirect(req.getContextPath() + "/output?fail=false");
+            return;
+        }
+
+        if (spaceId == null || !spaceId.equals(parkingDTO.getSpaceId())) {
+            resp.sendRedirect(req.getContextPath() + "/output?fail=nullId");
             return;
         }
 
