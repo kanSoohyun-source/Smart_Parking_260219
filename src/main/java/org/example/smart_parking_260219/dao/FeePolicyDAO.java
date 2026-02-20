@@ -158,6 +158,7 @@ public class FeePolicyDAO {
         }
     }
 
+    // 월정액 요금 조회
     public Integer getSubscribedFee(Connection connection) throws SQLException {
         String sql = "SELECT subscribed_fee FROM fee_policy LIMIT 1";
 
