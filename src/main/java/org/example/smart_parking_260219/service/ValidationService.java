@@ -104,6 +104,7 @@ public class ValidationService {
 
     /* #1. 일반 관리자 신규 추가 */
     private String buildAddManagerBody(String authCode) {
+        log.info("일반 관리자 신규 추가 OTP : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -128,7 +129,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='content'>" +
                 "    <p>안녕하세요.</p>" +
-                "    <p>새로운 <strong>일반 관리자 계정을 등록</strong>하기 위한 이메일 인증번호입니다.</p>" +
+                "    <p>새로운 <strong>일반 관리자 계정을 등록/수정</strong>하기 위한 이메일 인증번호입니다.</p>" +
                 "    <p>아래 인증번호를 입력하여 계정 등록을 완료해주세요.</p>" +
                 "    <div class='code-box'>" +
                 "      <p style='margin:0;color:#666;font-size:14px;'>인증번호</p>" +
@@ -153,6 +154,7 @@ public class ValidationService {
 
     /* #2. 관리자 정보 수정 */
     private String buildModifyManagerBody(String authCode) {
+        log.info("관리자 정보 수정 OTP : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -203,6 +205,7 @@ public class ValidationService {
 
     /* #3. 비밀번호 찾기 */
     private String buildForgotPasswordBody(String authCode) {
+        log.info("비밀번호 찾기 : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -254,6 +257,7 @@ public class ValidationService {
 
     /* #4. 임시 비밀번호 발급 이메일 */
     public String buildTempPasswordBody(String tempPassword) {
+        log.info("임시 비밀번호 발급 이메일 : {}", tempPassword);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -301,12 +305,10 @@ public class ValidationService {
 
     /* #5. 기본 템플릿 */
     private String buildDefaultBody(String authCode) {
-        return String.format(
-                "<h1>인증번호 안내</h1>" +
-                        "<p>인증번호: <strong>%s</strong></p>" +
-                        "<p>5분 내에 입력해주세요.</p>",
-                authCode
-        );
+        log.info("기본 템플릿 OTP : {}", authCode);
+        return String.format("<h1>인증번호 안내</h1>" +
+                "<p>인증번호: <strong>%s</strong></p>" +
+                "<p>5분 내에 입력해주세요.</p>", authCode);
     }
 
     /* 인증코드 생성 */

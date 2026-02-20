@@ -45,18 +45,20 @@
                 <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">일반 관리자 추가</a>
                 <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록 & 수정</a>
                 <a href="${pageContext.request.contextPath}/mgr/modify">최고 관리자 정보 수정</a>
-                <%--                <a href="${pageContext.request.contextPath}/mgr/modify_normal">일반 관리자 정보 수정</a>--%>
             </div>
         </li>
         <% } %>
 
+        <%-- 일반 관리자(NORMAL)일 때만 '내 정보 수정' 메뉴 출력 --%>
+        <% if ("NORMAL".equals(mRole)) { %>
+        <li><a href="${pageContext.request.contextPath}/mgr/my_modify">내 정보 수정</a></li>
+        <% } %>
         <li><a href="${pageContext.request.contextPath}/dashboard">주차 현황</a></li>
         <li><a href="${pageContext.request.contextPath}/input">입차</a></li>
         <li><a href="${pageContext.request.contextPath}/output">출차</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_add">회원 등록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_list">회원 목록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_search">회원 조회</a></li>
-<%--        <li><a href="${pageContext.request.contextPath}/policy/list">요금 부과 정책</a></li>--%>
         <li><a href="${pageContext.request.contextPath}/view/policy/list">요금 부과 정책</a></li>
         <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
         <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
@@ -65,6 +67,7 @@
 
 <script>
     <%-- 실시간 시계 --%>
+
     function updateClock() {
         const now = new Date();
         const year = now.getFullYear();
@@ -79,10 +82,12 @@
             clockElement.innerText = timeString;
         }
     }
+
     setInterval(updateClock, 1000); // 1초마다 updateClock 함수 실행
     window.onload = updateClock;  // 페이지 로드 시 즉시 실행 (1초 대기 방지)
 
     <%-- 관리자 추가 함수 --%>
+
     function confirmAddManager() {
         // confirm() 확인을 누르면 true -> href 경로로 이동
         // confirm() 취소를 누르면 false -> 이동 취소 (현재 화면 유지)
@@ -90,6 +95,7 @@
     }
 
     <%-- 로그아웃 함수 --%>
+
     function confirmLogout() {
         if (confirm("로그아웃을 하시겠습니까?")) {  // confirm()은 확인을 누르면 true, 취소를 누르면 false를 반환
             ${pageContext.request.contextPath}  // '확인' 클릭 시: true가 반환되어 href 주소(/logout)로 이동
@@ -101,6 +107,7 @@
     }
 
     <%-- 토글 --%>
+
     function toggleDropdown() {
         const dropdown = document.getElementById("adminSubMenu");
         // 'show' 클래스가 있으면 제거하고, 없으면 추가함
@@ -108,7 +115,7 @@
     }
 
     <%-- 메뉴 외부 클릭 시 드롭다운 닫기 --%>
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (!event.target.matches('.dropbtn')) {
             const dropdowns = document.getElementsByClassName("dropdown-content");
             for (let i = 0; i < dropdowns.length; i++) {

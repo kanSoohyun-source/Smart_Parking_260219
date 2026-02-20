@@ -183,6 +183,45 @@ public class ManagerController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/mgr_list.jsp").forward(request, response);
                 break;
 
+            /* ★ 일반 관리자 본인 정보 수정 페이지 (로그인한 본인만 접근) */
+            case "/my_modify":
+                log.info("일반 관리자 본인 정보 수정 페이지 요청");
+
+                // 세션에서 로그인한 관리자 정보를 가져와 그대로 JSP로 전달
+                // (아이디를 URL 파라미터로 노출하지 않고 세션 기준으로 처리)
+                ManagerVO myManager = (ManagerVO) session.getAttribute("loginManager");
+
+                if (myManager == null) {
+                    log.warn("세션에 로그인 정보 없음 - 로그인 페이지로 리다이렉트");
+                    response.sendRedirect(request.getContextPath() + "/login");
+                    return;
+                }
+
+                // 보안: 최고 관리자(ADMIN)는 이 경로 접근 불가 → 전용 수정 페이지로 이동
+                if ("ADMIN".equals(myManager.getRole())) {
+                    log.warn("ADMIN 계정의 /my_modify 접근 차단 → /mgr/modify 로 리다이렉트");
+                    response.sendRedirect(request.getContextPath() + "/mgr/modify");
+                    return;
+                }
+
+                // DB에서 최신 정보를 다시 조회 (세션 정보는 오래될 수 있음)
+                try {
+                    ManagerVO freshManager = managerDAO.selectOne(myManager.getManagerId());
+                    if (freshManager != null) {
+                        request.setAttribute("manager", freshManager);
+                        log.info("본인 정보 조회 성공 - ID: {}", freshManager.getManagerId());
+                    } else {
+                        log.warn("DB에서 본인 정보를 찾을 수 없음 - ID: {}", myManager.getManagerId());
+                        request.setAttribute("error", "계정 정보를 불러올 수 없습니다.");
+                    }
+                } catch (Exception e) {
+                    log.error("본인 정보 조회 중 오류 발생", e);
+                    request.setAttribute("error", "데이터 조회 중 오류가 발생했습니다.");
+                }
+
+                request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
+                break;
+
             /* 일반 관리자 정보 수정 페이지 호출 (ADMIN 전용) */
             case "/modify_normal":
                 log.info("일반 관리자 수정 페이지 처리");
@@ -256,6 +295,9 @@ public class ManagerController extends HttpServlet {
         } else if ("/modify".equals(pathInfo)) {
             log.info("관리자 수정 처리 시작");
             modifyManager(request, response);
+        } else if ("/my_modify".equals(pathInfo)) {
+            log.info("일반 관리자 본인 정보 수정 처리 시작");
+            modifyMyInfo(request, response);
         } else if ("/modify_normal".equals(pathInfo)) { // <--- 이 부분 추가
             log.info("일반 관리자 수정 처리 시작");
             modifyManagerNormal(request, response);
@@ -471,13 +513,152 @@ public class ManagerController extends HttpServlet {
 
             log.info("관리자 수정 완료 - ID: {}", managerId);
 
-            request.getSession().setAttribute("successMessage", "정보가 성공적으로 수정되었습니다.");
-            response.sendRedirect(request.getContextPath() + "/mgr/list");
+            // ★ 요청자 역할에 따른 분기 처리
+            HttpSession sess = request.getSession(false);
+            ManagerVO currentLogin = (sess != null) ? (ManagerVO) sess.getAttribute("loginManager") : null;
+
+            if (currentLogin != null && "NORMAL".equals(currentLogin.getRole())) {
+                // 일반 관리자가 본인 정보를 수정한 경우 → 세션 무효화 후 재로그인 유도
+                log.info("일반 관리자 본인 수정 완료 - 세션 무효화 후 로그인 페이지로 이동");
+                sess.setAttribute("logoutMessage", "정보가 수정되었습니다. 변경된 정보로 다시 로그인해주세요.");
+                sess.invalidate();
+                response.sendRedirect(request.getContextPath() + "/login");
+            } else {
+                // ADMIN이 타 관리자 수정한 경우 → 관리자 목록으로 이동
+                log.info("ADMIN에 의한 관리자 수정 완료 - 목록으로 이동");
+                request.getSession().setAttribute("successMessage", "정보가 성공적으로 수정되었습니다.");
+                response.sendRedirect(request.getContextPath() + "/mgr/list");
+            }
 
         } catch (Exception e) {
             log.error("수정 중 오류 발생", e);
             request.setAttribute("error", "오류가 발생했습니다: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/mgr_modify_normal.jsp").forward(request, response);
+        }
+    }
+
+    /**
+     * 일반 관리자 본인 정보 수정 처리 (POST /mgr/my_modify)
+     *
+     * - 아이디는 수정 불가 (세션/DB 일치 보장)
+     * - 이름, 비밀번호(선택), 이메일 수정 가능
+     * - 수정 완료 후 세션 갱신 및 재로그인 유도
+     */
+    private void modifyMyInfo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+
+        // 세션에서 현재 로그인한 관리자 정보 취득
+        ManagerVO loginManager = (ManagerVO) session.getAttribute("loginManager");
+        if (loginManager == null) {
+            log.warn("세션 없음 - 로그인 페이지로 리다이렉트");
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // 보안: ADMIN 계정은 이 엔드포인트 사용 불가
+        if ("ADMIN".equals(loginManager.getRole())) {
+            log.warn("ADMIN이 /my_modify POST 시도 - 차단");
+            response.sendRedirect(request.getContextPath() + "/mgr/modify");
+            return;
+        }
+
+        // ★ 아이디는 hidden 필드로 오지만, 세션의 ID와 반드시 일치해야 함 (위조 요청 방어)
+        String sessionId   = loginManager.getManagerId();
+        String requestedId = request.getParameter("managerId");
+
+        if (!sessionId.equals(requestedId)) {
+            log.warn("세션 ID({})와 요청 ID({}) 불일치 - 위조 요청 차단", sessionId, requestedId);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "잘못된 요청입니다.");
+            return;
+        }
+
+        String managerName   = request.getParameter("name");
+        String password      = request.getParameter("pw");
+        String email         = request.getParameter("email");
+
+        log.info("본인 정보 수정 요청 - ID: {}, 이름: {}, 이메일: {}, 비밀번호 변경: {}",
+                sessionId, managerName, email,
+                (password != null && !password.trim().isEmpty() ? "Yes" : "No"));
+
+        // 필수값 검증
+        if (managerName == null || managerName.trim().isEmpty() ||
+                email == null || email.trim().isEmpty()) {
+            log.warn("필수 입력값 누락");
+            request.setAttribute("error", "이름과 이메일은 필수 입력값입니다.");
+            ManagerVO fresh = managerDAO.selectOne(sessionId);
+            request.setAttribute("manager", fresh);
+            request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
+            return;
+        }
+
+        // 비밀번호 길이 검증 (입력한 경우만)
+        if (password != null && !password.trim().isEmpty() && password.length() < 4) {
+            log.warn("비밀번호 길이 부족: {}", password.length());
+            request.setAttribute("error", "비밀번호는 최소 4자 이상이어야 합니다.");
+            ManagerVO fresh = managerDAO.selectOne(sessionId);
+            request.setAttribute("manager", fresh);
+            request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
+            return;
+        }
+
+        // 이메일 형식 검증
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            log.warn("잘못된 이메일 형식: {}", email);
+            request.setAttribute("error", "올바른 이메일 형식이 아닙니다.");
+            ManagerVO fresh = managerDAO.selectOne(sessionId);
+            request.setAttribute("manager", fresh);
+            request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            // 기존 정보 조회
+            ManagerVO existing = managerDAO.selectOne(sessionId);
+            if (existing == null) {
+                request.setAttribute("error", "존재하지 않는 계정입니다.");
+                request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
+                return;
+            }
+
+            // 수정할 정보 빌드
+            ManagerVO.ManagerVOBuilder builder = ManagerVO.builder()
+                    .managerNo(existing.getManagerNo())
+                    .managerId(sessionId)          // ★ 아이디는 절대 변경 안 함
+                    .managerName(managerName.trim())
+                    .email(email.trim())
+                    .active(existing.isActive())
+                    .role(existing.getRole());
+
+            // 비밀번호: 입력이 없으면 기존 해시 유지
+            if (password != null && !password.trim().isEmpty()) {
+                log.info("비밀번호 변경 수행 - ID: {}", sessionId);
+                builder.password(password);        // DAO의 updateManager()에서 BCrypt 해싱
+            } else {
+                log.info("비밀번호 유지 - ID: {}", sessionId);
+                builder.password(existing.getPassword());  // 기존 해시값 유지
+            }
+
+            managerDAO.updateManager(builder.build());
+            log.info("본인 정보 수정 완료 - ID: {}", sessionId);
+
+            // ★ 수정 완료 후 세션 무효화 → 재로그인 유도
+            // (이름/이메일/비밀번호가 바뀌었으므로 세션 정보 갱신 필요)
+            session.setAttribute("logoutMessage", "정보가 수정되었습니다. 변경된 정보로 다시 로그인해주세요.");
+            session.invalidate();
+            response.sendRedirect(request.getContextPath() + "/login");
+
+        } catch (Exception e) {
+            log.error("본인 정보 수정 중 오류 발생 - ID: {}", sessionId, e);
+            request.setAttribute("error", "정보 수정 중 오류가 발생했습니다: " + e.getMessage());
+            try {
+                ManagerVO fresh = managerDAO.selectOne(sessionId);
+                request.setAttribute("manager", fresh);
+            } catch (Exception ex) {
+                log.error("재조회 실패", ex);
+            }
+            request.getRequestDispatcher("/WEB-INF/views/mgr_my_modify.jsp").forward(request, response);
         }
     }
 
