@@ -33,7 +33,7 @@ class MemberDAOTest {
 
     @Test
     public void memberDummy() throws SQLException {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i < 30; i++) {
             MemberVO memberVO = MemberVO.builder()
                     .carNum(i + "2221234")
                     .carType(2)
@@ -42,6 +42,8 @@ class MemberDAOTest {
                     .subscribed(true)
                     .startDate(LocalDate.now())
                     .endDate(LocalDate.now().plusMonths(1))
+                    .subscribedFee(100000)
+                    .createDate(LocalDateTime.now().plusDays(i))
                     .build();
             memberDAO.insertMember(memberVO);
         }
