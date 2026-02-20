@@ -10,6 +10,8 @@ import org.example.smart_parking_260219.dto.MemberDTO;
 import org.example.smart_parking_260219.service.MemberService;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Log4j2
 @WebServlet(name = "memberDetailController", value = "/member/member_detail")
@@ -30,13 +32,21 @@ public class MemberDetailController extends HttpServlet {
                 resp.sendRedirect("/member/member_search.jsp?error=missing");
                 return;
             }
-
             MemberDTO member = memberService.getOneMember(carNum.trim());
 
             if (member == null) {
                 resp.sendRedirect("/member/member_list?error=notFound");
                 return;
             }
+
+            if (member != null) {
+                // DB의 subscribed 상태와 별개로, 현재 날짜 기준 만료 여부 판단
+                boolean isExpired = member.getEndDate() != null && member.getEndDate().isBefore(LocalDate.now());
+                req.setAttribute("isExpired", isExpired);
+            }
+
+            List<MemberDTO> history = memberService.getMemberHistory(carNum.trim());
+            req.setAttribute("history", history);
 
             String page = req.getParameter("page");
             if (page == null || page.isEmpty()) page = "1";

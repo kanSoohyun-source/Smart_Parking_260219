@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
   List<MemberDTO> matchedMembers = (List<MemberDTO>) request.getAttribute("matchedMembers");
-  String searchCarNum            = (String) request.getAttribute("searchCarNum");
+  String searchCarNum = (String) request.getAttribute("searchCarNum");
 
   if (matchedMembers == null || matchedMembers.isEmpty()) {
     response.sendRedirect("/member/member_search");

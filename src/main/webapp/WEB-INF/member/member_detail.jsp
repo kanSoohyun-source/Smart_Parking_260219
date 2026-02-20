@@ -66,20 +66,44 @@
       </div>
     </div>
 
-    <!-- 월정액 정보 (구독 상태만 표시) -->
+    <!-- 월정액 정보 (월정액 누적 확인) -->
     <div class="card mb-3">
-      <div class="card-header bg-info text-white font-weight-bold">월정액 정보</div>
-      <div class="card-body">
-        <div class="form-group row mb-0">
-          <label class="col-4 col-form-label font-weight-bold">구독 상태</label>
-          <div class="col-8 d-flex align-items-center">
-            <% if (member.isSubscribed()) { %>
-            <span class="badge badge-success p-2">구독중</span>
-            <% } else { %>
-            <span class="badge badge-secondary p-2">만료</span>
-            <% } %>
-          </div>
-        </div>
+      <div class="card-header bg-dark text-white font-weight-bold">결제 및 갱신 이력</div>
+      <div class="card-body p-0"> <%-- 패딩을 제거하여 테이블이 꽉 차게 설정 --%>
+        <table class="table table-hover mb-0" style="font-size: 0.9rem;">
+          <thead class="thead-light">
+          <tr>
+            <th>결제일</th>
+            <th>이용 기간</th>
+            <th>결제 금액</th>
+          </tr>
+          </thead>
+          <tbody>
+          <%
+            java.util.List<org.example.smart_parking_260219.dto.MemberDTO> history =
+                    (java.util.List<org.example.smart_parking_260219.dto.MemberDTO>) request.getAttribute("history");
+            if (history != null && !history.isEmpty()) {
+              for (org.example.smart_parking_260219.dto.MemberDTO h : history) {
+          %>
+          <tr>
+            <td><%= h.getCreateDate().toLocalDate() %></td>
+            <td>
+              <small class="text-muted">
+                <%= h.getStartDate() %> ~ <%= h.getEndDate() %>
+              </small>
+            </td>
+            <td><%= String.format("%,d", h.getSubscribedFee()) %>원</td>
+          </tr>
+          <%
+            }
+          } else {
+          %>
+          <tr>
+            <td colspan="3" class="text-center">결제 이력이 없습니다.</td>
+          </tr>
+          <% } %>
+          </tbody>
+        </table>
       </div>
     </div>
 

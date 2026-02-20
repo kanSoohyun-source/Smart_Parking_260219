@@ -36,13 +36,20 @@ public enum MemberService {
         memberDAO.insertMember(memberVO);
     }
 
-    // 목록 조회
+    // 회원 목록 조회
     public List<MemberDTO> getAllMember() throws SQLException {
         List<MemberVO> memberVOList = memberDAO.selectAllMember();
 
         List<MemberDTO> memberDTOS = memberVOList.stream()
                 .map(memberVO -> modelMapper.map(memberVO, MemberDTO.class)).toList();
         return memberDTOS;
+    }
+
+    // 회원 월정액 누적 결제 내역
+    public List<MemberDTO> getMemberHistory(String carNum) throws SQLException {
+        List<MemberVO> memberVOList = memberDAO.selectMemberHistory(carNum);
+        return memberVOList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class)).toList();
     }
 
     // 차량번호로 조회(8자리)
@@ -78,12 +85,13 @@ public enum MemberService {
         log.info("만료된 월정액 회원 처리 완료");
     }
 
-    // 월정액 갱신 (현재 endDate 다음날부터 1개월)
+    // 월정액 갱신 (insert로 데이터를 중첩하여 갱신 데이터 관리)
     public void renewSubscription(String carNum) throws SQLException {
         MemberVO memberVO = memberDAO.selectOneMember(carNum);
         if (memberVO == null) throw new SQLException("회원 없음: " + carNum);
 
         LocalDate baseDate = memberVO.getEndDate();
+        LocalDate today = LocalDate.now();
 
         // 만료됐으면 오늘 다음날부터, 구독중이면 종료일 다음날부터
         LocalDate newStart = (baseDate == null || baseDate.isBefore(LocalDate.now()))
@@ -105,7 +113,7 @@ public enum MemberService {
                 .createDate(memberVO.getCreateDate())
                 .build();
 
-        memberDAO.updateSubscription(memberVO1);
+        memberDAO.insertSubscription(memberVO1);
         log.info("월정액 갱신 완료: {} ({} ~ {})", carNum, newStart, newEnd);
     }
 
