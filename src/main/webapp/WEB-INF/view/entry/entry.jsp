@@ -22,6 +22,9 @@
     if ("already".equals(failInput)) {
         out.println("<script>alert('이미 입차된 차량입니다.'); history.back();</script>");
     }
+    if ("nullId".equals(failInput)) {
+        out.println("<script>alert('주차구역을 지정해주세요.'); history.back();</script>");
+    }
 %>
 <div class="main-content">
     <div id="entry" class="page">

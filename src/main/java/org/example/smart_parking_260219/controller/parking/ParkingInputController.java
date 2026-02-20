@@ -41,14 +41,20 @@ public class ParkingInputController extends HttpServlet {
         log.info("POST /input - 입차 처리");
 
         String carNum = req.getParameter("carNum");
+        String spaceId = req.getParameter("spaceId");
+
         if (carNum == null || carNum.isEmpty() || carNum.length() > 8) {
             req.setAttribute("id", req.getParameter("spaceId"));
             req.setAttribute("fail", "over");
             req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
             return;
         }
-
-        String spaceId = req.getParameter("spaceId");
+        if (spaceId == null || spaceId.isEmpty() || spaceId.length() > 4) {
+            req.setAttribute("id", req.getParameter("spaceId"));
+            req.setAttribute("fail", "nullId");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
+            return;
+        }
 
         ParkingSpotDTO spotDTO = parkingSpotService.getParkingSpotBySpaceId(spaceId);
         log.info("spaceId: {}, empty: {}", spaceId, spotDTO.getEmpty());
