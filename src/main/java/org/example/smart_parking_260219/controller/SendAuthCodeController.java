@@ -23,9 +23,9 @@ public class SendAuthCodeController extends HttpServlet {
         req.setCharacterEncoding("UTF-8");  // 한글 깨짐 방지
 
         String email = req.getParameter("email");   // email 파라미터 추출
-        String purposeParam = req.getParameter("purpose");  // ✅ purpose 파라미터 추출
+        String purposeParam = req.getParameter("purpose");  // purpose 파라미터 추출
 
-        // ✅ purpose 문자열 → enum 변환 (값이 없거나 잘못된 경우 ADD_MANAGER 기본값)
+        // purpose 문자열 → enum 변환 (값이 없거나 잘못된 경우 ADD_MANAGER 기본값)
         ValidationService.Purpose purpose;
         try {
             purpose = ValidationService.Purpose.valueOf(purposeParam);
@@ -35,7 +35,7 @@ public class SendAuthCodeController extends HttpServlet {
         }
 
         try {
-            validationService.sendAuthCode(email, purpose);  // ✅ purpose 전달
+            validationService.sendAuthCode(email, purpose);  // purpose 전달
 
             // 성공 응답 설정, HTTP 헤더에 JSON 형식이며 UTF-8임을 명시
             // 응답 인코딩 설정 (반드시 getWriter() 전에 호출)
