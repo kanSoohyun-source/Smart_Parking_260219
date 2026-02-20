@@ -23,7 +23,7 @@
         out.println("<script>alert('이미 입차된 차량입니다.'); history.back();</script>");
     }
     if ("nullId".equals(failInput)) {
-        out.println("<script>alert('주차구역을 지정해주세요.'); history.back();</script>");
+        out.println("<script>alert('올바른 주차구역을 지정해주세요.'); history.back();</script>");
     }
 %>
 <div class="main-content">
@@ -34,7 +34,7 @@
             <div class="form-group">
                 <label>주차 자리</label>
                 <input type="text" id="parkingSlot" placeholder="A1 - A20" name="spaceId"
-                       value="<%=(space != null) ? space : ""%>">
+                       value="<%=(space != null) ? space : ""%>" <%= (space != null) ? "readonly" : "" %>>
                 <label>차량 번호</label>
                 <input type="text" id="entryCarNum" placeholder="차량번호 8자리" name="carNum">
             </div>

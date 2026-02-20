@@ -15,6 +15,7 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 // [버그수정] /parking/input → /input
 @WebServlet(name = "parkingInputController", value = "/input")
@@ -57,7 +58,14 @@ public class ParkingInputController extends HttpServlet {
         }
 
         ParkingSpotDTO spotDTO = parkingSpotService.getParkingSpotBySpaceId(spaceId);
-        log.info("spaceId: {}, empty: {}", spaceId, spotDTO.getEmpty());
+
+        if (spotDTO == null) {
+            req.setAttribute("id", spaceId);
+            req.setAttribute("fail", "nullId");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
+            return;
+        }
+        log.info("spaceId: {}, empty: {}", spaceId, Objects.requireNonNull(spotDTO).getEmpty());
 
         if (!spotDTO.getEmpty()) {
             req.setAttribute("id", spaceId);
@@ -65,7 +73,6 @@ public class ParkingInputController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
             return;
         }
-
         ParkingDTO existingParking = parkingService.getParkingByCarNum(carNum);
         if (existingParking != null && !existingParking.isPaid()) {
             req.setAttribute("id", spaceId);
