@@ -6,9 +6,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dto.ParkingDTO;
+import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.service.FeePolicyService;
 import org.example.smart_parking_260219.service.ParkingService;
+import org.example.smart_parking_260219.service.ParkingSpotService;
 import org.example.smart_parking_260219.service.PaymentService;
 
 import java.io.IOException;
@@ -20,6 +23,7 @@ public class PaymentController extends HttpServlet {
     private final PaymentService paymentService = PaymentService.INSTANCE;
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final FeePolicyService feePolicyService = FeePolicyService.getInstance();
+    private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,6 +39,7 @@ public class PaymentController extends HttpServlet {
 
         try {
             String carNum = req.getParameter("carNum");
+            String carType = req.getParameter("carType");
             int paymentType = Integer.parseInt(req.getParameter("paymentType"));
             int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
             int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
@@ -62,9 +67,18 @@ public class PaymentController extends HttpServlet {
 
             log.info("paymentDTO, " + paymentDTO);
 
+            ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
+                    .carNum(carNum)
+                    .build();
+            log.info("carType: {}", carType);
+            parkingDTO = ParkingDTO.builder()
+                    .carType(Integer.parseInt(carType))
+                    .build();
+
             // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
             paymentService.addPayment(paymentDTO);
-            parkingService.modifyParking(carNum);
+            parkingService.modifyParking(parkingDTO);
+            parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
             log.info("Payment and Parking update success!");
 

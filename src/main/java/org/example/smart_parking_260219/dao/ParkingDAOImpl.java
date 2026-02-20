@@ -27,14 +27,13 @@ public class ParkingDAOImpl implements ParkingDAO {
     // 입차 확인
     @Override
     public void insertParking(ParkingVO parkingVO) {
-        String sql = "INSERT INTO smart_parking_team2.parking (car_num, space_id, entry_time, car_type, phone) VALUES (?, ?, now(), ?, ?)";
+        String sql = "INSERT INTO smart_parking_team2.parking (car_num, space_id, entry_time, car_type) VALUES (?, ?, now(), ?)";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, parkingVO.getCarNum());
             preparedStatement.setString(2, parkingVO.getSpaceId());
             preparedStatement.setInt(3, parkingVO.getCarType());
-            preparedStatement.setString(4, parkingVO.getPhone());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -59,9 +58,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .spaceId(resultSet.getString("space_id"))
                         .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
                         .totalTime(resultSet.getInt("total_time"))
-                        .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
-                        .phone(resultSet.getString("phone"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 return parkingVO;
@@ -87,9 +84,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
                         .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
-                        .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
-                        .phone(resultSet.getString("phone"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 return parkingVO;
@@ -102,23 +97,24 @@ public class ParkingDAOImpl implements ParkingDAO {
 
     // 출차 확인
     @Override
-    public void updateParking(String carNum) {
-        LocalDateTime entry = selectParkingByCarNum(carNum).getEntryTime();
+    public void updateParking(ParkingVO parkingVO) {
+        LocalDateTime entry = selectParkingByCarNum(parkingVO.getCarNum()).getEntryTime();
         if (entry == null) {
             log.error("entry is null");
             return;
         }
         LocalDateTime exit = LocalDateTime.now();
-
+        int carType = selectParkingByCarNum(parkingVO.getCarNum()).getCarType();
         long totalMinutes = Duration.between(entry, exit).toMinutes();
 
-        String sql = "UPDATE smart_parking_team2.parking SET exit_time= ?, total_time= ?, paid=true WHERE car_num=?";
+        String sql = "UPDATE smart_parking_team2.parking SET exit_time= ?, car_type =?, total_time= ?, paid=true WHERE car_num=?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(exit));
-            preparedStatement.setLong(2, totalMinutes);
-            preparedStatement.setString(3,carNum);
+            preparedStatement.setInt(2, parkingVO.getCarType());
+            preparedStatement.setLong(3, totalMinutes);
+            preparedStatement.setString(4, parkingVO.getCarNum());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -142,9 +138,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
                         .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
-                        .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
-                        .phone(resultSet.getString("phone"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 return parkingVO;
@@ -172,9 +166,7 @@ public class ParkingDAOImpl implements ParkingDAO {
                         .memberId(resultSet.getInt("member_id"))
                         .spaceId(resultSet.getString("space_id"))
                         .entryTime(resultSet.getTimestamp("entry_time").toLocalDateTime())
-                        .carType(resultSet.getInt("car_type"))
                         .paid(resultSet.getBoolean("paid"))
-                        .phone(resultSet.getString("phone"))
                         .build();
                 log.info("parkingVO : {}", parkingVO);
                 ParkingVOList.add(parkingVO);

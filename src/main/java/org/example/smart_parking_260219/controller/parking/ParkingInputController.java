@@ -87,13 +87,6 @@ public class ParkingInputController extends HttpServlet {
             memberDTO = null;
         }
 
-        if (memberDTO == null) {
-            req.setAttribute("carNum", carNum);
-            req.setAttribute("id", spaceId);
-            req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
-            return;
-        }
-
         ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
                 .carNum(carNum)
                 .spaceId(spaceId)
@@ -101,11 +94,9 @@ public class ParkingInputController extends HttpServlet {
         parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
 
         ParkingDTO parkingDTO = ParkingDTO.builder()
-                .memberId(memberDTO.getMemberId())
+                .memberId((memberDTO != null) ? memberDTO.getMemberId() : 0)
                 .carNum(carNum)
                 .spaceId(spaceId)
-                .carType(memberDTO.getCarType())
-                .phone(memberDTO.getPhone())
                 .build();
         parkingService.addParking(parkingDTO);
 
