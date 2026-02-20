@@ -35,7 +35,6 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         }
     }
 
-    // 주차장 조회
     @Override
     public List<ParkingSpotVO> selectAllParkingSpot() {
         String sql = "SELECT * FROM smart_parking_team2.parking_spot";
@@ -61,7 +60,6 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         return ParkingSpotVOList;
     }
 
-    // 주차 공간 입차 갱신
     @Override
     public void updateInputParkingSpot(ParkingSpotVO parkingSpotVO) {
         String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = false, car_num =?, last_update = now() WHERE space_id = ?";
@@ -77,10 +75,10 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         }
     }
 
-    // 주차 공간 출차 갱신
+    // [버그수정] empty = false → true 로 수정 (출차 시 자리를 빈 상태로 변경해야 함)
     @Override
     public void updateOutputParkingSpot(ParkingSpotVO parkingSpotVO) {
-        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = false, car_num =null, last_update = now() WHERE car_num = ?";
+        String sql = "UPDATE smart_parking_team2.parking_spot SET `empty` = true, car_num = null, last_update = now() WHERE car_num = ?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -92,10 +90,9 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         }
     }
 
-    // 빈 주차공간 조회
     @Override
     public List<ParkingSpotVO> selectEmptyParkingSpot() {
-        String sql = "SELECT * FROM smart_parking_team2.parking_spot WHERE `empty` = false";
+        String sql = "SELECT * FROM smart_parking_team2.parking_spot WHERE `empty` = true";
         List<ParkingSpotVO> ParkingSpotVOList = new ArrayList<>();
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();

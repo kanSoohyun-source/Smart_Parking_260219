@@ -1,10 +1,28 @@
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
+<%@ page import="org.example.smart_parking_260219.dto.ParkingSpotDTO" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page import="org.example.smart_parking_260219.service.ParkingSpotService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+    // 미정산(paid=false) 주차 기록만 Map으로 구성 (spaceId → ParkingDTO)
     List<ParkingDTO> parkingDTOList = ParkingService.INSTANCE.getAllParking();
+    Map<String, ParkingDTO> activeParkingMap = new HashMap<>();
+    for (ParkingDTO dto : parkingDTOList) {
+        if (!dto.isPaid()) {
+            activeParkingMap.put(dto.getSpaceId(), dto);
+        }
+    }
+
+    // 전체 주차 공간 목록 (empty 상태 기준)
+    List<ParkingSpotDTO> allSpots = ParkingSpotService.INSTANCE.getAllParkingSpot();
+    Map<String, ParkingSpotDTO> spotMap = new HashMap<>();
+    for (ParkingSpotDTO spot : allSpots) {
+        spotMap.put(spot.getSpaceId(), spot);
+    }
+
     String failInput = request.getParameter("fail");
     if ("false".equals(failInput)) {
         out.println("<script>alert('이미 입차된 차량입니다.'); history.back();</script>");
@@ -28,26 +46,33 @@
                     String id = "A" + i;
                     String carNum = null;
                     String entryTime = null;
-                    Boolean result = ParkingSpotService.INSTANCE.getParkingSpotBySpaceId(id).getEmpty();
 
-                    // 입차된 차량이라면 차 번호와 입차 시간도 같이 출력
-                    for (ParkingDTO dto : parkingDTOList) {
-                        if (id.equals(dto.getSpaceId())) {
-                            carNum = dto.getCarNum();
-                            entryTime = String.valueOf(dto.getEntryTime().toLocalTime());
-                            break;
+                    // parking_spot 테이블의 empty 컬럼을 진실의 원천으로 사용
+                    ParkingSpotDTO spot = spotMap.get(id);
+                    boolean isEmpty = (spot == null) || spot.getEmpty();
+
+                    // empty = false 이고 미정산 주차 기록이 있을 때만 차량 정보 표시
+                    if (!isEmpty) {
+                        ParkingDTO activeParking = activeParkingMap.get(id);
+                        if (activeParking != null) {
+                            carNum = activeParking.getCarNum();
+                            entryTime = String.valueOf(activeParking.getEntryTime().toLocalTime());
+                        } else {
+                            // parking_spot은 occupied인데 활성 주차 기록이 없는 데이터 불일치 상태
+                            // 빈 자리로 표시하여 UI 오류 방지
+                            isEmpty = true;
                         }
-                    };
+                    }
             %>
             <%-- 입차 여부에 따라 주차 공간 출력 --%>
-            <div class="slot-item <%= (result) ? "empty" : "occupied" %>"
+            <div class="slot-item <%= (isEmpty) ? "empty" : "occupied" %>"
                  data-id="<%= id %>"
-                 data-empty="<%= (result) %>"
+                 data-empty="<%= (isEmpty) %>"
                  data-carnum="<%= carNum %>">
 
                 <div class="slot-title"><%= id %></div>
 
-                <% if (result) { %>
+                <% if (isEmpty) { %>
                 <div class="slot-status">공차</div>
                 <% } else { %>
                 <div class="slot-status"><%= carNum %></div>
@@ -68,8 +93,8 @@
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/JS/tlqkf.js"></script>
-<script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
 <script>const contextPath = "${pageContext.request.contextPath}";</script>
+<script src="${pageContext.request.contextPath}/JS/dashboard.js"></script>
+<script src="${pageContext.request.contextPath}/JS/parkingList.js"></script>
 </body>
 </html>

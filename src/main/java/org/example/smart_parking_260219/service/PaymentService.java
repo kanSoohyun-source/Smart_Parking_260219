@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2
-
 public enum PaymentService {
     INSTANCE;
 
@@ -35,11 +34,9 @@ public enum PaymentService {
     }
 
     // 결제 등록
-    // 사용자가 결제한 내역을 등록하고, 주차 상태를 '정산 완료'로 변경
     public void addPayment(PaymentDTO paymentDTO) throws Exception {
         log.info("Service: addPayment 호출 - 차량번호: " + paymentDTO.getCarNum());
 
-        // 1. 차량 정보 한 번만 조회 (NPE 방지를 위해 변수에 담기)
         ParkingVO parkingVO = parkingDAO.selectParkingByCarNum(paymentDTO.getCarNum());
 
         if (parkingVO == null || parkingVO.getParkingId() == 0) {
@@ -48,50 +45,39 @@ public enum PaymentService {
 
         int parkingId = parkingVO.getParkingId();
 
-        // 3. DTO -> VO 변환 (Builder로 직접 생성하며 요금 주입)
         PaymentVO paymentVO = PaymentVO.builder()
-                .parkingId(parkingId) // 혹은 paymentDTO.getParkingId()
+                .parkingId(parkingId)
                 .policyId(paymentDTO.getPolicyId())
                 .carNum(paymentDTO.getCarNum())
                 .paymentType(paymentDTO.getPaymentType())
-                .calculatedFee(paymentDTO.getCalculatedFee()) // 계산된 요금 주입
-                .discountAmount(paymentDTO.getDiscountAmount()) // 계산된 할인액 적용
-                .finalFee(paymentDTO.getFinalFee()) // 최종 요금 계산
+                .calculatedFee(paymentDTO.getCalculatedFee())
+                .discountAmount(paymentDTO.getDiscountAmount())
+                .finalFee(paymentDTO.getFinalFee())
                 .build();
 
-        // 4. DAO 호출하여 DB 저장
         paymentDAO.insertPayment(paymentVO);
         log.info("Service: 결제 등록 완료");
     }
 
-    // 결제 날짜별 목록 조회 서비스
-    // 관리자 페이지 등에서 보여줄 전체 결제 내역
+    // 결제 날짜별 목록 조회
     public List<PaymentDTO> getPaymentList(String targetDate) {
         log.info("Service: getPaymentList 호출 - 날짜: " + targetDate);
 
-        // 1. DAO 호출 (검색 결과가 없으면 빈 리스트가 반환되도록 DAO 설계 권장)
         List<PaymentVO> paymentVOList = paymentDAO.selectPaymentByDate(targetDate);
 
-        // 2. 결과가 null인 경우 빈 리스트 반환 (안전장치)
         if (paymentVOList == null || paymentVOList.isEmpty()) {
             log.info("해당 날짜에 결제 내역이 없습니다.");
             return Collections.emptyList();
         }
 
-        // 3. VO List -> DTO List 변환 및 반환
         return paymentVOList.stream()
                 .map(vo -> modelMapper.map(vo, PaymentDTO.class))
                 .collect(Collectors.toList());
     }
-    
-    // 요금 계산
-    // 주차 시간과 요금 정책을 기반으로 '할인 전 총 요금(calculatedFee)'을 계산
-    /*
-     * 입차 시점부터 24시간 단위로 구간을 나누어 요금을 합산
-     * 예: 10일 16시 입차 ~ 11일 10시 출차 (18시간 주차) -> 24시간 미만이므로 최대 15,000원
-     */
+
+    // 요금 계산 (24시간 주기 합산)
     public int calculateFeeLogic(ParkingDTO parkingDTO) {
-        log.info("calculateFeeLogic (24시간 주기 합산) - parkingId: " + parkingDTO.getParkingId());
+        log.info("calculateFeeLogic - parkingId: " + parkingDTO.getParkingId());
 
         ParkingVO parkingVO = parkingDAO.selectParkingByParkingId(parkingDTO.getParkingId());
         FeePolicyVO policyVO = feePolicyDAO.selectOnePolicy();
@@ -102,19 +88,12 @@ public enum PaymentService {
         int totalAccumulatedFee = 0;
         LocalDateTime currentStart = entryTime;
 
-        // 1. 입차 시간으로부터 24시간씩 더해가며 구간을 나눔
-        // currentStart에 24시간을 더한 시간이 exitTime보다 이전인 동안 반복
         while (currentStart.plusDays(1).isBefore(exitTime)) {
             LocalDateTime endOfCycle = currentStart.plusDays(1);
-
-            // 24시간 꽉 채운 구간에 대해 요금 계산 (대부분 일일 최대 요금이 적용됨)
             totalAccumulatedFee += calculateSingleDayFee(currentStart, endOfCycle, policyVO);
-
-            // 시작 지점을 24시간 뒤로 이동
             currentStart = endOfCycle;
         }
 
-        // 2. 마지막 남은 자투리 시간(24시간 미만 구간) 요금 합산
         totalAccumulatedFee += calculateSingleDayFee(currentStart, exitTime, policyVO);
 
         log.info("최종 합산 요금 (24시간 기준): " + totalAccumulatedFee);
@@ -122,52 +101,50 @@ public enum PaymentService {
     }
 
     // 할인 금액 계산
-    // 차량 타입과 정책을 기반으로 할인될 금액을 계산
+    // [버그수정] DB의 lightDiscount/disabledDiscount 값이 잘못 저장되어 있어도
+    //           안전하게 동작하도록 비율을 0.0~1.0 범위로 강제 보정 후 계산
     public int calculateDiscountLogic(int totalFee, int carType, FeePolicyVO policyVO) {
         double discountRate = 0.0;
 
-        // carType -> 1:일반, 2:월정액대상, 3:경차, 4:장애인
-
-        if (carType == 2) { // 월정액일 경우
-            discountRate = 1.0; // 100% 할인 (무료)
-        } else if (3 == carType) { // 경차일 경우
-            discountRate = policyVO.getLightDiscount(); // 0.3 (30%)
-        } else if (4 == carType) { // 장애인일 경우
-            discountRate = policyVO.getDisabledDiscount(); // 0.5 (50%)
+        if (carType == 2) {
+            // 월정액: 100% 무료
+            discountRate = 1.0;
+        } else if (carType == 3) {
+            // 경차: DB 정책값 사용, 단 0~1 범위를 벗어나면 기본값 0.3 적용
+            double raw = policyVO.getLightDiscount();
+            discountRate = (raw >= 0.0 && raw <= 1.0) ? raw : 0.3;
+            log.info("경차 할인율 적용: {}", discountRate);
+        } else if (carType == 4) {
+            // 장애인: DB 정책값 사용, 단 0~1 범위를 벗어나면 기본값 0.5 적용
+            double raw = policyVO.getDisabledDiscount();
+            discountRate = (raw >= 0.0 && raw <= 1.0) ? raw : 0.5;
+            log.info("장애인 할인율 적용: {}", discountRate);
         }
+        // carType == 1 (일반): discountRate = 0.0 → 할인 없음
 
-        // 할인 금액 계산
-        return (int) (totalFee * discountRate);
+        int discountAmount = (int) (totalFee * discountRate);
+        log.info("carType={}, totalFee={}, discountRate={}, discountAmount={}", carType, totalFee, discountRate, discountAmount);
+        return discountAmount;
     }
 
-    // 내부 사용 메서드
-    // 지정된 시간 구간(start ~ end)에 대한 요금을 계산, 일일 최대 요금 정책을 적용
-
+    // 내부 메서드: 지정된 시간 구간(start ~ end)에 대한 요금 계산
     private int calculateSingleDayFee(LocalDateTime start, LocalDateTime end, FeePolicyVO policyVO) {
-        // 두 시간 사이의 차이(분)를 구함
         long minutes = java.time.Duration.between(start, end).toMinutes();
 
-        // 무료 회차 - 주차 시간이 정책상 무료 시간(예: 10분) 이하이면 0원 반환
+        // 무료 구간 이내
         if (minutes <= policyVO.getGracePeriod()) return 0;
 
-        // 기본 요금 - 일단 기본 요금(예: 2000원)부터 시작
+        // 기본 요금
         int fee = policyVO.getDefaultFee();
 
-        // 추가 요금 - 주차 시간이 기본 시간(예: 60분)을 초과했을 경우
+        // 추가 요금 (기본 시간 초과 시)
         if (minutes > policyVO.getDefaultTime()) {
             long extraMinutes = minutes - policyVO.getDefaultTime();
-
-            // 초과된 시간을 단위 시간(예: 30분)으로 나누어 올림 처리 (1분만 넘어도 1단위 추가)
             int units = (int) Math.ceil((double) extraMinutes / policyVO.getExtraTime());
-
-            // 단위당 추가 요금(예: 1000원)을 곱해서 더함
             fee += (units * policyVO.getExtraFee());
         }
-        /*
-        최대 요금 제한
-        계산된 요금이 해당 날짜의 최대 요금(예: 15000원)을 넘으면 최대 요금만 받음.
-        Math.min(A, B)는 둘 중 작은 값을 선택
-         */
+
+        // 일일 최대 요금 제한
         return Math.min(fee, policyVO.getMaxDailyFee());
     }
 }

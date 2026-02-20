@@ -108,14 +108,9 @@ public class FeePolicyService {
     }
 
     public FeePolicyDTO getPolicyById(int policyId) throws Exception {
-        // DAO를 통해 DB에서 해당 ID의 정책 데이터를 조회해 옵니다.
-        // 예: return feePolicyDAO.selectOne(id);
-
-        // 현재는 전체 리스트에서 필터링하는 예시입니다.
-        return getPolicyList().stream()
-                .filter(policy -> policy.getPolicyId() == policyId)
-                .findFirst()
-                .orElse(null);
+        FeePolicyVO vo = feePolicyDAO.selectPolicyById(policyId);
+        if (vo == null) return null;
+        return toDto(vo);
     }
 
     public void applyPolicy(int id) throws Exception {

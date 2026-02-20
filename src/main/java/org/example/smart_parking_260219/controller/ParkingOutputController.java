@@ -19,32 +19,47 @@ public class ParkingOutputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
     private final ParkingSpotService parkingSpotService = ParkingSpotService.INSTANCE;
 
+    // [버그수정] doGet: 대시보드에서 입차 차량 클릭 시 /output?id=A1&carNum=xxx 로 GET 요청이 옴
+    // 기존에는 단순히 빈 exit.jsp만 보여줘서 차량 정보가 전달되지 않았음
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("/exit/exit.jsp");
+        log.info("GET /output");
+        String carNum = req.getParameter("carNum");
+        String spaceId = req.getParameter("id");
+        String failInput = req.getParameter("fail");
 
-        req.getRequestDispatcher("/WEB-INF/view/exit/exit.jsp").forward(req, resp);
+        // 단순 출차 페이지 접근 (carNum 없음)
+        if (carNum == null || carNum.isEmpty()) {
+            req.getRequestDispatcher("/WEB-INF/view/exit/exit.jsp").forward(req, resp);
+            return;
+        }
+
+        // 대시보드에서 입차 차량 클릭 → 차량 정보가 있으면 바로 정산 페이지로
+        if (parkingService.getParkingByCarNum(carNum) != null) {
+            req.setAttribute("id", spaceId);
+            req.setAttribute("carNum", carNum);
+            req.getRequestDispatcher("/WEB-INF/view/exit/exit_serch_list.jsp").forward(req, resp);
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/output?fail=false");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        log.info("/parking/output post...");
-        String CarNum = req.getParameter("carNum");
-        String spaceId = (String) req.getAttribute("id");
+        log.info("POST /output - 출차 차량 조회");
+        String carNum = req.getParameter("carNum");
+        // [버그수정] getAttribute → getParameter
+        String spaceId = req.getParameter("id");
 
-        // 주차장 현황 조회
         List<ParkingSpotDTO> parkingSpotDTOList = parkingSpotService.getAllParkingSpot();
         req.setAttribute("dtoList", parkingSpotDTOList);
-        log.info(CarNum);
 
-        // 출차할 차 번호가 존재한다면
-        if (parkingService.getParkingByCarNum(CarNum) != null) {
+        if (parkingService.getParkingByCarNum(carNum) != null) {
             req.setAttribute("id", spaceId);
-            req.setAttribute("carNum", CarNum);
+            req.setAttribute("carNum", carNum);
             req.getRequestDispatcher("/WEB-INF/view/exit/exit_serch_list.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/WEB-INF/view/exit/exit.jsp?fail=false").forward(req, resp);
+            resp.sendRedirect(req.getContextPath() + "/output?fail=false");
         }
     }
 }
-

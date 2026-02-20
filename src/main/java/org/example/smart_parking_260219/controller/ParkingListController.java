@@ -7,28 +7,43 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dto.ParkingDTO;
-import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.service.ParkingService;
-import org.example.smart_parking_260219.service.ParkingSpotService;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 @Log4j2
 @WebServlet("/get")
 public class ParkingListController extends HttpServlet {
 
+    private final ParkingService parkingService = ParkingService.INSTANCE;
+
+    // [버그수정] carNum만 setAttribute하고 DB 조회를 하지 않아 parkingDTO가 null → NPE(500)
+    // DB에서 parkingDTO 조회 후 setAttribute로 전달하도록 수정
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("parking get...");
-        String CarNum = req.getParameter("carNum");
-        req.setAttribute("carNum", CarNum);
+        log.info("GET /get - 출차 차량 조회");
+        String carNum = req.getParameter("carNum");
+
+        if (carNum == null || carNum.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/output");
+            return;
+        }
+
+        ParkingDTO parkingDTO = parkingService.getParkingByCarNum(carNum);
+
+        if (parkingDTO == null) {
+            resp.sendRedirect(req.getContextPath() + "/output?fail=false");
+            return;
+        }
+
+        req.setAttribute("carNum", carNum);
+        req.setAttribute("parkingDTO", parkingDTO);
         req.getRequestDispatcher("/WEB-INF/view/exit/exit_serch_list.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("parking post...");
+        log.info("POST /get - 정산 페이지 이동");
         String carNum = req.getParameter("carNum");
         req.setAttribute("carNum", carNum);
         req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);

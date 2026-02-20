@@ -16,7 +16,8 @@ import org.example.smart_parking_260219.service.ParkingSpotService;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "parkingInputController", value = "/parking/input")
+// [버그수정] /parking/input → /input
+@WebServlet(name = "parkingInputController", value = "/input")
 @Log4j2
 public class ParkingInputController extends HttpServlet {
     private final ParkingService parkingService = ParkingService.INSTANCE;
@@ -25,9 +26,11 @@ public class ParkingInputController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("/entry/entry.jsp");
+        log.info("GET /input - 입차 페이지 이동");
+        String spaceId = req.getParameter("id");
         String carNum = req.getParameter("carNum");
 
+        req.setAttribute("id", spaceId);
         req.setAttribute("carNum", carNum);
 
         req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
@@ -35,17 +38,16 @@ public class ParkingInputController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        log.info("/parking/input post...");
+        log.info("POST /input - 입차 처리");
 
-        // 차 번호 입력 (번호가 비어있거나 길이 초과 시 경고 창 출력)
         String carNum = req.getParameter("carNum");
-        if (carNum.isEmpty() || carNum.length() > 8) {
-            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp?fail=over").forward(req, resp);
+        if (carNum == null || carNum.isEmpty() || carNum.length() > 8) {
+            req.setAttribute("id", req.getParameter("spaceId"));
+            req.setAttribute("fail", "over");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
             return;
         }
-        log.info(carNum);
 
-        // 주차 구역 입력 (입력한 차 번호로 회원인지 비회원인지를 분간)
         String spaceId = req.getParameter("spaceId");
         MemberDTO memberDTO;
         try {
@@ -53,47 +55,48 @@ public class ParkingInputController extends HttpServlet {
         } catch (SQLException e) {
             memberDTO = null;
         }
+
         if (memberDTO == null) {
             req.setAttribute("carNum", carNum);
             req.setAttribute("id", spaceId);
             req.getRequestDispatcher("/WEB-INF/view/entry/add_non_member.jsp").forward(req, resp);
             return;
         }
-        log.info(parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty());
 
-        // 선택한 주차 구역이 빈 공간인지를 확인
-        if (parkingSpotService.getParkingSpotBySpaceId(spaceId).getEmpty()) {
-            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp?fail=false").forward(req, resp);
+        ParkingSpotDTO spotDTO = parkingSpotService.getParkingSpotBySpaceId(spaceId);
+        log.info("spaceId: {}, empty: {}", spaceId, spotDTO.getEmpty());
+
+        if (!spotDTO.getEmpty()) {
+            req.setAttribute("id", spaceId);
+            req.setAttribute("fail", "false");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
             return;
         }
 
-        // 차 번호가 비어 있거나 이전에 주차된 차량의 정산이 정상 처리 되었을때
-        if (parkingService.getParkingByCarNum(carNum) == null || parkingService.getParkingByCarNum(carNum).isPaid()) {
-            // 주차 공간 갱신
-            ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                    .carNum(carNum)
-                    .spaceId(spaceId)
-                    .build();
-            log.info("parkingSpotDTO: {}", parkingSpotDTO);
-            parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
-
-            // 주차 기록 추가
-            ParkingDTO parkingDTO = ParkingDTO.builder()
-                    .memberId(memberDTO.getMemberId())
-                    .carNum(carNum)
-                    .spaceId(spaceId)
-                    .carType(memberDTO.getCarType())
-                    .phone(memberDTO.getPhone())
-                    .build();
-            log.info("parkingDTO: {}", parkingDTO);
-            parkingService.addParking(parkingDTO);
-
-            // 입차 정상 처리
-            log.info("parking 대시보드 이동확인 --- ");
-            req.getRequestDispatcher("/WEB-INF/view/dashboard/dashboard.jsp").forward(req, resp);
-        } else {
-            // 해당 주차 공간의 주차가 불가능할 때
-            req.getRequestDispatcher("/WEB-INF/view/entry/dashboard.jsp?fail=false").forward(req, resp);
+        ParkingDTO existingParking = parkingService.getParkingByCarNum(carNum);
+        if (existingParking != null && !existingParking.isPaid()) {
+            req.setAttribute("id", spaceId);
+            req.setAttribute("fail", "false");
+            req.getRequestDispatcher("/WEB-INF/view/entry/entry.jsp").forward(req, resp);
+            return;
         }
+
+        ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
+                .carNum(carNum)
+                .spaceId(spaceId)
+                .build();
+        parkingSpotService.modifyInputParkingSpot(parkingSpotDTO);
+
+        ParkingDTO parkingDTO = ParkingDTO.builder()
+                .memberId(memberDTO.getMemberId())
+                .carNum(carNum)
+                .spaceId(spaceId)
+                .carType(memberDTO.getCarType())
+                .phone(memberDTO.getPhone())
+                .build();
+        parkingService.addParking(parkingDTO);
+
+        log.info("입차 정상 처리 - 대시보드로 이동");
+        resp.sendRedirect(req.getContextPath() + "/dashboard");
     }
 }

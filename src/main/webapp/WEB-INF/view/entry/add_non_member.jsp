@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/payment_style.css">
 </head>
 <body>
-<!-- Navigation -->
 <%@ include file="/main/menu.jsp" %>
 <%
     String space = (String) request.getAttribute("id");
@@ -14,12 +13,12 @@
     System.out.println("spaceId : " + space);
 %>
 <div class="main-content">
-    <!-- Content -->
     <div id="exit" class="page">
-        <form action="../nonMember" method="post" class="form-horizontal">
-            <input type="hidden" id="id" name="id" value="<%=space%>">
-            <input type="hidden" id="carNum" name="carNum" value="<%=carNum%>">
-            <h2>비회원 입차 출력</h2>
+        <%-- [버그수정] ../nonMember 상대경로 → contextPath 기준 절대경로 --%>
+        <form action="${pageContext.request.contextPath}/nonMember" method="post" class="form-horizontal">
+            <input type="hidden" id="id" name="id" value="<%=(space != null) ? space : ""%>">
+            <input type="hidden" id="carNum" name="carNum" value="<%=(carNum != null) ? carNum : ""%>">
+            <h2>비회원 입차</h2>
             <div class="form-group">
                 <label>연락처</label>
                 <input type="text" id="regPhone" name="phone" placeholder="연락처">
@@ -34,7 +33,7 @@
         </form>
     </div>
 </div>
-<script src="../../../JS/menu.js"></script>
-<script src="../../../JS/function.js"></script>
+<script src="${pageContext.request.contextPath}/JS/menu.js"></script>
+<script src="${pageContext.request.contextPath}/JS/function.js"></script>
 </body>
 </html>

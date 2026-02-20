@@ -45,18 +45,19 @@
                 <a href="${pageContext.request.contextPath}/mgr/add" onclick="return confirmAddManager();">일반 관리자 추가</a>
                 <a href="${pageContext.request.contextPath}/mgr/list">관리자 목록 & 수정</a>
                 <a href="${pageContext.request.contextPath}/mgr/modify">최고 관리자 정보 수정</a>
-<%--                <a href="${pageContext.request.contextPath}/mgr/modify_normal">일반 관리자 정보 수정</a>--%>
+                <%--                <a href="${pageContext.request.contextPath}/mgr/modify_normal">일반 관리자 정보 수정</a>--%>
             </div>
         </li>
         <% } %>
 
         <li><a href="${pageContext.request.contextPath}/dashboard">주차 현황</a></li>
-        <li><a href="${pageContext.request.contextPath}/parking/input">입차</a></li>
-        <li><a href="${pageContext.request.contextPath}/list">출차</a></li>
+        <li><a href="${pageContext.request.contextPath}/input">입차</a></li>
+        <li><a href="${pageContext.request.contextPath}/output">출차</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_add">회원 등록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_list">회원 목록</a></li>
         <li><a href="${pageContext.request.contextPath}/member/member_search">회원 조회</a></li>
-        <li><a href="${pageContext.request.contextPath}/policy/list">요금 부과 정책</a></li>
+<%--        <li><a href="${pageContext.request.contextPath}/policy/list">요금 부과 정책</a></li>--%>
+        <li><a href="${pageContext.request.contextPath}/view/policy/list">요금 부과 정책</a></li>
         <li><a href="${pageContext.request.contextPath}/statistics/statistics">매출 통계</a></li>
         <li><a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();">로그아웃</a></li>
     </ul>

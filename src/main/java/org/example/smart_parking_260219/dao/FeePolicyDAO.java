@@ -95,6 +95,38 @@ public class FeePolicyDAO {
         return list;
     }
 
+    // [단건 조회] 요금 정책 상세 출력 (ID 기반)
+    public FeePolicyVO selectPolicyById(int id) {
+        String sql = "SELECT * FROM fee_policy WHERE policy_id = ?";
+
+        try {
+            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
+            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) return null;
+
+            Timestamp ts = resultSet.getTimestamp("modify_date");
+            return FeePolicyVO.builder()
+                    .policyId(resultSet.getInt("policy_id"))
+                    .gracePeriod(resultSet.getInt("grace_period"))
+                    .defaultTime(resultSet.getInt("default_time"))
+                    .defaultFee(resultSet.getInt("default_fee"))
+                    .extraTime(resultSet.getInt("extra_time"))
+                    .extraFee(resultSet.getInt("extra_fee"))
+                    .lightDiscount(resultSet.getDouble("light_discount"))
+                    .disabledDiscount(resultSet.getDouble("disabled_discount"))
+                    .subscribedFee(resultSet.getInt("subscribed_fee"))
+                    .maxDailyFee(resultSet.getInt("max_daily_fee"))
+                    .isActive(resultSet.getBoolean("is_active"))
+                    .modifyDate(ts != null ? ts.toLocalDateTime() : null)
+                    .build();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // [단건 조회] 요금 정책 상세 출력
     public FeePolicyVO selectOnePolicy() {
         String sql = "SELECT * FROM fee_policy WHERE is_active = true ORDER BY modify_date DESC LIMIT 1";
@@ -133,7 +165,7 @@ public class FeePolicyDAO {
              ResultSet rs = preparedStatement.executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt("subscribe_fee");
+                return rs.getInt("subscribed_fee");
             }
 
             // 기본값 반환
@@ -171,4 +203,3 @@ public class FeePolicyDAO {
         }
     }
 }
-
