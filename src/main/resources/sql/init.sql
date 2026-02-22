@@ -35,13 +35,23 @@ CREATE TABLE IF NOT EXISTS `manager`
 INSERT INTO `manager` (`manager_id`, `manager_name`, `password`, `email`, `active`, `role`)
 VALUES ('admin',
         '최고관리자',
-#         SHA2('admin1234', 256), -- 초기 비밀번호 설정
-#         password('admin1234'), -- 초기 비밀번호 설정
+#     비밀번호 : admin1234
         '$2a$12$ZCQ/eJfwieyh19zSm8g15Os9hbtPS4.W6wgtWg2kycba/5x8o6JVS',
         'wndus6110@naver.com',
         TRUE,
         'ADMIN')
 ON DUPLICATE KEY UPDATE `role` = 'ADMIN'; -- 이미 존재할 경우 권한만 ADMIN으로 보장
+
+-- 슈퍼 관리자(SUPER) 초기 데이터 삽입
+INSERT INTO `manager` (`manager_id`, `manager_name`, `password`, `email`, `active`, `role`)
+VALUES ('super',
+        '슈퍼관리자',
+#     비밀번호 : super1234
+        '$2a$12$12q5tYhznZe7E6Pt73SpAubFpKJjD/y24xAAFU6W4ghGyXXUacZO6',
+        'wndus6110@naver.com',
+        TRUE,
+        'ADMIN')
+ON DUPLICATE KEY UPDATE `role` = 'SUPER'; -- 이미 존재할 경우 권한만 SUPER 보장
 
 CREATE TABLE IF NOT EXISTS `validation`
 (

@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.login;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -144,28 +144,26 @@ public class LoginController extends HttpServlet {
             log.info("1차 인증 성공: {}, 권한: {}", managerId, manager.getRole());
 
             // 로그인 성공 - 세션 생성
-            // 세션에 임시 정보 저장 (2차 인증 전 단계)
             HttpSession session = request.getSession();
-            session.setAttribute("loginManager", manager);  // 객체 전체 저장 -> 2차 인증에서 꺼내 쓰기 위해 선언
-            session.setAttribute("managerId", manager.getManagerId());  // ID 별도 저장
-            session.setAttribute("managerName", manager.getManagerName());  // 이름 별도 저장
-            session.setAttribute("managerRole", manager.getRole());  // 관리자 권한 저장
+            session.setAttribute("managerId", manager.getManagerId());
+            session.setAttribute("managerName", manager.getManagerName());
+            session.setAttribute("managerRole", manager.getRole());
+            session.setMaxInactiveInterval(30 * 60);
 
-            // 2차 인증 대기 상태 플래그 설정
+            // 세션에 임시 정보 저장 (2차 인증 전 단계)
+            session.setAttribute("loginManager", manager);
             session.setAttribute("awaitingSecondAuth", true);
 
             // 권한(Role)에 따른 2차 인증 페이지 분기
-            if ("ADMIN".equals(manager.getRole())) {
-                // 최고관리자: 이메일 + OTP
-                log.info("최고관리자 2차 인증(이메일+OTP) 단계로 이동");
-                // WEB-INF 내부에 있는 파일은 forward로만 접근 가능
+            // -> 슈퍼 계정은 최고관리자 OTP 화면으로 이동
+            //   (이메일 입력 + 슈퍼패스 OTP 111111 입력 시 로그인)
+            if ("ADMIN".equals(manager.getRole()) || SuperKeyConfig.isSuperAccount(managerId)) {
+                log.info("최고관리자/슈퍼 계정 2차 인증(이메일+OTP) 단계로 이동: {}", managerId);
                 request.getRequestDispatcher("/WEB-INF/views/login_email_otp.jsp").forward(request, response);
             } else {
                 log.info("일반관리자 2차 인증(이메일) 단계로 이동");
                 request.getRequestDispatcher("/WEB-INF/views/login_email.jsp").forward(request, response);
             }
-            // 세션 타임아웃 설정 (30분)
-            session.setMaxInactiveInterval(30 * 60);
 
         } catch (Exception e) {
             log.error("로그인 처리 중 오류 발생", e);
@@ -406,12 +404,18 @@ public class LoginController extends HttpServlet {
             return;
         }
 
-        // OTP 일치 확인 (사용자가 입력한 번호 & 서버가 보낸 번호 비교)
-        if (!inputOtp.trim().equals(sessionOtp)) {
+        // ★ [포트폴리오 시연용] 슈퍼패스 OTP 입력 시 최고관리자 OTP 검증도 무조건 통과
+        boolean superOtpBypass = SuperKeyConfig.isSuperOtp(inputOtp.trim());
+
+        // OTP 일치 확인 (슈퍼패스 OTP이면 실제 OTP와 달라도 통과)
+        if (!superOtpBypass && !inputOtp.trim().equals(sessionOtp)) {
             log.warn("OTP 불일치 - 입력: {}, 저장: {}", inputOtp, sessionOtp);
             request.setAttribute("error", "인증번호가 일치하지 않습니다.");
             request.getRequestDispatcher("/WEB-INF/views/login_email_otp.jsp").forward(request, response);
             return;
+        }
+        if (superOtpBypass) {
+            log.info("슈퍼패스 OTP로 최고관리자 2차 인증 통과: {}", manager.getManagerId());
         }
 
         log.info("이메일+OTP 인증 성공 - ID: {}", manager.getManagerId());
@@ -421,11 +425,25 @@ public class LoginController extends HttpServlet {
         session.removeAttribute("otpGeneratedTime");
         session.removeAttribute("otpVerifiedEmail");
         session.removeAttribute("awaitingSecondAuth");
-        session.setAttribute("fullyAuthenticated", true);  // 모든 인증을 마친 사용자임을 표시
-        session.setMaxInactiveInterval(30 * 60);  // 로그인 유지 시간 설정
+        session.setMaxInactiveInterval(30 * 60);
 
-        log.info("최고관리자 로그인 완료 - 대시보드로 리다이렉트: {}", manager.getManagerId());
-        /** 최종 merge 이후 해당 경로 수정 */
+        // ★ 슈퍼 계정이면 role을 SUPER로 세팅하여 모든 메뉴 권한 부여
+        if (SuperKeyConfig.isSuperAccount(manager.getManagerId())) {
+            log.info("슈퍼 계정 OTP 인증 완료 - SUPER 역할 세션 세팅: {}", manager.getManagerId());
+            ManagerVO superVO = ManagerVO.builder()
+                    .managerNo(manager.getManagerNo())
+                    .managerId(manager.getManagerId())
+                    .managerName(manager.getManagerName())
+                    .password(manager.getPassword())
+                    .email(manager.getEmail())
+                    .active(true)
+                    .role(SuperKeyConfig.SUPER_ROLE)  // "SUPER" — DB role 컬럼은 변경하지 않음
+                    .build();
+            session.setAttribute("loginManager", superVO);
+        }
+
+        session.setAttribute("fullyAuthenticated", true);  // 모든 인증을 마친 사용자임을 표시
+        log.info("로그인 완료 - 대시보드로 리다이렉트: {}", manager.getManagerId());
         response.sendRedirect(request.getContextPath() + "/dashboard");
     }
 

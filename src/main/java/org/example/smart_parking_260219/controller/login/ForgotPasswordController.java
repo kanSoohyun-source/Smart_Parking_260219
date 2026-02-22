@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.login;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dao.ManagerDAO;
 import org.example.smart_parking_260219.mail.MailService;
 import org.example.smart_parking_260219.service.ValidationService;
-import org.example.smart_parking_260219.util.PasswordUtil;
 import org.example.smart_parking_260219.vo.ManagerVO;
 
 import java.io.IOException;

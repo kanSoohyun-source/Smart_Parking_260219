@@ -37,8 +37,8 @@
 
     <ul id="navMenu">
 
-        <%-- 권한이 ADMIN일 때만 '관리자 메뉴' 출력 --%>
-        <% if ("ADMIN".equals(mRole)) { %>
+        <%-- ADMIN 또는 SUPER: 관리자 메뉴 토글 표시 --%>
+        <% if ("ADMIN".equals(mRole) || "SUPER".equals(mRole)) { %>
         <li class="dropdown">
             <a href="javascript:void(0);" class="dropbtn" onclick="toggleDropdown()">관리자 메뉴 ▼</a>
             <div id="adminSubMenu" class="dropdown-content">
@@ -49,8 +49,8 @@
         </li>
         <% } %>
 
-        <%-- 일반 관리자(NORMAL)일 때만 '내 정보 수정' 메뉴 출력 --%>
-        <% if ("NORMAL".equals(mRole)) { %>
+        <%-- NORMAL 또는 SUPER: 내 정보 수정 메뉴 표시 --%>
+        <% if ("NORMAL".equals(mRole) || "SUPER".equals(mRole)) { %>
         <li><a href="${pageContext.request.contextPath}/mgr/my_modify">내 정보 수정</a></li>
         <% } %>
         <li><a href="${pageContext.request.contextPath}/dashboard">주차 현황</a></li>
