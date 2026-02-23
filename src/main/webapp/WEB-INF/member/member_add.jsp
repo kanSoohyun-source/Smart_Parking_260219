@@ -75,14 +75,13 @@
                                value="<%= searchCarNum %>" readonly>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" hidden="hidden">
                         <label>차량 종류 <span class="text-danger">*</span></label>
-                        <select class="form-control" name="carType" disabled>
+                        <select class="form-control" name="carType">
                             <option value="1">일반</option>
                             <option value="2" selected>월정액</option>
                             <option value="3">경차</option>
                             <option value="4">장애인</option>
-                            <input type="hidden" value="2" readonly>
                         </select>
                     </div>
 
