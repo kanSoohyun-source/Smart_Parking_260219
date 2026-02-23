@@ -90,12 +90,12 @@
                 <label>결제 타입</label>
                 <div class="radio-group">
                     <label class="radio-item"><input type="radio" name="paymentType" value="1"
-                        <% if (parkingDTO.getCarType() != 2) {
+                        <% if (selectedCarType != 2) {
                 out.println("checked");
             } %>>카드</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="2">현금</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="3"
-                    <% if (parkingDTO.getCarType() == 2) {
+                    <% if (selectedCarType == 2) {
                 out.println("checked");
             } %>>월정액</label>
                 </div>
