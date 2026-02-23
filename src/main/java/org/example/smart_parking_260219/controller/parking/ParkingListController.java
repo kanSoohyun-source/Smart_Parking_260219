@@ -23,7 +23,6 @@ public class  ParkingListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("GET /get - 출차 차량 조회");
         String carNum = req.getParameter("carNum");
-        int carType = Integer.parseInt(req.getParameter("carType"));
         String spaceId = req.getParameter("id");
 
         // 차량번호가 공백일때
@@ -46,7 +45,6 @@ public class  ParkingListController extends HttpServlet {
         }
 
         req.setAttribute("carNum", carNum);
-        req.setAttribute("carType", carType);
         req.setAttribute("parkingDTO", parkingDTO);
         req.getRequestDispatcher("/WEB-INF/view/exit/exit_serch_list.jsp").forward(req, resp);
     }
