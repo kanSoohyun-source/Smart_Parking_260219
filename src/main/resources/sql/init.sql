@@ -49,7 +49,7 @@ VALUES ('super',
         '슈퍼관리자',
 #     비밀번호 : super1234
         '$2a$12$12q5tYhznZe7E6Pt73SpAubFpKJjD/y24xAAFU6W4ghGyXXUacZO6',
-        'wndus6110@naver.com',
+        'example@naver.com',
         TRUE,
         'ADMIN')
 ON DUPLICATE KEY UPDATE `role` = 'SUPER'; -- 이미 존재할 경우 권한만 SUPER 보장
