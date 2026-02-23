@@ -37,6 +37,12 @@ public enum ParkingService {
         parkingDAO.updateParking(parkingVO);
     }
 
+    // 차량 타입 업네이트
+    public void modifyParkingCarType(ParkingDTO parkingDTO) {
+        ParkingVO parkingVO = modelMapper.map(parkingDTO, ParkingVO.class);
+        parkingDAO.updateParking(parkingVO);
+    }
+
     // 프라이머리키 기준 차량 조회
     public ParkingDTO getByIdParking(int id) {
         return modelMapper.map(parkingDAO.selectParkingByParkingId(id), ParkingDTO.class);

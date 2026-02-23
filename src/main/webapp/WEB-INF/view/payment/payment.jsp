@@ -1,29 +1,33 @@
-<%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
+        <%@ page import="org.example.smart_parking_260219.dto.ParkingDTO" %>
 <%@ page import="org.example.smart_parking_260219.service.ParkingService" %>
 <%@ page import="org.example.smart_parking_260219.service.PaymentService" %>
 <%@ page import="org.example.smart_parking_260219.util.MapperUtil" %>
 <%@ page import="org.example.smart_parking_260219.service.FeePolicyService" %>
 <%@ page import="org.example.smart_parking_260219.vo.FeePolicyVO" %>
 <%@ page import="org.example.smart_parking_260219.dto.PaymentDTO" %>
-<%@ page import="static java.time.LocalTime.now" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String carNum = request.getParameter("carNum");
-    int carType = Integer.parseInt(request.getParameter("carType"));
+
+    // 1. 이전 페이지(출차화면)에서 보낸 carType을 받음
+    String carTypeParam = request.getParameter("carType");
+
+    // 2. 만약 값이 없으면(직접 진입 등) 기존 DB 정보에서 가져옴
+    ParkingDTO parkingDTO = null;
+    int selectedCarType = (carTypeParam != null) ? Integer.parseInt(carTypeParam) : parkingDTO.getCarType();
 
     // 2. 만약 Forward로 올 경우
-    if(carNum == null || carNum.isEmpty()) {
+    if (carNum == null || carNum.isEmpty()) {
         carNum = (String) request.getAttribute("carNum");
     }
-
     // 3. 데이터가 없을 때 DB 조회를 시도하면 에러가 나므로 조건문 처리
-    ParkingDTO parkingDTO = null;
+    parkingDTO = null;
     PaymentDTO paymentDTO = null;
     int calculatedFee = 0;
     int discountAmount = 0;
     int finalFee = 0;
 
-    if(carNum != null && !carNum.isEmpty() && !"null".equals(carNum)) {
+    if (carNum != null && !carNum.isEmpty() && !"null".equals(carNum)) {
         parkingDTO = ParkingService.INSTANCE.getParkingByCarNum(carNum.trim());
 //        if (parkingDTO != null) {
 //            // 주차 정보가 있을 때만 실행
@@ -36,7 +40,7 @@
             return;
         }
         calculatedFee = PaymentService.INSTANCE.calculateFeeLogic(parkingDTO);
-        discountAmount = PaymentService.INSTANCE.calculateDiscountLogic(calculatedFee, parkingDTO.getCarType(),
+        discountAmount = PaymentService.INSTANCE.calculateDiscountLogic(calculatedFee, selectedCarType,
                 MapperUtil.INSTANCE.getInstance().map(FeePolicyService.getInstance().getPolicy(), FeePolicyVO.class));
         finalFee = calculatedFee - discountAmount;
     } else {
@@ -78,7 +82,7 @@
         <h2>정산</h2>
         <form name="payment" action="${pageContext.request.contextPath}/payment/payment" method="post">
             <div class="form-group">
-                <input type="hidden" name="carType" value="<%=carType%>">
+                <input type="hidden" name="carType" value="<%=selectedCarType%>"/>
                 <label>차량 번호</label>
                 <input type="text" name ="carNum" id="carNum" placeholder="차량번호 8자리" maxlength="8" value="<%=carNum%>">
             </div>
@@ -86,10 +90,14 @@
                 <label>결제 타입</label>
                 <div class="radio-group">
                     <label class="radio-item"><input type="radio" name="paymentType" value="1"
-                        <% if(parkingDTO.getCarType() != 2) {out.println("checked");} %>>카드</label>
+                        <% if (parkingDTO.getCarType() != 2) {
+                out.println("checked");
+            } %>>카드</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="2">현금</label>
                     <label class="radio-item"><input type="radio" name="paymentType" value="3"
-                    <% if(parkingDTO.getCarType() == 2) {out.println("checked");} %>>월정액</label>
+                    <% if (parkingDTO.getCarType() == 2) {
+                out.println("checked");
+            } %>>월정액</label>
                 </div>
             </div>
             <div class="form-group">
@@ -206,17 +214,17 @@
 <script src="${pageContext.request.contextPath}/JS/function.js"></script>
 
 <script>
-    const entryTime = "<%= (parkingDTO != null && parkingDTO.getEntryTime() != null) ? parkingDTO.getEntryTime() : "" %>";
+    const entryTime = "<%=(parkingDTO != null && parkingDTO.getEntryTime() != null) ? parkingDTO.getEntryTime() : ""%>";
 
     <%
-        String exitTimeStr = "";
-        if (parkingDTO != null && parkingDTO.getExitTime() != null) {
-            exitTimeStr = parkingDTO.getExitTime().toString();
-        } else {
-            exitTimeStr = java.time.LocalDateTime.now().toString();
-        }
-    %>
-    const exitTime = "<%= exitTimeStr %>";
+                String exitTimeStr = "";
+                if (parkingDTO != null && parkingDTO.getExitTime() != null) {
+                    exitTimeStr = parkingDTO.getExitTime().toString();
+                } else {
+                    exitTimeStr = java.time.LocalDateTime.now().toString();
+                }
+                %>
+    const exitTime = "<%=exitTimeStr%>";
 </script>
 
 <script src="${pageContext.request.contextPath}/JS/payment.js"></script>

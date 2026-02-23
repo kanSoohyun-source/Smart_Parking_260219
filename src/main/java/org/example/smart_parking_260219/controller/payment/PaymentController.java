@@ -39,13 +39,13 @@ public class PaymentController extends HttpServlet {
 
         try {
             String carNum = req.getParameter("carNum");
-            String carType = req.getParameter("carType");
+            int carType = Integer.parseInt(req.getParameter("carType"));
             int paymentType = Integer.parseInt(req.getParameter("paymentType"));
             int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
             int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
             int finalFee = Integer.parseInt(req.getParameter("finalFee"));
 
-            // 상태 변경 전에 미리 ID를 확보
+            // [중요] 상태 변경 전에 미리 ID를 확보해야 합니다.
             var parkingDTO = parkingService.getParkingByCarNum(carNum);
             if (parkingDTO == null) {
                 log.error("해당 차량의 주차 기록을 찾을 수 없습니다: " + carNum);
@@ -69,16 +69,20 @@ public class PaymentController extends HttpServlet {
             log.info("paymentDTO, " + paymentDTO);
 
             ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
+                    .carNum(carNum).build();
+
+            log.info("parkingSpotDTO, " + parkingSpotDTO);
+
+            ParkingDTO parkingDTO1 = ParkingDTO.builder()
                     .carNum(carNum)
-                    .build();
-            log.info("carType: {}", carType);
-            parkingDTO = ParkingDTO.builder()
-                    .carType(Integer.parseInt(carType))
+                    .carType(carType) // 화면에서 선택한 타입 반영
                     .build();
 
-            // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
+
+
+            // 순서 주의: 결제 내역을 먼저, 주차 상태 변경.
             paymentService.addPayment(paymentDTO);
-            parkingService.modifyParking(parkingDTO);
+            parkingService.modifyParking(parkingDTO1);
             parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
             log.info("Payment and Parking, ParkingSpot update success!");

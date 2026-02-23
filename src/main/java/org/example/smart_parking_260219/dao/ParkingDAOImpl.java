@@ -104,10 +104,9 @@ public class ParkingDAOImpl implements ParkingDAO {
             return;
         }
         LocalDateTime exit = LocalDateTime.now();
-        int carType = selectParkingByCarNum(parkingVO.getCarNum()).getCarType();
         long totalMinutes = Duration.between(entry, exit).toMinutes();
 
-        String sql = "UPDATE smart_parking_team2.parking SET exit_time= ?, car_type =?, total_time= ?, paid=true WHERE car_num=?";
+        String sql = "UPDATE smart_parking_team2.parking SET exit_time= ?,car_type =?, total_time= ?, paid=true WHERE car_num=?";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
             @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
