@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.example.smart_parking_260219.dto.ParkingDTO;
 import org.example.smart_parking_260219.dto.ParkingSpotDTO;
 import org.example.smart_parking_260219.dto.PaymentDTO;
 import org.example.smart_parking_260219.service.FeePolicyService;
@@ -38,6 +39,7 @@ public class PaymentController extends HttpServlet {
 
         try {
             String carNum = req.getParameter("carNum");
+            String carType = req.getParameter("carType");
             int paymentType = Integer.parseInt(req.getParameter("paymentType"));
             int calculatedFee = Integer.parseInt(req.getParameter("calculatedFee"));
             int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
@@ -67,13 +69,16 @@ public class PaymentController extends HttpServlet {
             log.info("paymentDTO, " + paymentDTO);
 
             ParkingSpotDTO parkingSpotDTO = ParkingSpotDTO.builder()
-                    .carNum(carNum).build();
+                    .carNum(carNum)
+                    .build();
+            log.info("carType: {}", carType);
+            parkingDTO = ParkingDTO.builder()
+                    .carType(Integer.parseInt(carType))
+                    .build();
 
-            log.info("parkingSpotDTO, " + parkingSpotDTO);
-
-            // 순서 주의: 결제 내역을 먼저, 주차 상태 변경.
+            // 순서 주의: 결제 내역을 먼저 넣고, 주차 상태를 나중에 바꿉니다.
             paymentService.addPayment(paymentDTO);
-            parkingService.modifyParking(carNum);
+            parkingService.modifyParking(parkingDTO);
             parkingSpotService.modifyOutputParkingSpot(parkingSpotDTO);
 
             log.info("Payment and Parking, ParkingSpot update success!");

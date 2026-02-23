@@ -13,6 +13,9 @@
     if ("false".equals(failInput)) {
         out.println("<script>alert('존재하지 않는 차량입니다.'); history.back();</script>");
     }
+    if ("nullId".equals(failInput)) {
+        out.println("<script>alert('존재하지 않는 구역입니다.'); history.back();</script>");
+    }
 %>
 <div class="main-content">
     <div id="exit" class="page">

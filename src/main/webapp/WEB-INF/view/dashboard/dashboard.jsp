@@ -22,11 +22,6 @@
     for (ParkingSpotDTO spot : allSpots) {
         spotMap.put(spot.getSpaceId(), spot);
     }
-
-    String failInput = request.getParameter("fail");
-    if ("false".equals(failInput)) {
-        out.println("<script>alert('이미 입차된 차량입니다.'); history.back();</script>");
-    }
 %>
 <html>
 <head>

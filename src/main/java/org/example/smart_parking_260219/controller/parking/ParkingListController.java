@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.parking;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,16 +23,24 @@ public class ParkingListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("GET /get - 출차 차량 조회");
         String carNum = req.getParameter("carNum");
+        String spaceId = req.getParameter("id");
 
+        // 차량번호가 공백일때
         if (carNum == null || carNum.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/output");
             return;
         }
-
         ParkingDTO parkingDTO = parkingService.getParkingByCarNum(carNum);
 
+        // 주소창 내의 차량 번호 파라미터를 변경하는 부정적인 접근 차단
         if (parkingDTO == null) {
             resp.sendRedirect(req.getContextPath() + "/output?fail=false");
+            return;
+        }
+
+        // 주소창 내에 주차구역 파라미터를 변경하는 부정적인 접근 차단
+        if (spaceId == null || !spaceId.equals(parkingDTO.getSpaceId())) {
+            resp.sendRedirect(req.getContextPath() + "/output?fail=nullId");
             return;
         }
 
@@ -46,6 +54,12 @@ public class ParkingListController extends HttpServlet {
         log.info("POST /get - 정산 페이지 이동");
         String carNum = req.getParameter("carNum");
         req.setAttribute("carNum", carNum);
+        String carType = req.getParameter("carType");
+        req.setAttribute("carType", carType);
+        log.info("carType: {}",carType);
+
+
+
         req.getRequestDispatcher("/WEB-INF/view/payment/payment.jsp").forward(req, resp);
     }
 }
