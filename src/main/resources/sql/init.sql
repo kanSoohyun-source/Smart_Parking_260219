@@ -88,7 +88,6 @@ CREATE TABLE IF NOT EXISTS `parking`
     `exit_time`  DATETIME             DEFAULT NULL COMMENT '출차 시간 (주차중이면 NULL)',
     `total_time` INT                  DEFAULT 0 COMMENT '주차 시간(분)',
     `paid`       BOOLEAN              DEFAULT FALSE COMMENT '정산 완료 여부',
-    `phone`      VARCHAR(20) comment '핸드폰 번호',
 
     CONSTRAINT `fk_parking_member` FOREIGN KEY (`member_id`)
         REFERENCES `member` (`member_id`) ON DELETE SET NULL,
