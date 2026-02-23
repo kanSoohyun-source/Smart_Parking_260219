@@ -45,7 +45,7 @@ public class PaymentController extends HttpServlet {
             int discountAmount = Integer.parseInt(req.getParameter("discountAmount"));
             int finalFee = Integer.parseInt(req.getParameter("finalFee"));
 
-            // [중요] 상태 변경 전에 미리 ID를 확보해야 합니다.
+            // 상태 변경 전에 미리 ID를 확보
             var parkingDTO = parkingService.getParkingByCarNum(carNum);
             if (parkingDTO == null) {
                 log.error("해당 차량의 주차 기록을 찾을 수 없습니다: " + carNum);

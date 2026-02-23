@@ -9,6 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String carNum = request.getParameter("carNum");
+    int carType = Integer.parseInt(request.getParameter("carType"));
 
     // 2. 만약 Forward로 올 경우
     if(carNum == null || carNum.isEmpty()) {
@@ -77,6 +78,7 @@
         <h2>정산</h2>
         <form name="payment" action="${pageContext.request.contextPath}/payment/payment" method="post">
             <div class="form-group">
+                <input type="hidden" name="carType" value="<%=carType%>">
                 <label>차량 번호</label>
                 <input type="text" name ="carNum" id="carNum" placeholder="차량번호 8자리" maxlength="8" value="<%=carNum%>">
             </div>

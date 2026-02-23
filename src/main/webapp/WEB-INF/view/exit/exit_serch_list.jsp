@@ -58,7 +58,7 @@
                 <input type="text" class="time" id="entryTime" placeholder="입차 시간" name="entryTime"
                        value="<%=parkingDTO.getEntryTime()%>" readonly>
             </div>
-            <button onclick="registerMember()">정산</button>
+            <button type="submit" onclick="registerMember()">정산</button>
         </form>
     </div>
 </div>
