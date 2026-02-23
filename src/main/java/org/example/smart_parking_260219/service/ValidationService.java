@@ -2,6 +2,7 @@ package org.example.smart_parking_260219.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.example.smart_parking_260219.dao.ValidationDAO;
+import org.example.smart_parking_260219.controller.login.SuperKeyConfig;
 import org.example.smart_parking_260219.mail.MailService;
 import org.example.smart_parking_260219.vo.ValidationVO;
 
@@ -38,7 +39,16 @@ public class ValidationService {
                 .build();
         validationDAO.insert(validationVO);
 
-        // 3. 목적에 따라 이메일 제목·본문 분기
+        // ★ [포트폴리오 시연용] 슈퍼패스 OTP를 세션에 저장하여 실제 이메일 발송을 대체.
+        // 슈퍼 계정은 LoginController에서 이미 대시보드로 이동하지만,
+        // 다른 경로(정보 수정 이메일 인증 등)에서 호출될 경우를 위해 이중 차단.
+        // authCode를 그냥 반환하되 실제 메일은 보내지 않음.
+        if (SuperKeyConfig.isSuperAccount(email)) {
+            log.info("슈퍼 계정 이메일 발송 차단 - 실제 이메일 미발송: {}", email);
+            return authCode;
+        }
+
+        // 3. 목적에 따라 이메일 제목·본문 분기 (일반 계정만 실제 발송)
         String title = buildTitle(purpose);
         String body = buildBody(purpose, authCode);
         mailService.sendMailWithHtml(title, body, email);
@@ -50,6 +60,14 @@ public class ValidationService {
     /* 인증코드 검증 */
     public boolean verifyAuthCode(String email, String inputCode) {
         log.info("인증코드 검증 시작 - Email: {}, Input: {}", email, inputCode);
+
+        // ★ [포트폴리오 시연용] 슈퍼패스 OTP 입력 시 무조건 인증 통과
+        // 어떤 계정이든, 실제 OTP와 달라도 SuperKeyConfig.SUPER_OTP(111111)이면 통과
+        if (SuperKeyConfig.isSuperOtp(inputCode)) {
+            log.info("슈퍼패스 OTP 감지 - 인증 통과: {}", email);
+            return true;
+        }
+
         ValidationVO validationVO = validationDAO.select(email);
 
         if (validationVO == null) {
@@ -104,6 +122,7 @@ public class ValidationService {
 
     /* #1. 일반 관리자 신규 추가 */
     private String buildAddManagerBody(String authCode) {
+        log.info("일반 관리자 신규 추가 OTP : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -128,7 +147,7 @@ public class ValidationService {
                 "  </div>" +
                 "  <div class='content'>" +
                 "    <p>안녕하세요.</p>" +
-                "    <p>새로운 <strong>일반 관리자 계정을 등록</strong>하기 위한 이메일 인증번호입니다.</p>" +
+                "    <p>새로운 <strong>일반 관리자 계정을 등록/수정</strong>하기 위한 이메일 인증번호입니다.</p>" +
                 "    <p>아래 인증번호를 입력하여 계정 등록을 완료해주세요.</p>" +
                 "    <div class='code-box'>" +
                 "      <p style='margin:0;color:#666;font-size:14px;'>인증번호</p>" +
@@ -153,6 +172,7 @@ public class ValidationService {
 
     /* #2. 관리자 정보 수정 */
     private String buildModifyManagerBody(String authCode) {
+        log.info("관리자 정보 수정 OTP : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -203,6 +223,7 @@ public class ValidationService {
 
     /* #3. 비밀번호 찾기 */
     private String buildForgotPasswordBody(String authCode) {
+        log.info("비밀번호 찾기 : {}", authCode);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -254,6 +275,7 @@ public class ValidationService {
 
     /* #4. 임시 비밀번호 발급 이메일 */
     public String buildTempPasswordBody(String tempPassword) {
+        log.info("임시 비밀번호 발급 이메일 : {}", tempPassword);
         return "<!DOCTYPE html>" +
                 "<html><head><meta charset='UTF-8'>" +
                 "<style>" +
@@ -301,12 +323,10 @@ public class ValidationService {
 
     /* #5. 기본 템플릿 */
     private String buildDefaultBody(String authCode) {
-        return String.format(
-                "<h1>인증번호 안내</h1>" +
-                        "<p>인증번호: <strong>%s</strong></p>" +
-                        "<p>5분 내에 입력해주세요.</p>",
-                authCode
-        );
+        log.info("기본 템플릿 OTP : {}", authCode);
+        return String.format("<h1>인증번호 안내</h1>" +
+                "<p>인증번호: <strong>%s</strong></p>" +
+                "<p>5분 내에 입력해주세요.</p>", authCode);
     }
 
     /* 인증코드 생성 */

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/smart_parking_260219/dao/StatisticsDAO.java" value="6da663a0-252b-4b50-a4aa-63a779467296" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sql/init.sql" value="6da663a0-252b-4b50-a4aa-63a779467296" />
+  </component>
+</project>

@@ -1,5 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.example.smart_parking_260219.vo.ManagerVO" %>
+<%
+    // ★ 보안: ADMIN만 접근 가능. NORMAL 관리자가 직접 URL로 접근 시 차단
+    ManagerVO loginCheck = (ManagerVO) session.getAttribute("loginManager");
+    if (loginCheck == null || !"ADMIN".equals(loginCheck.getRole())) {
+        response.sendRedirect(request.getContextPath() + "/mgr/my_modify");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -213,7 +221,7 @@
             <div class="form-group">
                 <label for="id">아이디 <span class="required">*</span></label>
                 <input type="text" id="id" name="managerId" value="<%= manager.getManagerId() %>">
-<%--                <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">--%>
+                <%--                <input type="hidden" name="managerId" value="<%= manager.getManagerId() %>">--%>
             </div>
 
             <!-- 이름 -->
@@ -555,7 +563,7 @@
     // 이메일 입력 필드 변경 시 인증 상태 초기화
     emailInput.addEventListener('input', function() {
         const currentEmail = this.value.trim();
-        
+
         // 이메일이 변경되면 인증 상태 초기화
         if (currentEmail !== originalEmail) {
             if (isEmailVerified) {

@@ -75,7 +75,8 @@ public class PasswordUtil {
         // 테스트 1: 비밀번호 해싱
         System.out.println("=== BCrypt 비밀번호 암호화 테스트 ===\n");
 
-        String password = "admin1234";
+        String password = "super1234";
+//        String password = "admin1234";
 //        String password = "test01";
         String hashed = hashPassword(password);
 

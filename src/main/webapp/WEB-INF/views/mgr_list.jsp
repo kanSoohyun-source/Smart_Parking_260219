@@ -206,6 +206,19 @@
     </div>
 </div>
 
+<%-- ── 슈퍼관리자 접근 차단 안내 모달 ── --%>
+<div id="superModal" class="modal-backdrop">
+    <div class="modal-box">
+        <div class="modal-icon">🛡️</div>
+        <div class="modal-title">수정 불가 계정</div>
+        <div class="modal-desc">
+            해당 계정은 <strong>시스템의 모든 기능을<br> 조회하기 위해 생성된 전용 계정</strong>입니다.<br><br>
+            보안 정책상 이 계정은 수정할 수 없습니다.
+        </div>
+        <button class="modal-btn" onclick="closeSuperModal()">확인</button>
+    </div>
+</div>
+
     <%
     /* 현재 로그인한 관리자의 role을 세션에서 꺼냄 */
     ManagerVO sessionMgr = (ManagerVO) session.getAttribute("loginManager");
@@ -272,7 +285,7 @@
                         for (int i = startIndex; i < endIndex; i++) {
                             ManagerDTO mgr = managerList.get(i);
                 %>
-                <tr class="<%= "ADMIN".equals(mgr.getRole()) ? "row-admin" : "" %>">
+                <tr class="<%= ("ADMIN".equals(mgr.getRole()) || "SUPER".equals(mgr.getRole())) ? "row-admin" : "" %>">
                     <td><%= mgr.getManagerNo() %>
                     </td>
                     <td><%= mgr.getManagerId() %>
@@ -286,6 +299,14 @@
                             <%= mgr.getManagerName() %>
                         </a>
                         <span class="badge-admin">최고관리자</span>
+                        <% } else if ("SUPER".equals(mgr.getRole())) { %>
+                        <%-- 슈퍼관리자: 클릭 시 view/modify 진입 차단 → 슈퍼관리자 전용 안내 모달 표시 --%>
+                        <a href="javascript:void(0);"
+                           onclick="openSuperModal();"
+                           style="color: #667eea; font-weight: bold; cursor: pointer;">
+                            <%= mgr.getManagerName() %>
+                        </a>
+                        <span class="badge-admin">슈퍼관리자</span>
                         <% } else { %>
                         <%-- 일반관리자: 기존처럼 view 페이지로 이동 --%>
                         <a href="${pageContext.request.contextPath}/mgr/view?id=<%= mgr.getManagerId() %>"
@@ -385,13 +406,25 @@
         document.getElementById('adminModal').classList.remove('show');
     }
 
+    /* ── 슈퍼관리자 모달 제어 ── */
+    function openSuperModal() {
+        document.getElementById('superModal').classList.add('show');
+    }
+
+    function closeSuperModal() {
+        document.getElementById('superModal').classList.remove('show');
+    }
+
     /* 모달 바깥 영역 클릭 시 닫기 */
     document.getElementById('adminModal').addEventListener('click', function (e) {
         if (e.target === this) closeAdminModal();
     });
+    document.getElementById('superModal').addEventListener('click', function (e) {
+        if (e.target === this) closeSuperModal();
+    });
     /* ESC 키로 닫기 */
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeAdminModal();
+        if (e.key === 'Escape') { closeAdminModal(); closeSuperModal(); }
     });
 </script>
 </html>
