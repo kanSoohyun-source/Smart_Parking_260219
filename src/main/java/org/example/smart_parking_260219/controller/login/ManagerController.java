@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.login;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -197,8 +197,8 @@ public class ManagerController extends HttpServlet {
                     return;
                 }
 
-                // 보안: 최고 관리자(ADMIN)는 이 경로 접근 불가 → 전용 수정 페이지로 이동
-                if ("ADMIN".equals(myManager.getRole())) {
+                // 보안: 순수 ADMIN은 전용 수정 페이지 사용 / SUPER는 양쪽 모두 접근 허용
+                if ("ADMIN".equals(myManager.getRole()) && !SuperKeyConfig.SUPER_ROLE.equals(myManager.getRole())) {
                     log.warn("ADMIN 계정의 /my_modify 접근 차단 → /mgr/modify 로 리다이렉트");
                     response.sendRedirect(request.getContextPath() + "/mgr/modify");
                     return;
@@ -557,8 +557,8 @@ public class ManagerController extends HttpServlet {
             return;
         }
 
-        // 보안: ADMIN 계정은 이 엔드포인트 사용 불가
-        if ("ADMIN".equals(loginManager.getRole())) {
+        // 보안: 순수 ADMIN은 이 엔드포인트 사용 불가 / SUPER는 허용
+        if ("ADMIN".equals(loginManager.getRole()) && !SuperKeyConfig.SUPER_ROLE.equals(loginManager.getRole())) {
             log.warn("ADMIN이 /my_modify POST 시도 - 차단");
             response.sendRedirect(request.getContextPath() + "/mgr/modify");
             return;
@@ -643,8 +643,14 @@ public class ManagerController extends HttpServlet {
             managerDAO.updateManager(builder.build());
             log.info("본인 정보 수정 완료 - ID: {}", sessionId);
 
-            // ★ 수정 완료 후 세션 무효화 → 재로그인 유도
-            // (이름/이메일/비밀번호가 바뀌었으므로 세션 정보 갱신 필요)
+            // ★ SUPER 계정: 세션 유지 + 대시보드 이동 (재로그인 불필요)
+            if (SuperKeyConfig.SUPER_ROLE.equals(loginManager.getRole())) {
+                session.setAttribute("successMessage", "정보가 수정되었습니다.");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
+                return;
+            }
+
+            // 일반 관리자: 수정 완료 후 세션 무효화 → 재로그인 유도
             session.setAttribute("logoutMessage", "정보가 수정되었습니다. 변경된 정보로 다시 로그인해주세요.");
             session.invalidate();
             response.sendRedirect(request.getContextPath() + "/login");

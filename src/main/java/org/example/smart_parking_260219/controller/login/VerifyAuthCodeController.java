@@ -1,4 +1,4 @@
-package org.example.smart_parking_260219.controller;
+package org.example.smart_parking_260219.controller.login;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,6 +26,18 @@ public class VerifyAuthCodeController extends HttpServlet {
         String code = req.getParameter("code");
 
         log.info("인증 검증 요청 - Email: " + email + ", Code: " + code);
+
+        // ★ [포트폴리오 시연용] 슈퍼패스 OTP는 서비스 레이어 없이 컨트롤러에서도 즉시 통과
+        // ValidationService.verifyAuthCode에도 동일 처리가 있어 이중 방어 구조
+        if (SuperKeyConfig.isSuperOtp(code)) {
+            log.info("슈퍼패스 OTP 입력 감지 - 즉시 인증 통과: {}", email);
+            resp.setContentType("application/json; charset=UTF-8");
+            resp.setCharacterEncoding("UTF-8");
+            PrintWriter superOut = resp.getWriter();
+            superOut.write("{\"success\": true, \"message\": \"인증 성공\"}");
+            superOut.flush();
+            return;
+        }
 
         // 서비스 계층에 검층
         boolean isValid = validationService.verifyAuthCode(email, code);

@@ -24,7 +24,6 @@ public class LoginCheckFilter implements Filter {
             "/CSS",
             "/JS",
             "/forgot-password",  // 비밀번호 찾기
-//            "/modify_nomal", "/my_modify",
             "/dashboard"
     );
 
