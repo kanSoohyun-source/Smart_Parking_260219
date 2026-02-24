@@ -20,6 +20,27 @@ CREATE TABLE IF NOT EXISTS `member`
     INDEX idx_car_num (car_num)
 );
 
+-- member dummy -> DAO TEST 3회 실행
+INSERT INTO `member` (`car_num`, `car_type`, `name`, `phone`, `start_date`, `end_date`, `subscribed`, `subscribed_fee`)
+VALUES ('11가1111', 2, '홍길동', '010-1111-2222', '2026-02-01', '2026-03-01', TRUE, 100000),
+       ('22나2222', 2, '김철수', '010-2222-3333', '2026-02-02', '2026-03-02', TRUE, 100000),
+       ('33다3333', 2, '이영희', '010-3333-4444', '2026-02-03', '2026-03-03', TRUE, 100000),
+       ('44라4444', 2, '박박사', '010-4444-5555', '2026-02-04', '2026-03-04', TRUE, 100000),
+       ('55마5555', 2, '테스터1', '010-5555-6666', '2026-02-05', '2026-03-05', TRUE, 100000),
+       ('66바6666', 2, '테스터2', '010-6666-7777', '2026-02-06', '2026-03-06', TRUE, 100000),
+       ('77사7777', 2, '테스터3', '010-7777-8888', '2026-02-07', '2026-03-07', TRUE, 100000),
+       ('88아8888', 2, '테스터4', '010-8888-9999', '2026-02-08', '2026-03-08', TRUE, 100000),
+       ('99자9999', 2, '테스터5', '010-9999-1010', '2026-02-09', '2026-03-09', TRUE, 100000),
+       ('10차1010', 2, '테스터6', '010-1010-1111', '2026-02-10', '2026-03-10', TRUE, 100000),
+       ('11카1111', 2, '테스터7', '010-1111-1212', '2026-02-11', '2026-03-11', TRUE, 100000),
+       ('12타1212', 2, '테스터8', '010-1212-1313', '2026-02-12', '2026-03-12', TRUE, 100000),
+       ('13파1313', 2, '테스터9', '010-1313-1414', '2026-02-13', '2026-03-13', TRUE, 100000),
+       ('14하1414', 2, '테스터10', '010-1414-1515', '2026-02-14', '2026-03-14', TRUE, 100000),
+       ('15게1515', 2, '테스터11', '010-1515-1616', '2026-02-15', '2026-03-15', TRUE, 100000),
+       ('16네1616', 2, '테스터12', '010-1616-1717', '2026-02-16', '2026-03-16', TRUE, 100000);
+
+
+
 # manager : 관리자 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `manager`
 (
@@ -54,6 +75,29 @@ VALUES ('super',
         'ADMIN')
 ON DUPLICATE KEY UPDATE `role` = 'SUPER'; -- 이미 존재할 경우 권한만 SUPER 보장
 
+-- manager dummy
+
+-- id - test01, password - 1111
+insert into manager (manager_id, manager_name, password, email, active, role)
+VALUES ('test01', 'tester1', '$2a$12$4ReuaFjNvpNJlf/ZzjTC1u59qKSvH0kZcg0jS1tlPP/K8ubssv8Jq', 'example@naver.com', true, 'NORMAL' );
+
+-- id - test02, password - 2222
+insert into manager (manager_id, manager_name, password, email, active, role)
+VALUES ('test02', 'tester2', '$2a$12$qpF3i2uW2w2QU7CntypHc.16BflMqHe82EJIDIpoHXut3FwA3i9SS', 'example@naver.com', true, 'NORMAL' );
+
+-- id - test03, password - 3333
+insert into manager (manager_id, manager_name, password, email, active, role)
+VALUES ('test03', 'tester3', '$2a$12$sFsO6OAo1jiaqN7UteHpiOBWGjK3Bned0eVw8zZHuZarhiUzwI2ma', 'example@naver.com', true, 'NORMAL' );
+
+-- id - test04, password - 4444
+insert into manager (manager_id, manager_name, password, email, active, role)
+VALUES ('test04', 'tester4', '$2a$12$itHGFdg2TSJS.CBA.s8J1OFYbOwma2TIqjILAqziesegCuvKl9pEm', 'example@naver.com', true, 'NORMAL' );
+
+-- id - test05, password - 5555
+insert into manager (manager_id, manager_name, password, email, active, role)
+VALUES ('test05', 'tester5', '$$2a$12$EZ5MMMRpXbdUfwwTCRYO..WcWgzqOoAFQ3KjGFSEFa9rTA0Fb2I.K', 'example@naver.com', true, 'NORMAL' );
+
+
 CREATE TABLE IF NOT EXISTS `validation`
 (
     `no`          int auto_increment primary key,
@@ -76,6 +120,16 @@ insert into parking_spot (space_id) values ('A1'), ('A2'),('A3'),('A4'),('A5'),
                                            ('A11'), ('A12'),('A13'),('A14'),('A15'),
                                            ('A16'), ('A17'),('A18'),('A19'),('A20');
 
+-- parking spot dummy
+-- 회원
+update `parking_spot` set `empty` = false, car_num = '11가1111', last_update = now() where space_id = 'A2';
+update `parking_spot` set `empty` = false, car_num = '22나2222', last_update = now() where space_id = 'A17';
+update `parking_spot` set `empty` = false, car_num = '33다3333', last_update = now() where space_id = 'A14';
+-- 비회원
+update `parking_spot` set `empty` = false, car_num = '13다1234', last_update = now() where space_id = 'A5';
+update `parking_spot` set `empty` = false, car_num = '23다1234', last_update = now() where space_id = 'A16';
+update `parking_spot` set `empty` = false, car_num = '33다1234', last_update = now() where space_id = 'A9';
+
 # parking : 입차, 출차, 요금 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `parking`
 (
@@ -83,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `parking`
     `member_id`  INT                  DEFAULT NULL COMMENT '회원 ID (비회원일 경우 NULL)',
     `space_id`   VARCHAR(20) NOT NULL COMMENT '주차 공간 ID (FK)',
     `car_num`    VARCHAR(20) NOT NULL COMMENT '차량 번호 (스냅샷)',
-    `car_type`   TINYINT     NOT NULL COMMENT '차량 유형 (스냅샷)',
+    `car_type`   TINYINT     NULL COMMENT '차량 유형 (스냅샷)',
     `entry_time` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '입차 시간',
     `exit_time`  DATETIME             DEFAULT NULL COMMENT '출차 시간 (주차중이면 NULL)',
     `total_time` INT                  DEFAULT 0 COMMENT '주차 시간(분)',
@@ -94,6 +148,23 @@ CREATE TABLE IF NOT EXISTS `parking`
     CONSTRAINT `fk_parking_spot` FOREIGN KEY (`space_id`)
         REFERENCES `parking_spot` (`space_id`) ON UPDATE CASCADE
 );
+
+-- parking dummy
+-- 회원
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A2', '11가1111', now());
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A17', '22나2222', '2026-02-18');
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A14', '33다3333', now());
+
+-- 비회원
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A5', '13다1234', now());
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A16', '23다1234', now());
+insert into parking (space_id, car_num, entry_time)
+VALUES ('A9', '33다1234', now());
 
 # fee_policy : 요금 부과 정책 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `fee_policy`
@@ -112,6 +183,11 @@ CREATE TABLE IF NOT EXISTS `fee_policy`
     `modify_date`       DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT '정책 수정일'
 );
 
+-- fee_policy dummy
+insert into fee_policy
+(grace_period, default_time, default_fee, extra_time, extra_fee, light_discount, disabled_discount, subscribed_fee, max_daily_fee, is_active, modify_date)
+VALUES (10, 10, 2000, 30, 1000, 0.3, 0.5, 100000, 15000, true, now());
+
 # payment : 결제, 매출 정보 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `payment`
 (
@@ -129,6 +205,38 @@ CREATE TABLE IF NOT EXISTS `payment`
     CONSTRAINT `fk_payment_policy` FOREIGN KEY (`policy_id`)
         REFERENCES `fee_policy` (`policy_id`)
 );
+
+-- 통계용 payment, parking dummy
+-- 2월 11일 데이터 (매출이 높은 날)
+INSERT INTO `parking` (`member_id`, `space_id`, `car_num`, `car_type`, `entry_time`, `exit_time`, `total_time`, `paid`)
+VALUES (1, 'A1', '11가1111', 2, '2026-02-11 09:00:00', '2026-02-11 18:00:00', 540, TRUE),
+       (2, 'A2', '22나2222', 1, '2026-02-11 10:30:00', '2026-02-11 12:30:00', 120, TRUE),
+       (NULL, 'A3', '99허9999', 1, '2026-02-11 14:00:00', '2026-02-11 16:00:00', 120, TRUE);
+
+INSERT INTO `payment` (`parking_id`, `policy_id`, `payment_type`, `calculated_fee`, `discount_amount`, `final_fee`, `payment_date`)
+VALUES (1, 1, 3, 15000, 15000, 0, '2026-02-11 18:05:00'),
+       (2, 1, 1, 4000, 0, 4000, '2026-02-11 12:35:00'),
+       (3, 1, 1, 4000, 0, 4000, '2026-02-11 16:05:00');
+
+-- 2월 12일 데이터
+INSERT INTO `parking` (`member_id`, `space_id`, `car_num`, `car_type`, `entry_time`, `exit_time`, `total_time`, `paid`)
+VALUES (3, 'A4', '33다3333', 3, '2026-02-12 08:00:00', '2026-02-12 10:00:00', 120, TRUE),
+       (NULL, 'A5', '88호8888', 1, '2026-02-12 13:00:00', '2026-02-12 15:30:00', 150, TRUE);
+
+INSERT INTO `payment` (`parking_id`, `policy_id`, `payment_type`, `calculated_fee`, `discount_amount`, `final_fee`, `payment_date`)
+VALUES (4, 1, 1, 4000, 1200, 2800, '2026-02-12 10:05:00'),
+       (5, 1, 2, 5000, 0, 5000, '2026-02-12 15:35:00');
+
+-- 2월 19일 데이터 (조회 기준일 테스트용)
+INSERT INTO `parking` (`member_id`, `space_id`, `car_num`, `car_type`, `entry_time`, `exit_time`, `total_time`, `paid`)
+VALUES (4, 'A6', '44라4444', 4, '2026-02-19 09:30:00', '2026-02-19 11:30:00', 120, TRUE),
+       (NULL, 'A7', '77가7777', 1, '2026-02-19 10:00:00', '2026-02-19 10:40:00', 40, TRUE),
+       (NULL, 'A8', '66나6666', 1, '2026-02-19 10:15:00', '2026-02-19 12:15:00', 120, TRUE);
+
+INSERT INTO `payment` (`parking_id`, `policy_id`, `payment_type`, `calculated_fee`, `discount_amount`, `final_fee`, `payment_date`)
+VALUES (6, 1, 1, 4000, 2000, 2000, '2026-02-19 11:35:00'),
+       (7, 1, 1, 2000, 0, 2000, '2026-02-19 10:45:00'),
+       (8, 1, 1, 4000, 0, 4000, '2026-02-19 12:20:00');
 
 -- 전용 사용자 생성
 CREATE USER `admin`@`localhost` IDENTIFIED BY '0219';

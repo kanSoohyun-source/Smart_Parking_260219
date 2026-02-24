@@ -42,7 +42,7 @@ class ParkingDAOImplTest {
         ParkingVO parkingVO = ParkingVO.builder()
                 .carNum(num)
                 .build();
-        parkingDAO.updateParking(num);
+        parkingDAO.updateParking(parkingVO);
     }
 
     @Test
