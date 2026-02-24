@@ -58,13 +58,17 @@ public class PaymentController extends HttpServlet {
             // 결제 정보 저장
             PaymentDTO paymentDTO = PaymentDTO.builder()
                     .carNum(carNum)
+                    .carType(carType)
                     .parkingId(parkingDTO.getParkingId())
                     .policyId(feePolicyService.getPolicy().getPolicyId())
                     .paymentType(paymentType)
                     .calculatedFee(calculatedFee)
                     .discountAmount(discountAmount)
                     .finalFee(finalFee)
+                    .totalTime(parkingDTO.getTotalTime())
                     .build();
+
+            log.info("완성된 paymentDTO: " + paymentDTO);
 
             log.info("paymentDTO, " + paymentDTO);
 

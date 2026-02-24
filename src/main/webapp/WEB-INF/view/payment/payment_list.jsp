@@ -43,17 +43,18 @@
                             // 루프 안에서 각 행마다 이름을 판별합니다.
                             String typeName = "";
 
-                            // 핵심: 타입을 모르니 String으로 변환 후 비교하는 게 가장 안전합니다.
-                            String rawType = String.valueOf(paymentDTO.getCarType());
+                            int rawType = paymentDTO.getCarType();
 
-                            if ("1".equals(rawType)) {
+                            if (rawType == 1) {
                                 typeName = "일반";
-                            } else if ("2".equals(rawType)) {
+                            } else if (rawType == 2) {
                                 typeName = "월정액";
-                            } else if ("3".equals(rawType)) {
+                            } else if (rawType == 3) {
                                 typeName = "경차";
-                            } else {
+                            } else if (rawType == 4) {
                                 typeName = "장애인";
+                            } else {
+                                typeName = "기타(" + rawType + ")"; // 값이 다른 경우 확인용
                             }
                     %>
                     <tr>

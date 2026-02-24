@@ -56,11 +56,12 @@ public class PaymentDAO {
         }
     }
 
-    // 전체 조회 - 결제 목록 출력 (차량번호 포함)
+    // 전체 조회 - 결제 목록 출력 (차량번호, 타입, 시간 포함)
     public List<PaymentVO> selectAllPayments() {
         List<PaymentVO> paymentVOList = new ArrayList<>();
-        String sql = "SELECT pay.*, p.car_num FROM payment pay "
-                + "JOIN smart_parking_team2.parking p ON pay.parking_id = p.parking_id "
+        // 쿼리문에 p.car_type과 p.total_time을 명시해줘야 합니다.
+        String sql = "SELECT pay.*, p.car_num, p.car_type, p.total_time FROM payment pay "
+                + "JOIN parking p ON pay.parking_id = p.parking_id "
                 + "ORDER BY pay.payment_id DESC";
         try {
             @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
@@ -73,6 +74,8 @@ public class PaymentDAO {
                         .parkingId(resultSet.getInt("parking_id"))
                         .policyId(resultSet.getInt("policy_id"))
                         .carNum(resultSet.getString("car_num"))
+                        .carType(resultSet.getInt("car_type"))
+                        .totalTime(resultSet.getInt("total_time"))
                         .paymentType(resultSet.getInt("payment_type"))
                         .calculatedFee(resultSet.getInt("calculated_fee"))
                         .discountAmount(resultSet.getInt("discount_amount"))
@@ -81,42 +84,13 @@ public class PaymentDAO {
                 paymentVOList.add(paymentVO);
             }
         } catch (SQLException e) {
-            throw new RuntimeException();
+            log.error("selectAllPayments 오류: " + e.getMessage());
+            throw new RuntimeException(e);
         }
         return paymentVOList;
     }
 
-    // 단건 조회 - 결제 내역 상세 출력
-    public PaymentVO selectOnePayment(int parkingId) {
-        String sql = "SELECT pay.*, p.car_num FROM smart_parking_team2.payment pay "
-                + "JOIN smart_parking_team2.parking p ON pay.parking_id = p.parking_id "
-                + "WHERE p.parking_id = ?";
-        try {
-            @Cleanup Connection connection = DBConnection.INSTANCE.getConnection();
-            @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, parkingId);
-            @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                PaymentVO paymentVO = PaymentVO.builder()
-                        .paymentId(resultSet.getInt("payment_id"))
-                        .parkingId(resultSet.getInt("parking_id"))
-                        .policyId(resultSet.getInt("policy_id"))
-                        .carNum(resultSet.getString("car_num"))
-                        .paymentType(resultSet.getInt("payment_type"))
-                        .calculatedFee(resultSet.getInt("calculated_fee"))
-                        .discountAmount(resultSet.getInt("discount_amount"))
-                        .finalFee(resultSet.getInt("final_fee"))
-                        .paymentDate(resultSet.getTimestamp("payment_date").toLocalDateTime()).build();
-                return paymentVO;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-        return null;
-    }
-
-    // 단건 날짜 조회
+    // 해당 날짜 목록 조회
     public List<PaymentVO> selectPaymentByDate(String targetDate) {
         String sql = "SELECT pay.*, park.car_type, park.car_num, park.total_time " +
                 "FROM payment pay " +
