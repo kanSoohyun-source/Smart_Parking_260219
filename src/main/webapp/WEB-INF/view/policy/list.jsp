@@ -129,38 +129,44 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>기본 시간/요금</th>
-                    <th>추가 시간/요금</th>
-                    <th>유예시간</th>
-                    <th>경차 할인</th>
-                    <th>장애인 할인</th>
-                    <th>일일최대</th>
-                    <th>등록/수정일</th>
-                    <th>상태</th>
-                </tr>
+                    <tr>
+                        <th>기본 시간/요금</th>
+                        <th>추가 시간/요금</th>
+                        <th>유예시간</th>
+                        <th>경차 할인</th>
+                        <th>장애인 할인</th>
+                        <th>일일최대</th>
+                        <th>등록/수정일</th>
+                        <th>상태</th>
+                    </tr>
                 </thead>
                 <tbody>
                 <%
                     if (boardList != null && !boardList.isEmpty()) {
                         for (FeePolicyDTO dto : boardList) {
                             String activeClass = dto.isActive() ? "active-row" : "";
-                            // 클릭 시 이동할 URL 미리 생성
                             String detailUrl = request.getContextPath() + "/view/policy?id=" + dto.getPolicyId() + "&pageNum=" + pageNum;
                 %>
                 <tr class="<%= activeClass %>" onclick="location.href='<%= detailUrl %>'">
                     <td>
-                        <span class="policy-text">
-                            <i class="far fa-clock mr-1"></i><%= dto.getDefaultTime() %>분 / <%= String.format("%,d", dto.getDefaultFee()) %>원
-                        </span>
+                        <i class="far fa-clock mr-1"></i>
+                        <%= dto.getDefaultTime() %>분 /
+                        <%= (dto.getDefaultFee() != 0) ? String.format("%,d", dto.getDefaultFee()) : "0" %>원
                     </td>
-                    <td><%= dto.getExtraTime() %>분 / <%= String.format("%,d", dto.getExtraFee()) %>원</td>
+                    <td>
+                        <%= dto.getExtraTime() %>분 /
+                        <%= (dto.getExtraFee() != 0) ? String.format("%,d", dto.getExtraFee()) : "0" %>원
+                    </td>
                     <td><span class="badge badge-light"><%= dto.getGracePeriod() %>분</span></td>
-                    <td><b class="text-info"><%= dto.getLightDiscount() %>%</b></td>
-                    <td><b class="text-info"><%= dto.getDisabledDiscount() %>%</b></td>
+
+                    <%-- 할인율은 double 연산 시 null 체크 주의 --%>
+                    <td><b class="text-info"><%= (int)(dto.getLightDiscount() * 100) %>%</b></td>
+                    <td><b class="text-info"><%= (int)(dto.getDisabledDiscount() * 100) %>%</b></td>
+
                     <td><b class="text-danger"><%= String.format("%,d", dto.getMaxDailyFee()) %>원</b></td>
                     <td class="text-muted" style="font-size: 0.85rem;">
-                        <%= (dto.getModifyDate() != null) ? dto.getModifyDate().toString().replace("T", " ").substring(0, 19) : "-" %>
+                        <%-- 안전한 날짜 출력 --%>
+                        <%= (dto.getModifyDate() != null) ? dto.getModifyDate().toString().replace("T", " ") : "-" %>
                     </td>
                     <td>
                         <% if (dto.isActive()) { %>
@@ -171,7 +177,11 @@
                     </td>
                 </tr>
                 <%
-                        }
+                    }
+                } else {
+                %>
+                <tr><td colspan="8" class="text-center">데이터가 없습니다.</td></tr>
+                <%
                     }
                 %>
                 </tbody>

@@ -65,7 +65,7 @@
                     <%
                     } else {
                     %>
-                    <label class="radio-item"><input type="radio" name="carType" value="1">일반</label>
+                    <label class="radio-item"><input type="radio" name="carType" value="1" checked>일반</label>
                     <label class="radio-item"><input type="radio" name="carType" value="3">경차</label>
                     <label class="radio-item"><input type="radio" name="carType" value="4">장애인</label>
                     <%

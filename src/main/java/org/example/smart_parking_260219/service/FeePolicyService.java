@@ -69,6 +69,9 @@ public class FeePolicyService {
         // Dto -> vo
         FeePolicyVO originalVo = toVo(feePolicyDTO);
 
+        double lightDiscount = originalVo.getLightDiscount() * 0.01;
+        double disabledDiscount = originalVo.getDisabledDiscount() * 0.01;
+
         FeePolicyVO feePolicyVo = FeePolicyVO.builder()
                 .policyId(originalVo.getPolicyId())
                 .gracePeriod(originalVo.getGracePeriod())
@@ -76,8 +79,8 @@ public class FeePolicyService {
                 .defaultFee(originalVo.getDefaultFee())
                 .extraTime(originalVo.getExtraTime())
                 .extraFee(originalVo.getExtraFee())
-                .lightDiscount(originalVo.getLightDiscount())
-                .disabledDiscount(originalVo.getDisabledDiscount())
+                .lightDiscount(lightDiscount)
+                .disabledDiscount(disabledDiscount)
                 .subscribedFee(originalVo.getSubscribedFee())
                 .maxDailyFee(originalVo.getMaxDailyFee())
                 .isActive(true)

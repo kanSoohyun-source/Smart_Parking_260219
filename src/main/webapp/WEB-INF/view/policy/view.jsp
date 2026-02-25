@@ -135,11 +135,11 @@
             </div>
             <div class="info-item">
                 <div class="info-label"><i class="fas fa-car-side"></i>경차 할인율</div>
-                <div class="info-value"><%=policy.getLightDiscount()%>%</div>
+                <div class="info-value"><%=policy.getLightDiscount() * 100%>%</div>
             </div>
             <div class="info-item">
                 <div class="info-label"><i class="fas fa-wheelchair"></i>장애인 할인율</div>
-                <div class="info-value"><%=policy.getDisabledDiscount()%>%</div>
+                <div class="info-value"><%=policy.getDisabledDiscount() * 100%>%</div>
             </div>
             <div class="info-item">
                 <div class="info-label"><i class="fas fa-info-circle"></i>정책 상태</div>
