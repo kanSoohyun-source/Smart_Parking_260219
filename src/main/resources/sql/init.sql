@@ -83,19 +83,19 @@ VALUES ('test01', 'tester1', '$2a$12$4ReuaFjNvpNJlf/ZzjTC1u59qKSvH0kZcg0jS1tlPP/
 
 -- id - test02, password - 2222
 insert into manager (manager_id, manager_name, password, email, active, role)
-VALUES ('test02', 'tester2', '$2a$12$qpF3i2uW2w2QU7CntypHc.16BflMqHe82EJIDIpoHXut3FwA3i9SS', 'example@naver.com', true, 'NORMAL' );
+VALUES ('test02', 'tester2', '$2a$12$fH1QjEr/cAZvm87TyiOqluVV04tHx88ojnUbjH6z5HLnoSEJjLeOm', 'example@naver.com', true, 'NORMAL' );
 
 -- id - test03, password - 3333
 insert into manager (manager_id, manager_name, password, email, active, role)
-VALUES ('test03', 'tester3', '$2a$12$sFsO6OAo1jiaqN7UteHpiOBWGjK3Bned0eVw8zZHuZarhiUzwI2ma', 'example@naver.com', true, 'NORMAL' );
+VALUES ('test03', 'tester3', '$2a$12$FBBPtsVf4wkRTdlGo64pV.PLDGeJTRBLzrPRl766Z2xLJxudQ/Su6', 'example@naver.com', true, 'NORMAL' );
 
 -- id - test04, password - 4444
 insert into manager (manager_id, manager_name, password, email, active, role)
-VALUES ('test04', 'tester4', '$2a$12$itHGFdg2TSJS.CBA.s8J1OFYbOwma2TIqjILAqziesegCuvKl9pEm', 'example@naver.com', true, 'NORMAL' );
+VALUES ('test04', 'tester4', '$2a$12$ikBOSKCvmiQVjG8fi3flwu853ctVAWsFRmym.FlZQS1w2O73Yrhd2', 'example@naver.com', true, 'NORMAL' );
 
 -- id - test05, password - 5555
 insert into manager (manager_id, manager_name, password, email, active, role)
-VALUES ('test05', 'tester5', '$$2a$12$EZ5MMMRpXbdUfwwTCRYO..WcWgzqOoAFQ3KjGFSEFa9rTA0Fb2I.K', 'example@naver.com', true, 'NORMAL' );
+VALUES ('test05', 'tester5', '$2a$12$UunwhxzJhMdX6yMaoA7uFOl0CaV/Xaxa08WTmZyAYffwPZRAbSuzi', 'example@naver.com', true, 'NORMAL' );
 
 
 CREATE TABLE IF NOT EXISTS `validation`
@@ -148,23 +148,6 @@ CREATE TABLE IF NOT EXISTS `parking`
     CONSTRAINT `fk_parking_spot` FOREIGN KEY (`space_id`)
         REFERENCES `parking_spot` (`space_id`) ON UPDATE CASCADE
 );
-
--- parking dummy
--- 회원
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A2', '11가1111', now());
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A17', '22나2222', '2026-02-18');
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A14', '33다3333', now());
-
--- 비회원
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A5', '13다1234', now());
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A16', '23다1234', now());
-insert into parking (space_id, car_num, entry_time)
-VALUES ('A9', '33다1234', now());
 
 # fee_policy : 요금 부과 정책 테이블 [완료]
 CREATE TABLE IF NOT EXISTS `fee_policy`
@@ -237,6 +220,23 @@ INSERT INTO `payment` (`parking_id`, `policy_id`, `payment_type`, `calculated_fe
 VALUES (6, 1, 1, 4000, 2000, 2000, '2026-02-19 11:35:00'),
        (7, 1, 1, 2000, 0, 2000, '2026-02-19 10:45:00'),
        (8, 1, 1, 4000, 0, 4000, '2026-02-19 12:20:00');
+
+-- 현재 주차 중인 더미 (통계용 데이터 이후에 INSERT → parking_id 9~14)
+-- 회원 (car_type은 member 테이블의 car_type 스냅샷)
+insert into parking (member_id, space_id, car_num, car_type, entry_time)
+VALUES (1, 'A2', '11가1111', 2, now());
+insert into parking (member_id, space_id, car_num, car_type, entry_time)
+VALUES (2, 'A17', '22나2222', 2, '2026-02-18');
+insert into parking (member_id, space_id, car_num, car_type, entry_time)
+VALUES (3, 'A14', '33다3333', 2, now());
+
+-- 비회원 (car_type = 1: 일반)
+insert into parking (space_id, car_num, car_type, entry_time)
+VALUES ('A5', '13다1234', 1, now());
+insert into parking (space_id, car_num, car_type, entry_time)
+VALUES ('A16', '23다1234', 1, now());
+insert into parking (space_id, car_num, car_type, entry_time)
+VALUES ('A9', '33다1234', 1, now());
 
 -- 전용 사용자 생성
 CREATE USER `admin`@`localhost` IDENTIFIED BY '0219';
