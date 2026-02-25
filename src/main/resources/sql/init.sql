@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `member`
     `end_date` DATE NOT NULL COMMENT '월정액 종료일',
     `subscribed`  BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '현재 월정액 구독 중인지 여부',
     `subscribed_fee`    INT     NOT NULL DEFAULT 100000 COMMENT '월정액 가격 - 100,000원',
-    `create_date` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
+    `create_date` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
     INDEX idx_car_num (car_num)
 );
 

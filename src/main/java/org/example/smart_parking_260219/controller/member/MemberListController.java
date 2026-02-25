@@ -92,6 +92,8 @@ public class MemberListController extends HttpServlet {
             case "endDate" -> Comparator.comparing(m ->
                     m.getEndDate() != null ? m.getEndDate() : LocalDate.MIN);
             case "status" -> Comparator.comparing(MemberDTO::isSubscribed);
+            case "createDate" -> Comparator.comparing(m ->
+                    m.getCreateDate() != null ? m.getCreateDate() : LocalDate.MIN);
             default -> Comparator.comparing(MemberDTO::getMemberId);
         };
 

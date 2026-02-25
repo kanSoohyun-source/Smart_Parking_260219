@@ -117,10 +117,10 @@
                     회원 이름<span class="sort-icon"><%= getArrow("name", sortColumn, sortOrder) %></span></a></th>
                 <th><a href="<%= getSortUrl("phone", sortColumn, sortOrder, currentPage) %>">
                     전화번호<span class="sort-icon"><%= getArrow("phone", sortColumn, sortOrder) %></span></a></th>
-                <th><a href="<%= getSortUrl("startDate", sortColumn, sortOrder, currentPage) %>">
-                    구독 시작일<span class="sort-icon"><%= getArrow("startDate", sortColumn, sortOrder) %></span></a></th>
+                <th><a href="<%= getSortUrl("createDate", sortColumn, sortOrder, currentPage) %>">
+                    구독 가입일<span class="sort-icon"><%= getArrow("createDate", sortColumn, sortOrder) %></span></a></th>
                 <th><a href="<%= getSortUrl("endDate", sortColumn, sortOrder, currentPage) %>">
-                    구독 종료일<span class="sort-icon"><%= getArrow("endDate", sortColumn, sortOrder) %></span></a></th>
+                    구독 만기일<span class="sort-icon"><%= getArrow("endDate", sortColumn, sortOrder) %></span></a></th>
                 <th><a href="<%= getSortUrl("status", sortColumn, sortOrder, currentPage) %>">
                     상태<span class="sort-icon"><%= getArrow("status", sortColumn, sortOrder) %></span></a></th>
                 <th>관리</th>
@@ -140,7 +140,7 @@
                 <td><%= m.CarTypeText() %></td>
                 <td><%= m.getName() %></td>
                 <td><%= m.getPhone() %></td>
-                <td><%= m.getStartDate() != null ? m.getStartDate() : "-" %></td>
+                <td><%= m.getCreateDate() != null ? m.getCreateDate() : "-" %></td>
                 <td><%= m.getEndDate() != null ? m.getEndDate() : "-" %></td>
                 <td>
                     <% if (isExpired) { %>

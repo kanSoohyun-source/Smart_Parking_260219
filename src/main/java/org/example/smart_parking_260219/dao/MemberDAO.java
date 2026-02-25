@@ -68,7 +68,7 @@ public class MemberDAO {
                     .startDate(resultSet.getObject("start_date", java.time.LocalDate.class))
                     .endDate(resultSet.getObject("end_date", java.time.LocalDate.class))
                     .subscribedFee(resultSet.getInt("subscribed_fee"))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .createDate(resultSet.getObject("create_date", LocalDate.class))
                     .build();
             memberVOList.add(memberVO);
         }
@@ -95,7 +95,7 @@ public class MemberDAO {
                     .startDate(resultSet.getObject("start_date", java.time.LocalDate.class))
                     .endDate(resultSet.getObject("end_date", java.time.LocalDate.class))
                     .subscribedFee(resultSet.getInt("subscribed_fee"))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .createDate(resultSet.getObject("create_date", LocalDate.class))
                     .build();
             return memberVO;
         }
@@ -125,7 +125,7 @@ public class MemberDAO {
                     .startDate(resultSet.getObject("start_date", LocalDate.class))
                     .endDate(resultSet.getObject("end_date", LocalDate.class))
                     .subscribedFee(resultSet.getInt("subscribed_fee"))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .createDate(resultSet.getObject("create_date", LocalDate.class))
                     .build();
             memberVOList.add(memberVO);
         }
@@ -202,7 +202,7 @@ public class MemberDAO {
                     .subscribedFee(resultSet.getInt("subscribed_fee"))
                     .startDate(resultSet.getObject("start_date", LocalDate.class))
                     .endDate(resultSet.getObject("end_date", LocalDate.class))
-                    .createDate(resultSet.getObject("create_date", LocalDateTime.class))
+                    .createDate(resultSet.getObject("create_date", LocalDate.class))
                     .build());
         }
         return historyList;

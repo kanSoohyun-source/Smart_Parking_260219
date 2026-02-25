@@ -59,7 +59,7 @@
           <label class="col-4 col-form-label font-weight-bold">등록일</label>
           <div class="col-8">
             <input type="text" class="form-control bg-light"
-                   value="<%= member.getCreateDate().toString().replace('T', ' ') %>" readonly>
+                   value="<%= member.getCreateDate() %>" readonly>
           </div>
         </div>
         <% } %>
@@ -86,10 +86,10 @@
               for (org.example.smart_parking_260219.dto.MemberDTO h : history) {
           %>
           <tr>
-            <td><%= h.getCreateDate().toLocalDate() %></td>
+            <td><%= h.getCreateDate() != null ? h.getCreateDate() : "-" %></td>
             <td>
               <small class="text-muted">
-                <%= h.getStartDate() %> ~ <%= h.getEndDate() %>
+                <%= h.getStartDate() != null ? h.getStartDate() : "-" %> ~ <%= h.getEndDate() != null ? h.getEndDate() : "-" %>
               </small>
             </td>
             <td><%= String.format("%,d", h.getSubscribedFee()) %>원</td>

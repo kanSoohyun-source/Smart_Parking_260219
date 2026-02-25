@@ -19,6 +19,6 @@ public class MemberVO {
     private boolean subscribed; // 월정액 회원 여부 (default false)
     private LocalDate startDate; // 구독 시작 일자
     private LocalDate endDate; // 구독 만료 일자
-    private LocalDateTime createDate;  // 가입일
+    private LocalDate createDate;  // 가입일
     private int subscribedFee; // 월정액 비용 기본값 10만원
 }
