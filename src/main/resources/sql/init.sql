@@ -72,7 +72,7 @@ VALUES ('super',
         '$2a$12$12q5tYhznZe7E6Pt73SpAubFpKJjD/y24xAAFU6W4ghGyXXUacZO6',
         'example@naver.com',
         TRUE,
-        'ADMIN')
+        'SUPER')
 ON DUPLICATE KEY UPDATE `role` = 'SUPER'; -- 이미 존재할 경우 권한만 SUPER 보장
 
 -- manager dummy
